@@ -1603,14 +1603,7 @@ class CampaignCreator {
             }
             // Tamanho do vídeo OK
             
-            // Validar aspect ratio 9:16 para vídeos
-            const isValidAspectRatio = await this.validateVideoAspectRatio(file);
-            if (!isValidAspectRatio) {
-                // Aspect ratio do vídeo inválido
-                alert('O vídeo deve ter proporção 9:16 (vertical). Por favor, ajuste o vídeo.');
-                return false;
-            }
-            // Aspect ratio do vídeo OK
+            // Validação de proporção removida - aceita qualquer proporção de vídeo
             
         } else {
             // Tipo de arquivo não suportado
@@ -1643,26 +1636,7 @@ class CampaignCreator {
         });
     }
 
-    // Validar proporção 9:16 para vídeos
-    validateVideoAspectRatio(file) {
-        return new Promise((resolve) => {
-            const video = document.createElement('video');
-            video.onloadedmetadata = function() {
-                const aspectRatio = this.videoWidth / this.videoHeight;
-                const targetRatio = 9 / 16;
-                const tolerance = 0.05; // 5% de tolerância
-                
-                const isValid = Math.abs(aspectRatio - targetRatio) <= tolerance;
-                URL.revokeObjectURL(video.src);
-                resolve(isValid);
-            };
-            video.onerror = function() {
-                URL.revokeObjectURL(video.src);
-                resolve(false);
-            };
-            video.src = URL.createObjectURL(file);
-        });
-    }
+    // Função de validação de proporção de vídeo removida
 
     // Função para redimensionar e otimizar imagem
     // Função para converter HEIC para JPG usando heic2any
@@ -1838,7 +1812,7 @@ class CampaignCreator {
             
             previewHTML = `
                 <div style="position: relative; width: 338px; height: 601px; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin: 0 auto; background: white;">
-                    <div class="image-placeholder" style="width: 100%; height: 100%; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; text-align: center; padding: 20px; box-sizing: border-box;">
+                    <div class="image-placeholder" style="width: 100%; height: 100%; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; text-align: center; padding: 0; box-sizing: border-box;">
                         <div style="background: rgba(102, 126, 234, 0.1); border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
                             <i class="fas fa-image" style="font-size: 24px;"></i>
                         </div>
