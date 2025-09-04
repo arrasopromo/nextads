@@ -2218,6 +2218,22 @@ div.file-preview-container .file-preview-image {
     background: linear-gradient(135deg, #5a67d8, #6b46c1);
 }
 
+.confirm-btn.first-click {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    box-shadow: 0 12px 35px rgba(240, 147, 251, 0.6);
+    transform: translateY(-2px) scale(1.02);
+    animation: pulse-confirm 1.5s infinite;
+}
+
+@keyframes pulse-confirm {
+    0%, 100% {
+        box-shadow: 0 12px 35px rgba(240, 147, 251, 0.6);
+    }
+    50% {
+        box-shadow: 0 15px 40px rgba(240, 147, 251, 0.8);
+    }
+}
+
 .confirm-btn:active {
     transform: translateY(-1px);
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);

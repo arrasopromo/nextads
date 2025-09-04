@@ -20,7 +20,8 @@ class CampaignCreator {
             objective: null,
             direction: null,
             location: null,
-            gender: null
+            gender: null,
+            confirmButton: false
         };
         this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
@@ -193,14 +194,14 @@ class CampaignCreator {
         // File upload
         this.setupFileUpload();
 
-        // Confirm button - Adicionar suporte touch
+        // Confirm button - Adicionar suporte touch e duplo clique mobile
         const confirmBtn = document.getElementById('confirm-campaign');
         if (confirmBtn) {
-            confirmBtn.addEventListener('click', () => this.confirmCampaign());
+            confirmBtn.addEventListener('click', (e) => this.handleConfirmClick(e));
             confirmBtn.addEventListener('touchend', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                this.confirmCampaign();
+                this.handleConfirmClick(e);
             });
         }
     }
@@ -2159,6 +2160,34 @@ class CampaignCreator {
     showError(errorDiv, message) {
         errorDiv.textContent = message;
         errorDiv.classList.remove('hidden');
+    }
+
+    handleConfirmClick(e) {
+        const confirmBtn = document.getElementById('confirm-campaign');
+        
+        if (this.isMobile) {
+            if (this.mobileClickState.confirmButton) {
+                // Segundo clique - confirmar campanha
+                this.mobileClickState.confirmButton = false;
+                confirmBtn.classList.remove('first-click');
+                this.confirmCampaign();
+            } else {
+                // Primeiro clique - destacar botão
+                confirmBtn.classList.add('first-click');
+                this.mobileClickState.confirmButton = true;
+                
+                // Remover destaque após 3 segundos se não houver segundo clique
+                setTimeout(() => {
+                    if (this.mobileClickState.confirmButton) {
+                        confirmBtn.classList.remove('first-click');
+                        this.mobileClickState.confirmButton = false;
+                    }
+                }, 3000);
+            }
+        } else {
+            // Desktop - confirmação direta
+            this.confirmCampaign();
+        }
     }
 
     confirmCampaign() {
