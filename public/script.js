@@ -15,6 +15,15 @@ class CampaignCreator {
         this.estados = [];
         this.fileUploadConfigured = false;
         
+        // Estado para duplo clique em mobile
+        this.mobileClickState = {
+            objective: null,
+            direction: null,
+            location: null,
+            gender: null
+        };
+        this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
         this.init();
     }
 
@@ -200,19 +209,59 @@ class CampaignCreator {
         const card = e.currentTarget;
         const option = card.dataset.option;
         const section = card.closest('.form-section');
+        const sectionTitle = section.querySelector('h2').textContent;
         
+        // Verificar se é mobile e implementar duplo clique
+        if (this.isMobile) {
+            let clickStateKey = null;
+            if (sectionTitle === 'Objetivo') {
+                clickStateKey = 'objective';
+            } else if (sectionTitle === 'Direcionamento') {
+                clickStateKey = 'direction';
+            } else if (sectionTitle === 'Localização') {
+                clickStateKey = 'location';
+            }
+            
+            if (clickStateKey && this.mobileClickState[clickStateKey] === option) {
+                // Segundo clique - selecionar
+                this.selectOption(card, option, section, sectionTitle);
+                this.mobileClickState[clickStateKey] = null;
+                card.classList.remove('first-click');
+            } else if (clickStateKey) {
+                // Primeiro clique - destacar
+                section.querySelectorAll('.option-card').forEach(c => {
+                    c.classList.remove('first-click');
+                });
+                card.classList.add('first-click');
+                this.mobileClickState[clickStateKey] = option;
+                
+                // Remover destaque após 3 segundos se não houver segundo clique
+                setTimeout(() => {
+                    if (this.mobileClickState[clickStateKey] === option) {
+                        card.classList.remove('first-click');
+                        this.mobileClickState[clickStateKey] = null;
+                    }
+                }, 3000);
+            }
+        } else {
+            // Desktop - seleção direta
+            this.selectOption(card, option, section, sectionTitle);
+        }
+    }
+    
+    selectOption(card, option, section, sectionTitle) {
         // Remove selection from siblings
         section.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
     
-        if (section.querySelector('h2').textContent === 'Objetivo') {
+        if (sectionTitle === 'Objetivo') {
             this.selectedObjective = option;
             // Bloquear/desbloquear cards de direcionamento baseado no objetivo
             this.updateDirectionAvailability(option);
-        } else if (section.querySelector('h2').textContent === 'Direcionamento') {
+        } else if (sectionTitle === 'Direcionamento') {
             this.selectedDirection = option;
             this.toggleDirectionSections(option);
-        } else if (section.querySelector('h2').textContent === 'Localização') {
+        } else if (sectionTitle === 'Localização') {
             this.selectedLocation = option;
             this.toggleLocationSections(option);
         }
@@ -1148,6 +1197,36 @@ class CampaignCreator {
         const btn = e.currentTarget;
         const gender = btn.dataset.gender;
         
+        // Verificar se é mobile e implementar duplo clique
+        if (this.isMobile) {
+            if (this.mobileClickState.gender === gender) {
+                // Segundo clique - selecionar
+                this.selectGender(btn, gender);
+                this.mobileClickState.gender = null;
+                btn.classList.remove('first-click');
+            } else {
+                // Primeiro clique - destacar
+                document.querySelectorAll('.gender-btn').forEach(b => {
+                    b.classList.remove('first-click');
+                });
+                btn.classList.add('first-click');
+                this.mobileClickState.gender = gender;
+                
+                // Remover destaque após 3 segundos se não houver segundo clique
+                setTimeout(() => {
+                    if (this.mobileClickState.gender === gender) {
+                        btn.classList.remove('first-click');
+                        this.mobileClickState.gender = null;
+                    }
+                }, 3000);
+            }
+        } else {
+            // Desktop - seleção direta
+            this.selectGender(btn, gender);
+        }
+    }
+    
+    selectGender(btn, gender) {
         document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         

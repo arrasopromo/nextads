@@ -318,6 +318,32 @@ body:has(.campaign-config) .form-header {
     box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
 }
 
+/* Estilo para primeiro clique em mobile */
+.option-card.first-click {
+    border-color: #fbbf24;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
+    animation: pulse-first-click 1.5s infinite;
+}
+
+.option-card.first-click i {
+    color: white;
+}
+
+@keyframes pulse-first-click {
+    0% {
+        box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
+    }
+    50% {
+        box-shadow: 0 8px 25px rgba(251, 191, 36, 0.6);
+    }
+    100% {
+        box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
+    }
+}
+
 .option-card i {
     font-size: 2rem;
     margin-bottom: 0.75rem;
@@ -425,6 +451,20 @@ body:has(.campaign-config) .form-header {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     border-color: #667eea;
+}
+
+/* Estilo para primeiro clique em mobile nos botões de gênero */
+.gender-btn.first-click {
+    border-color: #fbbf24;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
+    animation: pulse-first-click 1.5s infinite;
+}
+
+.gender-btn.first-click i {
+    color: white;
 }
 
 .gender-btn i {
