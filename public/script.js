@@ -1837,16 +1837,19 @@ class CampaignCreator {
                 </div>
             `;
             
-            // Gerar thumbnail real para vídeo
-            setTimeout(() => {
-                this.generateVideoThumbnail(fileItem, file);
-            }, 100);
         }
         
         // Definindo innerHTML do fileItem...
         fileItem.innerHTML = previewHTML;
         // Adicionando fileItem ao container...
         uploadedFilesDiv.appendChild(fileItem);
+        
+        // Gerar thumbnail real para vídeo APÓS adicionar ao DOM
+        if (isVideo) {
+            setTimeout(() => {
+                this.generateVideoThumbnail(fileItem, file);
+            }, 100);
+        }
         
         // FileItem adicionado ao DOM. Verificando se imagem está visível...
         
