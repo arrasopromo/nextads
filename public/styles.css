@@ -662,7 +662,7 @@ div.file-preview-container .file-preview-image {
     height: 100% !important;
     max-height: none !important;
     object-fit: cover !important;
-    object-position: center !important;
+    object-position: center center !important;
     display: block !important;
     background: transparent !important;
     background-color: transparent !important;
@@ -674,8 +674,10 @@ div.file-preview-container .file-preview-image {
     padding: 0 !important;
     margin: 0 !important;
     position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    border-radius: 12px !important;
 }
 
 .file-preview-video {
@@ -4138,5 +4140,22 @@ div.file-preview-container .file-preview-image {
         flex-direction: column;
         gap: 0.5rem;
         align-items: center;
+    }
+    
+    /* Corrigir posicionamento do rodapé no mobile */
+    footer {
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        margin-top: 3rem !important;
+        padding: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    
+    /* Garantir que o main-content tenha espaço suficiente */
+    .main-content {
+        padding-bottom: 120px !important;
+        min-height: calc(100vh - 120px) !important;
     }
 }
