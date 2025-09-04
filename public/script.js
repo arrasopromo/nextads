@@ -2889,8 +2889,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Adicionar eventos touch extras para garantir interatividade mobile
         setTimeout(() => {
-    
-            
             // Garantir que todos os elementos interativos tenham eventos touch
             const interactiveElements = document.querySelectorAll('.option-card, .social-btn, .gender-btn, .upload-card, .confirm-btn, .buscar-mercado-btn, .validate-btn');
             
@@ -2898,14 +2896,42 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!element.hasAttribute('data-touch-enabled')) {
                     element.setAttribute('data-touch-enabled', 'true');
                     
+                    let touchStartX = 0;
+                    let touchStartY = 0;
+                    let touchStartTime = 0;
+                    let hasMoved = false;
+                    
                     element.addEventListener('touchstart', function(e) {
                         this.classList.add('touch-active');
+                        touchStartX = e.touches[0].clientX;
+                        touchStartY = e.touches[0].clientY;
+                        touchStartTime = Date.now();
+                        hasMoved = false;
+                    }, { passive: true });
+                    
+                    element.addEventListener('touchmove', function(e) {
+                        const touchX = e.touches[0].clientX;
+                        const touchY = e.touches[0].clientY;
+                        const deltaX = Math.abs(touchX - touchStartX);
+                        const deltaY = Math.abs(touchY - touchStartY);
+                        
+                        // Se o movimento for maior que 10px em qualquer direção, considerar como scroll
+                        if (deltaX > 10 || deltaY > 10) {
+                            hasMoved = true;
+                            this.classList.remove('touch-active');
+                        }
                     }, { passive: true });
                     
                     element.addEventListener('touchend', function(e) {
                         this.classList.remove('touch-active');
-                        // Simular clique se não houver evento touchend específico
-                        if (!this.hasAttribute('data-has-touchend')) {
+                        
+                        const touchDuration = Date.now() - touchStartTime;
+                        
+                        // Só simular clique se:
+                        // 1. Não houve movimento significativo
+                        // 2. O toque durou menos de 500ms (não é um long press)
+                        // 3. Não há evento touchend específico já configurado
+                        if (!hasMoved && touchDuration < 500 && !this.hasAttribute('data-has-touchend')) {
                             e.preventDefault();
                             this.click();
                         }
@@ -2913,11 +2939,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     element.addEventListener('touchcancel', function(e) {
                         this.classList.remove('touch-active');
+                        hasMoved = true;
                     });
                 }
             });
-            
-    
         }, 500);
         
     } catch (error) {
