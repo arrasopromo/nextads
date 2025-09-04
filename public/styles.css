@@ -1779,7 +1779,7 @@ div.file-preview-container .file-preview-image {
 /* Responsividade do pop-up */
 @media (max-width: 768px) {
     .advantage-popup-content {
-        width: 95%;
+        width: 85%;
         max-height: 85vh;
     }
     
@@ -1796,8 +1796,10 @@ div.file-preview-container .file-preview-image {
     }
     
     .advantage-info-icon {
-        font-size: 0.75rem;
-        margin-left: 0.3rem;
+        font-size: 1rem;
+        margin-left: 0.15rem;
+        min-width: 1.8rem;
+        min-height: 1.8rem;
     }
 }
 
@@ -1855,17 +1857,16 @@ div.file-preview-container .file-preview-image {
     body .file-preview-container img,
     body div.file-preview-container img,
     body .video-thumbnail-img {
-        margin: 0 !important;
+        margin: 0 auto !important;
         display: block !important;
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
+        position: relative !important;
         width: 100% !important;
         height: 100% !important;
         object-fit: cover !important;
         object-position: center !important;
+        left: auto !important;
+        right: auto !important;
+        transform: none !important;
     }
     
     body .video-thumbnail-container {
