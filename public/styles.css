@@ -648,6 +648,8 @@ div.file-preview-container {
     background-color: transparent !important;
     background-image: none !important;
     display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 .file-preview-image,
@@ -668,6 +670,8 @@ div.file-preview-container .file-preview-image {
     visibility: visible !important;
     border: none !important;
     outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 .file-preview-video {

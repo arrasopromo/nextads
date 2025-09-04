@@ -204,13 +204,14 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 500 * 1024 * 1024 // 500MB
+        fileSize: 10 * 1024 * 1024 // 10MB para imagens, vídeos serão validados separadamente
     },
     fileFilter: (req, file, cb) => {
         console.log('🔍 Validando arquivo no servidor:', {
             originalname: file.originalname,
             mimetype: file.mimetype,
-            fieldname: file.fieldname
+            fieldname: file.fieldname,
+            size: file.size
         });
         
         // Obter extensão do arquivo
@@ -218,14 +219,20 @@ const upload = multer({
         console.log('📁 Extensão do arquivo:', fileExtension);
         
         // Lista de extensões permitidas
-        const allowedExtensions = ['.jpeg', '.jpg', '.png', '.gif', '.heic', '.webp', '.dng', '.mp4', '.mov', '.avi', '.webm', '.3gp', '.mkv', '.ts'];
+        const imageExtensions = ['.jpeg', '.jpg', '.png', '.gif', '.heic', '.webp', '.dng'];
+        const videoExtensions = ['.mp4', '.mov', '.avi', '.webm', '.3gp', '.mkv', '.ts'];
+        const allowedExtensions = [...imageExtensions, ...videoExtensions];
         
         // Verificar se a extensão está na lista permitida
         const isAllowedExtension = allowedExtensions.includes(fileExtension);
+        const isImage = imageExtensions.includes(fileExtension);
+        const isVideo = videoExtensions.includes(fileExtension);
         
         console.log('📊 Resultados da validação:', {
             fileExtension,
             isAllowedExtension,
+            isImage,
+            isVideo,
             allowedExtensions
         });
         
@@ -1250,7 +1257,7 @@ app.post('/api/campaign', (req, res) => {
 app.use((error, req, res, next) => {
     if (error instanceof multer.MulterError) {
         if (error.code === 'LIMIT_FILE_SIZE') {
-            return res.status(400).json({ error: 'Arquivo muito grande. Máximo 50MB.' });
+            return res.status(400).json({ error: 'Arquivo muito grande. Máximo 10MB para imagens ou 500MB para vídeos.' });
         }
     }
     
@@ -1275,6 +1282,23 @@ app.post('/api/upload', upload.array('files', 10), async (req, res) => {
             console.log(`📄 [UPLOAD] Processando arquivo: ${file.originalname}`);
             console.log(`📊 [UPLOAD] Tipo MIME: ${file.mimetype}`);
             console.log(`📏 [UPLOAD] Tamanho: ${file.size} bytes`);
+            
+            // Validação específica de tamanho por tipo de arquivo
+            const fileExtension = path.extname(file.originalname).toLowerCase();
+            const imageExtensions = ['.jpeg', '.jpg', '.png', '.gif', '.heic', '.webp', '.dng'];
+            const videoExtensions = ['.mp4', '.mov', '.avi', '.webm', '.3gp', '.mkv', '.ts'];
+            
+            const isImage = imageExtensions.includes(fileExtension);
+            const isVideo = videoExtensions.includes(fileExtension);
+            
+            // Verificar limites específicos
+            if (isImage && file.size > 10 * 1024 * 1024) { // 10MB para imagens
+                return res.status(400).json({ error: 'Imagem muito grande. Máximo 10MB para imagens.' });
+            }
+            
+            if (isVideo && file.size > 500 * 1024 * 1024) { // 500MB para vídeos
+                return res.status(400).json({ error: 'Vídeo muito grande. Máximo 500MB para vídeos.' });
+            }
             
             let processedFile = {
                 originalName: file.originalname,
