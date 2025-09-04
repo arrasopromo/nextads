@@ -1486,7 +1486,7 @@ class CampaignCreator {
         // Validando arquivo
         
         const maxImageSize = 5 * 1024 * 1024; // 5MB
-        const maxVideoSize = 50 * 1024 * 1024; // 50MB
+        const maxVideoSize = 100 * 1024 * 1024; // 100MB
         
         // Obter extensão do arquivo
         const fileName = file.name.toLowerCase();
@@ -2915,8 +2915,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         const deltaX = Math.abs(touchX - touchStartX);
                         const deltaY = Math.abs(touchY - touchStartY);
                         
-                        // Se o movimento for maior que 10px em qualquer direção, considerar como scroll
-                        if (deltaX > 10 || deltaY > 10) {
+                        // Se o movimento for maior que 20px em qualquer direção, considerar como scroll
+                        if (deltaX > 20 || deltaY > 20) {
                             hasMoved = true;
                             this.classList.remove('touch-active');
                         }
@@ -3238,11 +3238,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Previne scroll no popup quando está aberto
+    // Permite scroll dentro do conteúdo do popup, mas previne scroll da página de fundo
     if (advantagePopup) {
         advantagePopup.addEventListener('touchmove', function(e) {
             if (advantagePopup.classList.contains('show')) {
-                e.preventDefault();
+                // Só previne scroll se o toque for no overlay (fundo), não no conteúdo
+                if (e.target === advantagePopup) {
+                    e.preventDefault();
+                }
             }
         }, { passive: false });
     }
