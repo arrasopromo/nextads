@@ -204,7 +204,7 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 10 * 1024 * 1024 // 10MB para imagens, vídeos serão validados separadamente
+        fileSize: 500 * 1024 * 1024 // 500MB para permitir vídeos grandes, validação específica será feita na rota
     },
     fileFilter: (req, file, cb) => {
         console.log('🔍 Validando arquivo no servidor:', {
@@ -1257,7 +1257,7 @@ app.post('/api/campaign', (req, res) => {
 app.use((error, req, res, next) => {
     if (error instanceof multer.MulterError) {
         if (error.code === 'LIMIT_FILE_SIZE') {
-            return res.status(400).json({ error: 'Arquivo muito grande. Máximo 10MB para imagens ou 500MB para vídeos.' });
+            return res.status(400).json({ error: 'Arquivo muito grande. Máximo 500MB permitido.' });
         }
     }
     

@@ -1564,8 +1564,8 @@ class CampaignCreator {
     async validateFile(file) {
         // Validando arquivo
         
-        const maxImageSize = 5 * 1024 * 1024; // 5MB
-        const maxVideoSize = 100 * 1024 * 1024; // 100MB
+        const maxImageSize = 10 * 1024 * 1024; // 10MB
+        const maxVideoSize = 500 * 1024 * 1024; // 500MB
         
         // Obter extensão do arquivo
         const fileName = file.name.toLowerCase();
@@ -1589,7 +1589,7 @@ class CampaignCreator {
             // Arquivo é uma imagem
             if (file.size > maxImageSize) {
                 // Imagem muito grande
-                alert('Imagem muito grande. Máximo 5MB.');
+                alert('Imagem muito grande. Máximo 10MB.');
                 return false;
             }
             // Tamanho da imagem OK
@@ -1598,7 +1598,7 @@ class CampaignCreator {
             // Arquivo é um vídeo
             if (file.size > maxVideoSize) {
                 // Vídeo muito grande
-                alert('Vídeo muito grande. Máximo 50MB.');
+                alert('Vídeo muito grande. Máximo 500MB.');
                 return false;
             }
             // Tamanho do vídeo OK
