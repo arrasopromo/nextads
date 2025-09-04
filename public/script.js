@@ -1371,7 +1371,7 @@ class CampaignCreator {
             const handleSelectFiles = () => {
                 const input = document.createElement('input');
                 input.type = 'file';
-                input.multiple = true;
+                input.multiple = false;
                 input.accept = 'image/*,video/*';
                 input.addEventListener('change', (e) => {
                     this.handleFiles(e.target.files);
