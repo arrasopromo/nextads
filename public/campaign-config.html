@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuração da Campanha - Turbo Impulsione</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Botão do menu mobile -->
+        <button class="mobile-menu-btn" id="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <!-- Overlay para fechar o menu -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html"><img src="logo.png" alt="Next Ads" class="sidebar-logo"></a>
+                <button class="close-menu-btn" id="close-menu-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html" class="nav-link active"><i class="fas fa-plus"></i> Criar Campanha</a></li>
+                    <li><a href="#" class="nav-link"><i class="fas fa-list"></i> Minhas Campanhas</a></li>
+                    <li><a href="#" class="nav-link"><i class="fas fa-info-circle"></i> Sobre</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="campaign-form">
+                <div class="form-header">
+                    <h1>Configuração da Campanha</h1>
+                </div>
+                
+                <div class="campaign-config" id="campaign-config">
+                    <!-- Botão Voltar -->
+                    <button class="back-btn" id="back-to-first">
+                        <i class="fas fa-arrow-left"></i>
+                        Voltar
+                    </button>
+
+                    <p>Configure os detalhes finais da sua campanha publicitária</p>
+
+                <!-- Métricas -->
+                <section class="form-section">
+                    <h3>Métricas Estimadas</h3>
+                    <div class="metrics-container">
+                        <!-- Métricas serão inseridas dinamicamente -->
+                    </div>
+                </section>
+
+                <!-- Duração da Campanha -->
+                <section class="form-section">
+                    <h3>Duração da Campanha</h3>
+                    <p>Escolha por quantos dias sua campanha ficará ativa</p>
+                    <div class="duration-cards">
+                        <div class="duration-card" data-days="0">
+                            <h3>Teste</h3>
+                            <p>Apenas para teste</p>
+                            <div class="price">R$ 0,30</div>
+                        </div>
+                        <div class="duration-card" data-days="1">
+                            <h3>1 Dia</h3>
+                            <p>Campanha rápida</p>
+                            <div class="price">R$ 97,00</div>
+                        </div>
+                        <div class="duration-card" data-days="3">
+                            <h3>3 Dias</h3>
+                            <p>Teste inicial</p>
+                            <div class="price">R$ 197,00</div>
+                        </div>
+                        <div class="duration-card selected" data-days="7">
+                            <h3>7 Dias</h3>
+                            <p>Recomendado</p>
+                            <div class="price">R$ 297,00</div>
+                        </div>
+                        <div class="duration-card" data-days="14">
+                            <h3>14 Dias</h3>
+                            <p>Campanha estendida</p>
+                            <div class="price">R$ 397,00</div>
+                        </div>
+                        <div class="duration-card" data-days="30">
+                            <h3>30 Dias</h3>
+                            <p>Máximo alcance</p>
+                            <div class="price">R$ 537,00</div>
+                        </div>
+                    </div>
+                </section>
+
+
+
+                <!-- Resumo das Configurações -->
+                <section class="form-section">
+                    <h3>Resumo da Campanha</h3>
+                    <div class="summary-container">
+                        <div class="summary-item">
+                            <h4>Objetivo:</h4>
+                            <p id="summary-objective">-</p>
+                        </div>
+                        <div class="summary-item">
+                            <h4>Direcionamento:</h4>
+                            <div id="summary-profile" class="profile-summary">-</div>
+                        </div>
+                        <div class="summary-item">
+                            <h4>Localização:</h4>
+                            <p id="summary-location">-</p>
+                        </div>
+                        <div class="summary-item">
+                            <h4>Gênero</h4>
+                            <p id="summary-gender">-</p>
+                        </div>
+                        <div class="summary-item">
+                            <h4>Idade</h4>
+                            <p id="summary-age">-</p>
+                        </div>
+                        <div class="summary-item">
+                            <h4>Mercados</h4>
+                            <p id="summary-markets">-</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Ações -->
+                <div class="form-actions">
+                    <button type="button" class="confirm-btn" id="launch-campaign">
+                        Lançar Campanha 🚀
+                    </button>
+                    
+                    <!-- Modal PIX -->
+                    <div id="pix-modal" class="pix-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); z-index: 10000; justify-content: center; align-items: center; animation: fadeIn 0.3s ease;">
+                        <div class="pix-modal-content" style="background: white; border-radius: 20px; padding: 0; max-width: 600px; width: 95%; max-height: 95vh; min-height: 400px; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); animation: slideUp 0.3s ease;">
+                            <div class="pix-header" style="background: #f8f9fa; color: #000; padding: 1.5rem 2rem 1rem 2rem; border-radius: 20px 20px 0 0; text-align: center; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: center; align-items: center; position: relative;">
+                                <h2 id="pix-header-title" style="margin: 0; font-size: 20px; color: #333;">Conectando pagamento</h2>
+                                <button class="close-btn" id="close-pix-modal" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: #666; font-size: 24px; cursor: pointer; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background 0.3s ease;">&times;</button>
+                            </div>
+                            
+                            <div class="pix-body" style="padding: 1.5rem;">
+                                <!-- Loading -->
+                                <div id="pix-loading" class="pix-loading" style="text-align: center; padding: 3rem 2rem; display: block; min-height: 300px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                    <div class="loading-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; width: 100%;">
+                                        <div class="spinner" style="width: 50px; height: 50px; border: 4px solid #e2e8f0; border-top: 4px solid #667eea; border-right: 4px solid #764ba2; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                                        <h3 id="loading-message" style="color: #000; transition: opacity 0.8s ease-in-out; min-height: 2.5em; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.4; margin: 0; font-size: 18px; max-width: 400px; word-wrap: break-word;">Carregando ambiente seguro...</h3>
+                                        <p style="margin: 0; color: #666; font-size: 14px;">Aguarde alguns instantes...</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Pagamento PIX -->
+                                <div id="pix-payment" class="pix-payment" style="display: none; padding: 20px; background: white; border-radius: 8px; max-width: 500px; margin: 0 auto;">
+                                    <!-- Título -->
+                                    <div class="campaign-title" style="text-align: center; margin-bottom: 15px; padding: 0 10px;">
+                                        <h3 style="margin: 0; color: #333; font-size: 18px; font-weight: 600; line-height: 1.4;">A campanha será criada automaticamente<br>após confirmação do pagamento</h3>
+                                    </div>
+                                    
+                                    <!-- Resumo da Campanha -->
+                                    <div class="campaign-summary" style="background: none; border: none; padding: 0; margin-bottom: 20px;">
+                                        <div class="campaign-metrics" style="margin-bottom: 15px; padding: 15px 20px; background: #f8f9fa; border-radius: 8px; margin: 0 20px 15px 20px;">
+                                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                <div>
+                                                    <div style="font-size: 14px; color: #666; margin-bottom: 5px;">Duração</div>
+                                                    <div style="font-size: 18px; font-weight: bold; color: #333;" id="pix-duration">7 dias</div>
+                                                </div>
+                                                <div style="text-align: right;">
+                                                    <div style="font-size: 14px; color: #666; margin-bottom: 5px;">Investimento</div>
+                                                    <div style="font-size: 18px; font-weight: bold; color: #007bff;" id="pix-value">R$ 297,00</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Timer -->
+                                    <div class="timer-section" style="text-align: center; margin-bottom: 12px;">
+                                        <p style="font-size: 14px; color: #333; margin: 0; line-height: 1.3;">🕐 Aguardando - Expira em<br><span id="pix-countdown" class="countdown" style="font-size: 18px; font-weight: bold; color: #dc3545; font-family: 'Courier New', monospace;">15:00</span></p>
+                                    </div>
+                                    
+                                    <!-- QR Code -->
+                                    <div class="pix-section" style="margin-top: 10px;">
+                                        <div class="qr-code-container" style="text-align: center; margin-bottom: 12px;">
+                                            <div id="qr-code-loading" class="loading-spinner">
+                                                <div class="spinner"></div>
+                                                <p>Gerando QR Code...</p>
+                                            </div>
+                                            <div id="qr-code-content" style="display: none;">
+                                                <img id="qr-code-image" src="" alt="QR Code PIX" style="width: 160px; height: 160px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Código PIX -->
+                                        <div style="text-align: center; margin-bottom: 15px;">
+                                            <label for="pix-code" style="font-size: 14px; color: #666; display: block; margin-bottom: 10px;">Código PIX (copie e cole no seu banco)</label>
+                                        </div>
+                                        
+                                        <!-- Campo de código PIX -->
+                                        <div class="pix-code-input" style="text-align: center; margin-bottom: 10px; padding: 0 10px;">
+                                            <input type="text" id="pix-code" readonly style="width: 100%; max-width: 500px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; margin: 0 auto; display: block; font-size: 12px; font-family: monospace; background: #f8f9fa; box-sizing: border-box;" />
+                                        </div>
+                                        
+                                        <!-- Botão de cópia -->
+                                        <div style="text-align: center; padding: 0 10px;">
+                                            <button type="button" class="copy-btn" id="copy-pix-code" style="padding: 12px 20px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; width: 100%; max-width: 200px;">
+                                                <i class="fas fa-copy"></i> Copiar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+
+                                </div>
+                                
+                                <!-- Erro -->
+                                <div id="pix-error" class="pix-error" style="display: none; padding: 20px; text-align: center;">
+                                    <div class="error-content" style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; padding: 15px; margin: 10px;">
+                                        <h3 style="color: #495057; margin: 0 0 10px 0; font-size: 16px;">Pagamento Expirado</h3>
+                                        <p id="error-message" style="color: #6c757d; margin: 0 0 15px 0; font-size: 14px;">Ocorreu um erro ao processar o pagamento.</p>
+                                        <button class="retry-btn" id="retry-pix-btn" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;">Gerar pagamento</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Sucesso -->
+                                <div id="pix-success" class="pix-success" style="display: none; padding: 20px; text-align: center;">
+                                    <div class="success-content" style="background: #d4edda; border: 1px solid #c3e6cb; border-radius: 6px; padding: 15px; margin: 10px;">
+                                        <h3 style="color: #155724; margin: 0 0 10px 0; font-size: 16px;">🎉 Pagamento Confirmado!</h3>
+                                        <p style="color: #155724; margin: 0 0 15px 0; font-size: 14px;">Sua campanha foi criada com sucesso e já está ativa!</p>
+                                        <button class="view-campaign-btn" id="view-campaign-btn" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px;">👀 Visualizar Campanha</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Inicializar página de configuração
+        document.addEventListener('DOMContentLoaded', function() {
+            // Recuperar dados da campanha do localStorage
+            const campaignData = JSON.parse(localStorage.getItem('campaignData') || '{}');
+            
+            // Atualizar resumo com dados salvos
+            updateCampaignSummaryFromStorage(campaignData);
+            
+            // Atualizar métricas baseadas no objetivo
+            updateMetricsBasedOnObjectiveFromStorage(campaignData.objective);
+            
+            // Configurar cards de duração
+            setupDurationCards();
+            
+            // Configurar eventos de seleção de duração
+            setupDurationSelection();
+            
+            // Configurar botão voltar
+            document.getElementById('back-to-first').addEventListener('click', function() {
+                window.location.href = 'index.html';
+            });
+            
+            // Configurar botão lançar campanha
+            document.getElementById('launch-campaign').addEventListener('click', function() {
+                launchCampaignWithPix();
+            });
+            
+            // Configurar event listeners do modal PIX
+            setupPixModalEventListeners();
+            
+            // Iniciar temporizador automático de 15 minutos após 1 segundo
+            setTimeout(() => {
+                // Iniciando temporizador automático de 15 minutos...
+                startPixTimer(900); // 15 minutos em segundos
+            }, 1000);
+        });
+        
+        // Função para lançar campanha com PIX
+        function launchCampaignWithPix() {
+            const modal = document.getElementById('pix-modal');
+            modal.style.display = 'flex';
+            
+            // Resetar modal para estado inicial
+            showPixLoading();
+        }
+        
+        // CSS para animação do spinner
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Array de mensagens de carregamento
+        const messages = [
+            '🔒 Carregando ambiente seguro...',
+            '💳 Conectando com a Woovi pagamento...',
+            '🔐 Pagamento criptografado com chave RSA 256...',
+            '✅ Ambiente seguro estabelecido...'
+        ];
+        
+        let currentMessageIndex = 0;
+        let messageInterval;
+        
+        // Função para rotacionar mensagens
+        function rotateMessages() {
+            const messageElement = document.getElementById('loading-message');
+            if (messageElement) {
+                // Fade out
+                messageElement.style.opacity = '0';
+                
+                setTimeout(() => {
+                    // Mudar mensagem
+                    currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+                    messageElement.textContent = messages[currentMessageIndex];
+                    
+                    // Fade in
+                    messageElement.style.opacity = '1';
+                    
+                    // Se chegou na última mensagem, parar a rotação após um tempo
+                    if (currentMessageIndex === messages.length - 1) {
+                        setTimeout(() => {
+                            stopMessageRotation();
+                        }, 1300); // Parar após exibir a última mensagem
+                    }
+                }, 300);
+            }
+        }
+        
+        // Função para iniciar rotação de mensagens
+        function startMessageRotation() {
+            messageInterval = setInterval(rotateMessages, 1300); // 1.3 segundos
+        }
+        
+        // Função para parar rotação de mensagens
+        function stopMessageRotation() {
+            if (messageInterval) {
+                clearInterval(messageInterval);
+                messageInterval = null;
+            }
+        }
+        
+        // Função para mostrar loading
+        function showPixLoading() {
+            const modal = document.getElementById('pix-modal');
+            const loading = document.getElementById('pix-loading');
+            const payment = document.getElementById('pix-payment');
+            const messageElement = document.getElementById('loading-message');
+            const headerTitle = document.getElementById('pix-header-title');
+            
+            if (modal && loading && messageElement && headerTitle) {
+                // Resetar mensagem inicial
+                currentMessageIndex = 0;
+                messageElement.textContent = messages[0];
+                messageElement.style.opacity = '1';
+                messageElement.style.transition = 'opacity 0.3s ease';
+                
+                // Definir título para pré-carregamento
+                headerTitle.textContent = 'Conectando pagamento';
+                
+                // Mostrar loading e esconder outras seções
+                loading.style.display = 'flex';
+                if (payment) payment.style.display = 'none';
+                const errorElement = document.getElementById('pix-error');
+                if (errorElement) errorElement.style.display = 'none';
+                const successElement = document.getElementById('pix-success');
+                if (successElement) successElement.style.display = 'none';
+                
+                // Iniciar rotação de mensagens
+                startMessageRotation();
+                
+                // Simular carregamento e depois mostrar tela de pagamento
+                setTimeout(() => {
+                    showPaymentScreen();
+                }, 6200); // 6.2 segundos de carregamento (1.3s * 4 mensagens + buffer)
+            }
+        }
+        
+        // Função para mostrar tela de pagamento
+        function showPaymentScreen() {
+            const loading = document.getElementById('pix-loading');
+            const payment = document.getElementById('pix-payment');
+            const headerTitle = document.getElementById('pix-header-title');
+            
+            // Parar rotação de mensagens
+            stopMessageRotation();
+            
+            // Alterar título para tela de pagamento
+            if (headerTitle) {
+                headerTitle.textContent = 'Pagamento conectado';
+            }
+            
+            // Esconder loading e mostrar pagamento
+            if (loading) loading.style.display = 'none';
+            if (payment) {
+                payment.style.display = 'block';
+                
+                // Aguardar um pouco para garantir que a tela esteja visível antes de criar a cobrança
+                setTimeout(() => {
+                    createPixCharge();
+                }, 100);
+            }
+        }
+        
+        // Função para criar cobrança PIX real
+        async function createPixCharge() {
+            try {
+                const campaignData = JSON.parse(localStorage.getItem('campaignData') || '{}');
+                const selectedCard = document.querySelector('.duration-card.selected');
+                const duration = selectedCard ? parseInt(selectedCard.dataset.days) : 7;
+                const priceText = selectedCard ? selectedCard.querySelector('.price').textContent : 'R$ 297,00';
+                const price = parseFloat(priceText.replace('R$ ', '').replace(',', '.'));
+                
+                // Dados para a API Woovi
+                const pixData = {
+                    value: Math.round(price * 100), // converter para centavos
+                    days: duration,
+                    expiresIn: 900, // 15 minutos em segundos
+                    campaignType: campaignData.campaignType || 'Publicidade Digital',
+                    comment: `Campanha de ${duration} dias - ${campaignData.businessName || 'Negócio'}`,
+                    useSandbox: false // Sempre usar produção no campaign-config
+                };
+                
+                // Iniciando criação de cobrança PIX
+                
+                // Fazer requisição para a API Woovi
+                
+                const response = await fetch('/api/create-pix-charge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(pixData)
+                });
+                
+                // Resposta recebida
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Erro na resposta da API');
+                    throw new Error(`Erro na API: ${response.status} - ${response.statusText}`);
+                }
+                
+                const response_data = await response.json();
+                
+                // Extrair dados da resposta
+                const charge = response_data.data;
+                
+                showPixPayment(charge, duration, priceText);
+                startPaymentMonitoring(charge.correlationID);
+                
+            } catch (error) {
+                console.error('❌ Erro completo ao criar cobrança PIX:');
+                console.error('📄 Mensagem:', error.message);
+                console.error('📚 Stack:', error.stack);
+                console.error('🔍 Erro objeto:', error);
+                showPixError('Erro ao gerar PIX. Tente novamente.');
+            }
+        }
+        
+        // Função para mostrar pagamento PIX
+        function showPixPayment(charge, duration, priceText) {
+            
+            document.getElementById('pix-loading').style.display = 'none';
+            document.getElementById('pix-payment').style.display = 'block';
+            
+            // Atualizar resumo da campanha
+            document.getElementById('pix-duration').textContent = `${duration} dias`;
+            document.getElementById('pix-value').textContent = priceText;
+            
+            // Atualizar QR Code e código PIX
+            // A API retorna qrCodeImage em charge.charge.qrCodeImage
+            const qrCodeImage = charge.charge?.qrCodeImage || charge.charge?.paymentMethods?.pix?.qrCodeImage;
+            const pixCode = charge.brCode || charge.charge?.brCode;
+            
+            // Extraindo dados do QR Code e código PIX
+            
+            if (qrCodeImage) {
+                const qrImage = document.getElementById('qr-code-image');
+                const loadingElement = document.getElementById('qr-code-loading');
+                const contentElement = document.getElementById('qr-code-content');
+                
+                // Verificando elementos do QR Code
+                
+                // Verificar se todos os elementos existem
+                if (!qrImage) {
+                    console.error('Elemento qr-code-image não encontrado');
+                    return;
+                }
+                if (!loadingElement) {
+                    console.error('Elemento qr-code-loading não encontrado');
+                    return;
+                }
+                if (!contentElement) {
+                    console.error('Elemento qr-code-content não encontrado');
+                    return;
+                }
+                
+                // Adicionar eventos de carregamento
+                qrImage.onload = function() {
+                    if (loadingElement) {
+                        loadingElement.style.display = 'none';
+                    }
+                    
+                    if (contentElement) {
+                        contentElement.style.display = 'block';
+                    }
+                };
+                
+                qrImage.onerror = function() {
+                    console.error('Erro ao carregar QR Code');
+                    if (loadingElement) {
+                        loadingElement.innerHTML = '<p style="color: red;">Erro ao carregar QR Code</p>';
+                    }
+                };
+                
+                // Definir a URL da imagem
+                loadingElement.style.display = 'none';
+                contentElement.style.display = 'block';
+                
+                qrImage.src = qrCodeImage;
+                
+                // Verificar se a imagem já está carregada (cache)
+                if (qrImage.complete && qrImage.naturalHeight !== 0) {
+                    qrImage.onload();
+                }
+            } else {
+                console.error('QR Code não encontrado na resposta');
+                document.getElementById('qr-code-loading').innerHTML = '<p style="color: red;">QR Code não disponível</p>';
+            }
+            
+            if (pixCode) {
+                document.getElementById('pix-code').value = pixCode;
+            } else {
+                console.error('Código PIX não encontrado na resposta');
+            }
+            
+            // Iniciar timer de 15 minutos
+            startPixTimer(900); // 15 minutos em segundos
+        }
+        
+        // Função para mostrar erro
+        function showPixError(message) {
+            document.getElementById('pix-loading').style.display = 'none';
+            document.getElementById('pix-payment').style.display = 'none';
+            document.getElementById('pix-error').style.display = 'block';
+            document.getElementById('error-message').textContent = message;
+        }
+        
+        // Função para mostrar sucesso
+        function showPixSuccess() {
+            document.getElementById('pix-loading').style.display = 'none';
+            document.getElementById('pix-payment').style.display = 'none';
+            document.getElementById('pix-success').style.display = 'block';
+            
+            // Atualizar status da campanha
+            updateCampaignStatus('active');
+        }
+        
+        // Função para fechar modal
+        function closePixModal() {
+            const modal = document.getElementById('pix-modal');
+            modal.style.display = 'none';
+            
+            // Limpar timers
+            if (window.pixTimer) {
+                clearInterval(window.pixTimer);
+            }
+            if (window.paymentChecker) {
+                clearInterval(window.paymentChecker);
+            }
+        }
+        
+        // Função para animar métricas
+        function animateMetrics() {
+            const reachElement = document.getElementById('people-reached');
+            const salesElement = document.getElementById('sales-made');
+            const followersElement = document.getElementById('new-followers');
+            
+            let reach = 0;
+            let sales = 0;
+            let followers = 0;
+            
+            const interval = setInterval(() => {
+                reach += Math.floor(Math.random() * 50) + 10;
+                sales += Math.floor(Math.random() * 3);
+                followers += Math.floor(Math.random() * 5) + 1;
+                
+                reachElement.textContent = reach.toLocaleString();
+                salesElement.textContent = sales;
+                followersElement.textContent = followers;
+                
+                if (reach > 1000) {
+                    clearInterval(interval);
+                }
+            }, 500);
+        }
+        
+
+        
+        // Função para iniciar timer PIX
+        function startPixTimer(seconds) {
+            const timerElement = document.getElementById('pix-countdown');
+            const timerElementExtra = document.getElementById('pix-timer-extra');
+            
+            // Limpar timer anterior se existir
+            if (window.pixTimer) {
+                clearInterval(window.pixTimer);
+            }
+            
+            if (!timerElement) {
+                console.error('Elemento pix-countdown não encontrado');
+                return;
+            }
+            
+            // Atualizar imediatamente
+            const initialMinutes = Math.floor(seconds / 60);
+            const initialSeconds = seconds % 60;
+            const initialTimeText = `${initialMinutes.toString().padStart(2, '0')}:${initialSeconds.toString().padStart(2, '0')}`;
+            timerElement.textContent = initialTimeText;
+            if (timerElementExtra) {
+                timerElementExtra.textContent = initialTimeText;
+            }
+
+            
+            window.pixTimer = setInterval(() => {
+                seconds--;
+                
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                
+                const timeText = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+                
+
+                
+                timerElement.textContent = timeText;
+                
+                // Atualizar também o elemento extra se existir
+                if (timerElementExtra) {
+                    timerElementExtra.textContent = timeText;
+                }
+                
+                if (seconds <= 0) {
+                    clearInterval(window.pixTimer);
+                    showPixError('Tempo para pagamento expirado. Gere um novo PIX.');
+                    return;
+                }
+            }, 1000);
+        }
+        
+        // Função para monitorar pagamento
+        function startPaymentMonitoring(correlationID) {
+            let attempts = 0;
+            const maxAttempts = 300; // 15 minutos (300 * 3 segundos)
+            
+            // Limpar qualquer monitoramento anterior
+            if (window.paymentChecker) {
+                clearInterval(window.paymentChecker);
+            }
+            
+            // Verificar status via webhook a cada 3 segundos
+            const checkPaymentStatus = async () => {
+                attempts++;
+                
+                try {
+                    console.log(`Verificando pagamento ${correlationID} - Tentativa ${attempts}/${maxAttempts}`);
+                    const response = await fetch(`/api/payment-status/${correlationID}`);
+                    const result = await response.json();
+                    
+                    if (result.success && result.status === 'COMPLETED') {
+                        clearInterval(window.paymentChecker);
+                        clearInterval(window.pixTimer);
+                        showPixSuccess();
+                        console.log('✅ Pagamento confirmado via webhook!');
+                        return;
+                    }
+                    
+                    // Parar após máximo de tentativas
+                    if (attempts >= maxAttempts) {
+                        clearInterval(window.paymentChecker);
+                        console.log('⏰ Tempo limite para verificação de pagamento atingido');
+                        showPixError('Tempo limite para verificação de pagamento. Verifique manualmente se o pagamento foi processado.');
+                        return;
+                    }
+                    
+                } catch (error) {
+                    console.error('Erro ao verificar status do pagamento:', error);
+                    
+                    // Parar após muitos erros consecutivos
+                    if (attempts >= 10) {
+                        clearInterval(window.paymentChecker);
+                        showPixError('Erro ao verificar status do pagamento. Tente novamente.');
+                        return;
+                    }
+                }
+            };
+            
+            // Verificar imediatamente e depois a cada 1 minuto
+            checkPaymentStatus();
+            window.paymentChecker = setInterval(checkPaymentStatus, 60000);
+        }
+        
+        // Função para copiar código PIX
+        function copyPixCode() {
+            const input = document.getElementById('pix-code');
+            const button = document.getElementById('copy-pix-code');
+            
+            if (input) {
+                input.select();
+                document.execCommand('copy');
+            }
+            
+            if (button) {
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }
+        }
+        
+        // Função para gerar novo PIX
+        function generateNewPix() {
+            showPixLoading();
+            setTimeout(() => {
+                createPixCharge();
+            }, 1000);
+        }
+        
+        // Função para visualizar campanha
+        function viewCampaign() {
+            closePixModal();
+            // Redirecionar para página de campanhas ou dashboard
+            alert('Campanha ativada com sucesso! Redirecionando para o dashboard...');
+        }
+        
+        // Função para atualizar status da campanha
+         function updateCampaignStatus(status) {
+             const statusItems = {
+                 'created': 'status-created',
+                 'payment': 'status-payment', 
+                 'active': 'status-active',
+                 'reaching': 'status-reaching',
+                 'sales': 'status-sales',
+                 'followers': 'status-followers'
+             };
+             
+             // Atualizar ícones de status
+             Object.keys(statusItems).forEach(key => {
+                 const element = document.getElementById(statusItems[key]);
+                 if (element) {
+                     const icon = element.querySelector('.status-icon');
+                     if (key === status) {
+                         icon.textContent = '✅';
+                         element.style.color = '#48bb78';
+                     } else if (key === 'created' || key === 'payment') {
+                         icon.textContent = '✅';
+                         element.style.color = '#48bb78';
+                     }
+                 }
+             });
+             
+             // Simular métricas em tempo real
+             animateMetrics();
+         }
+         
+         // Função para gerar novo PIX
+         function generateNewPix() {
+             showPixLoading();
+             setTimeout(() => {
+                 createPixCharge();
+             }, 2000);
+         }
+         
+         // Função para visualizar campanha
+         function viewCampaign() {
+             closePixModal();
+             // Redirecionar para dashboard ou página de campanha
+             alert('Redirecionando para o dashboard da campanha...');
+         }
+         
+         // Event listeners para o modal PIX
+         document.addEventListener('DOMContentLoaded', function() {
+            // Fechar modal
+            document.querySelector('.pix-close').addEventListener('click', closePixModal);
+            
+            // Copiar código PIX
+            document.getElementById('copy-pix-code').addEventListener('click', copyPixCode);
+            
+            // Tentar novamente
+            document.getElementById('retry-pix').addEventListener('click', generateNewPix);
+            
+            // Ver campanha
+            document.getElementById('view-campaign').addEventListener('click', viewCampaign);
+            
+            // Fechar modal clicando fora
+            document.getElementById('pix-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closePixModal();
+                }
+            });
+        });
+        
+        function setupDurationCards() {
+            const cards = document.querySelectorAll('.duration-card');
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    cards.forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    
+                    // Atualizar métricas e gráfico
+                    const days = parseInt(card.dataset.days);
+                    const campaignData = JSON.parse(localStorage.getItem('campaignData') || '{}');
+                    updateMetricsBasedOnObjectiveFromStorage(campaignData.objective);
+                    updateReachChart(days);
+                });
+            });
+        }
+        
+        function updateReachChart(days) {
+            // Função simples para atualizar métricas baseadas na duração
+            // Como não há gráfico real implementado, apenas atualizamos as métricas
+            const campaignData = JSON.parse(localStorage.getItem('campaignData') || '{}');
+            updateMetricsBasedOnObjectiveFromStorage(campaignData.objective);
+        }
+        
+        // Configurar event listeners do modal PIX
+        function setupPixModalEventListeners() {
+            // Botões de fechar modal
+            const closeBtn = document.getElementById('close-pix-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const cancelBtn = document.getElementById('cancel-pix-btn');
+            
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closePixModal);
+            }
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', closePixModal);
+            }
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', closePixModal);
+            }
+            
+            // Botões de copiar PIX
+            const copyBtn1 = document.getElementById('copy-pix-code');
+            const copyBtn2 = document.getElementById('copy-pix-code-2');
+            
+            if (copyBtn1) {
+                copyBtn1.addEventListener('click', copyPixCode);
+            }
+            if (copyBtn2) {
+                copyBtn2.addEventListener('click', copyPixCode);
+            }
+            
+            // Botão de retry
+            const retryBtn = document.getElementById('retry-pix-btn');
+            if (retryBtn) {
+                retryBtn.addEventListener('click', generateNewPix);
+            }
+            
+            // Botão de refresh PIX
+            const refreshBtn = document.getElementById('refresh-pix-btn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', generateNewPix);
+            }
+            
+            // Botão de visualizar campanha
+            const viewBtn = document.getElementById('view-campaign-btn');
+            if (viewBtn) {
+                viewBtn.addEventListener('click', viewCampaign);
+            }
+        }
+        
+        function setupDurationSelection() {
+            // Esta função agora está integrada em setupDurationCards
+        }
+        
+        function updateCampaignSummaryFromStorage(data) {
+            if (data.objective) {
+                document.getElementById('summary-objective').textContent = data.objective;
+            }
+            
+            // Verificar primeiro se é direcionamento para site
+            if (data.direction === 'site' && data.siteUrl) {
+                // Direcionamento para site
+                let url = data.siteUrl;
+                // Remove protocolo para economizar espaço
+                url = url.replace(/^https?:\/\//, '');
+                // Se ainda for muito longa, truncar
+                if (url.length > 25) {
+                    url = url.substring(0, 22) + '...';
+                }
+                document.getElementById('summary-profile').innerHTML = `<p style="margin: 0; font-size: 14px; color: #6c757d; font-weight: 500;">Site: ${url}</p>`;
+            } else if (data.profileData && data.profileData.isValidated) {
+                // Atualizar perfil com dados detalhados de rede social
+                updateProfileSummary(data.profileData);
+            } else if (data.profile) {
+                document.getElementById('summary-profile').innerHTML = data.profile;
+            }
+            
+            if (data.location) {
+                document.getElementById('summary-location').textContent = data.location;
+            }
+            if (data.gender) {
+                document.getElementById('summary-gender').textContent = data.gender;
+            }
+            if (data.age) {
+                document.getElementById('summary-age').textContent = data.age;
+            }
+            if (data.markets) {
+                document.getElementById('summary-markets').textContent = data.markets || 'Nenhum mercado específico';
+            }
+        }
+        
+        function updateProfileSummary(profileData) {
+            const profileContainer = document.getElementById('summary-profile');
+            
+            if (profileData.platform === 'instagram') {
+                profileContainer.innerHTML = `
+                    <div class="profile-summary-content">
+                        <img src="${profileData.profilePicUrl || '/default-avatar.png'}" alt="Foto do perfil" class="profile-summary-image">
+                        <div class="profile-summary-info">
+                            <div class="profile-summary-name">
+                                <i class="fab fa-instagram" style="color: #E4405F; margin-right: 5px;"></i>
+                                @${profileData.username || 'usuário'}
+                            </div>
+                            <div class="profile-summary-display">${profileData.followers || ''} • ${profileData.following || ''}</div>
+                        </div>
+                    </div>
+                `;
+            } else if (profileData.platform === 'whatsapp') {
+                profileContainer.innerHTML = `
+                    <div class="profile-summary-content">
+                        <img src="${profileData.profilePicUrl || '/default-avatar.png'}" alt="Foto do perfil" class="profile-summary-image">
+                        <div class="profile-summary-info">
+                            <div class="profile-summary-name">
+                                <i class="fab fa-whatsapp" style="color: #25D366; margin-right: 5px;"></i>
+                                ${profileData.phoneNumber || 'Número não disponível'}
+                            </div>
+                            <div class="profile-summary-status">
+                                <i class="fas fa-check-circle" style="color: #25D366; margin-right: 3px;"></i>
+                                WhatsApp Ativo
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function updateMetricsBasedOnObjectiveFromStorage(objective) {
+            const metricsContainer = document.querySelector('.metrics-container');
+            if (!metricsContainer) return;
+            
+            // Métricas baseadas na duração selecionada (padrão 7 dias)
+            const selectedDuration = document.querySelector('.duration-card.selected');
+            const days = selectedDuration ? parseInt(selectedDuration.dataset.days) : 7;
+            
+            // Dados das métricas da tabela fornecida para vendas
+            const metricas = {
+                1: { alcanceMin: 1500, alcanceMax: 3000, vendas: '5 – 10', cliques: '150 – 300', cadastros: '10 – 20', orcamento: 'R$ 30' },
+                3: { alcanceMin: 3750, alcanceMax: 7500, vendas: '10 – 15', cliques: '375 – 750', cadastros: '25 – 50', orcamento: 'R$ 75' },
+                7: { alcanceMin: 7000, alcanceMax: 14000, vendas: '15 – 25', cliques: '700 – 1.4K', cadastros: '45 – 90', orcamento: 'R$ 140' },
+                14: { alcanceMin: 10500, alcanceMax: 21000, vendas: '25 – 40', cliques: '1.1K – 2.1K', cadastros: '70 – 140', orcamento: 'R$ 210' },
+                30: { alcanceMin: 15000, alcanceMax: 30000, vendas: '25 – 60', cliques: '1.5K – 3K', cadastros: '100 – 200', orcamento: 'R$ 300' }
+            };
+            
+            // Encontrar a métrica correspondente
+            let metricaEscolhida;
+            if (days <= 1) metricaEscolhida = metricas[1];
+            else if (days <= 3) metricaEscolhida = metricas[3];
+            else if (days <= 7) metricaEscolhida = metricas[7];
+            else if (days <= 14) metricaEscolhida = metricas[14];
+            else metricaEscolhida = metricas[30];
+            
+            const alcanceFormatado = `${(metricaEscolhida.alcanceMin / 1000).toFixed(1)}K – ${(metricaEscolhida.alcanceMax / 1000).toFixed(0)}K`;
+            
+            let metrics = [];
+            
+            switch(objective) {
+                case 'vendas':
+                    metrics = [
+                        { title: 'Alcance Estimado', value: alcanceFormatado, label: 'pessoas alcançadas' },
+                        { title: 'Vendas Estimadas', value: metricaEscolhida.vendas, label: 'vendas esperadas' }
+                    ];
+                    break;
+                case 'engajamento':
+                    metrics = [
+                        { title: 'Alcance Estimado', value: alcanceFormatado, label: 'pessoas alcançadas' },
+                        { title: 'Cliques no Link', value: metricaEscolhida.cliques, label: 'cliques estimados' }
+                    ];
+                    break;
+                case 'cadastros':
+                    metrics = [
+                        { title: 'Alcance Estimado', value: alcanceFormatado, label: 'pessoas alcançadas' },
+                        { title: 'Cadastros Estimados', value: metricaEscolhida.cadastros, label: 'leads esperados' }
+                    ];
+                    break;
+                default:
+                    metrics = [
+                        { title: 'Alcance Estimado', value: alcanceFormatado, label: 'pessoas alcançadas' }
+                    ];
+            }
+            
+            metricsContainer.innerHTML = metrics.map(metric => `
+                <div class="metric-card">
+                    <h4>${metric.title}</h4>
+                    <div class="metric-value">${metric.value}</div>
+                    <div class="metric-label">${metric.label}</div>
+                    <div class="metric-info">
+                        <i class="fas fa-info-circle" title="Informações baseadas em dados do Meta Ads"></i>
+                        <span class="info-text">Dados do Meta Ads</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+
+    </script>
+    
+    <!-- Modal de Pagamento PIX -->
+    <div id="pix-payment-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🚀 Finalizar Lançamento da Campanha</h2>
+                <button class="close-modal" id="close-modal-btn">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Resumo da Campanha -->
+                <div class="campaign-summary">
+                    <h3>📊 Resumo da Campanha</h3>
+                    <div class="summary-row">
+                        <span>Duração:</span>
+                        <span id="modal-duration">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Valor Total:</span>
+                        <span id="modal-value" class="value-highlight">-</span>
+                    </div>
+                </div>
+                
+                <!-- Mensagem Persuasiva -->
+                <div class="persuasive-message">
+                    <p>🎯 <strong>Sua campanha será ativada automaticamente após a confirmação do pagamento!</strong></p>
+                    <p>✨ Comece a alcançar milhares de pessoas e impulsione seus resultados agora mesmo.</p>
+                </div>
+                
+                <!-- QR Code PIX -->
+                <div class="pix-section">
+                    <h3>💳 Pagamento via PIX</h3>
+
+                    <div class="qr-code-container">
+                        <div id="qr-code-loading-modal" class="loading-spinner">
+                            <div class="spinner"></div>
+                            <p>Gerando QR Code...</p>
+                        </div>
+                        <div id="qr-code-content-modal" style="display: none;">
+                            <img id="qr-code-image-modal" src="" alt="QR Code PIX" />
+                            <div class="pix-code-section">
+                                <label>Código PIX (Copia e Cola):</label>
+                                <div class="pix-code-input">
+                                    <input type="text" id="pix-code" readonly />
+                                    <button class="copy-btn" id="copy-pix-code-2">
+                                        <i class="fas fa-copy"></i> Copiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Timer -->
+                <div class="timer-section">
+                    <h4>⏰ Tempo para pagamento:</h4>
+                    <div class="timer-display">
+                        <span id="timer-minutes">10</span>:<span id="timer-seconds">00</span>
+                    </div>
+                    <p class="timer-warning">O QR Code expira em 10 minutos</p>
+                </div>
+                
+                <!-- Status da Campanha -->
+                <div class="campaign-status">
+                    <h4>📈 Status da Campanha</h4>
+                    <div class="status-timeline">
+                        <div class="status-item active" id="status-created">
+                            <div class="status-icon">✅</div>
+                            <span>Campanha criada</span>
+                        </div>
+                        <div class="status-item" id="status-payment">
+                            <div class="status-icon">⏳</div>
+                            <span>Aguardando pagamento</span>
+                        </div>
+                        <div class="status-item" id="status-activated">
+                            <div class="status-icon">🚀</div>
+                            <span>Campanha ativada</span>
+                        </div>
+                        <div class="status-item" id="status-reach">
+                            <div class="status-icon">👥</div>
+                            <span>Alcançando pessoas</span>
+                        </div>
+                        <div class="status-item" id="status-sales">
+                            <div class="status-icon">💰</div>
+                            <span>Gerando vendas</span>
+                        </div>
+                        <div class="status-item" id="status-followers">
+                            <div class="status-icon">📈</div>
+                            <span>Novos seguidores</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botões de Ação -->
+                <div class="modal-actions">
+                    <button class="secondary-btn" id="cancel-pix-btn">Cancelar</button>
+                    <button class="primary-btn" id="refresh-pix-btn">
+                        <i class="fas fa-refresh"></i> Gerar Novo PIX
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </script>
+    
+    <!-- Modal de Pagamento PIX -->
+    <div id="pix-modal" class="pix-modal" style="display: none;">
+        <div class="pix-modal-content">
+            <div class="pix-header">
+                <h2>🚀 Finalizar Lançamento da Campanha</h2>
+                <span class="pix-close">&times;</span>
+            </div>
+            
+            <div class="pix-body">
+                <!-- Resumo da Campanha -->
+                <div class="campaign-summary">
+                    <h3>📊 Resumo da Campanha</h3>
+                    <div class="summary-row">
+                        <span>Duração:</span>
+                        <span id="pix-duration">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Valor:</span>
+                        <span id="pix-value">-</span>
+                    </div>
+                </div>
+                
+                <!-- Mensagem Persuasiva -->
+                <div class="persuasive-message">
+                    <p>💡 <strong>Sua campanha será ativada automaticamente após a confirmação do pagamento!</strong></p>
+                    <p>✨ Comece a alcançar milhares de pessoas e impulsione seus resultados agora mesmo.</p>
+                </div>
+                
+                <!-- Status da Campanha -->
+                <div class="campaign-status">
+                    <div class="status-item" id="status-created">
+                        <i class="fas fa-circle-notch fa-spin" style="display: none;"></i>
+                        <i class="fas fa-check" style="display: none;"></i>
+                        <span>Campanha criada</span>
+                    </div>
+                    <div class="status-item" id="status-payment">
+                        <i class="fas fa-circle-notch fa-spin" style="display: none;"></i>
+                        <i class="fas fa-check" style="display: none;"></i>
+                        <span>Aguardando pagamento</span>
+                    </div>
+                    <div class="status-item" id="status-activated">
+                        <i class="fas fa-circle-notch fa-spin" style="display: none;"></i>
+                        <i class="fas fa-check" style="display: none;"></i>
+                        <span>Campanha ativada</span>
+                    </div>
+                    <div class="status-item" id="status-running">
+                        <i class="fas fa-circle-notch fa-spin" style="display: none;"></i>
+                        <i class="fas fa-check" style="display: none;"></i>
+                        <span>Campanha em execução</span>
+                    </div>
+                </div>
+                
+                <!-- QR Code PIX -->
+                <div class="pix-payment" id="pix-payment-section" style="display: none;">
+                    <h3>💳 Pagamento via PIX</h3>
+                    
+                    <!-- Timer -->
+                    <div class="pix-timer">
+                        <span>⏰ Tempo restante: </span>
+                        <span id="pix-countdown-extra">15:00</span>
+                    </div>
+                    
+                    <!-- QR Code -->
+                    <div class="qr-code-container">
+                        <img id="qr-code-image-extra" src="" alt="QR Code PIX" />
+                    </div>
+                    
+                    <!-- Código PIX -->
+                    <div class="pix-code-container">
+                        <label>Código PIX (Copiar e Colar):</label>
+                        <div class="pix-code-input">
+                            <input type="text" id="pix-code" readonly />
+                            <button id="copy-pix-code" class="copy-btn">
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="pix-instructions">
+                        <p>📱 <strong>Como pagar:</strong></p>
+                        <ol>
+                            <li>Abra o app do seu banco</li>
+                            <li>Escaneie o QR Code ou cole o código PIX</li>
+                            <li>Confirme o pagamento</li>
+                            <li>Aguarde a confirmação automática</li>
+                        </ol>
+                    </div>
+                </div>
+                
+
+                
+                <!-- Erro -->
+                <div class="pix-error" id="pix-error" style="display: none;">
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Erro ao gerar cobrança PIX. Tente novamente.</p>
+                        <button id="retry-pix" class="retry-btn">Tentar Novamente</button>
+                    </div>
+                </div>
+                
+                <!-- Sucesso -->
+                <div class="pix-success" id="pix-success" style="display: none;">
+                    <div class="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>🎉 Pagamento Confirmado!</h3>
+                        <p>Sua campanha foi ativada com sucesso e já está sendo executada.</p>
+                        <div class="campaign-metrics">
+                            <div class="metric">
+                                <span class="metric-number" id="people-reached">0</span>
+                                <span class="metric-label">pessoas alcançadas</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-number" id="sales-made">0</span>
+                                <span class="metric-label">vendas realizadas</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-number" id="new-followers">0</span>
+                                <span class="metric-label">novos seguidores</span>
+                            </div>
+                        </div>
+                        <button id="view-campaign" class="view-campaign-btn">Ver Campanha</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            // Garantir que o menu inicie fechado
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // Função para abrir menu
+            function openMenu() {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            // Função para fechar menu
+            function closeMenu() {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            // Eventos para abrir menu (click e touch)
+             mobileMenuBtn.addEventListener('click', openMenu);
+             mobileMenuBtn.addEventListener('touchend', function(e) {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 openMenu();
+             });
+             
+             // Eventos para fechar menu (click e touch)
+             closeMenuBtn.addEventListener('click', closeMenu);
+             closeMenuBtn.addEventListener('touchend', function(e) {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 closeMenu();
+             });
+             
+             overlay.addEventListener('click', closeMenu);
+             overlay.addEventListener('touchend', function(e) {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 closeMenu();
+             });
+             
+             // Fechar menu ao clicar em um link de navegação
+              navLinks.forEach(link => {
+                  link.addEventListener('click', closeMenu);
+                  link.addEventListener('touchend', function(e) {
+                      e.stopPropagation();
+                      closeMenu();
+                      // Não usar preventDefault aqui para permitir navegação
+                  });
+              });
+            
+            // Fechar menu com tecla ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+                    closeMenu();
+                }
+            });
+        });
+    </script>
+    
+    <footer style="background-color: #f8f9fa; padding: 0.8rem; text-align: center; margin-top: 2rem; border-top: 1px solid #dee2e6; position: absolute; left: 15%; right: 0; padding-right: 2rem; font-family: Arial, sans-serif;">
+        <p style="margin: 0; color: #6c757d; font-size: 0.7rem;">
+            <i class="fas fa-copyright"></i> 2025 Next Ads. Todos os direitos reservados.
+        </p>
+    </footer>
+    
+</body>
+</html>

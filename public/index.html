@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Campanha - MetaADS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="container">
+        <!-- Botão do menu mobile -->
+        <button class="mobile-menu-btn" id="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <!-- Overlay para fechar o menu -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html"><img src="logo.png" alt="Next Ads" class="sidebar-logo"></a>
+                <button class="close-menu-btn" id="close-menu-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html" class="nav-link active"><i class="fas fa-plus"></i> Criar Campanha</a></li>
+                    <li><a href="#" class="nav-link"><i class="fas fa-list"></i> Minhas Campanhas</a></li>
+                    <li><a href="sobre.html" class="nav-link"><i class="fas fa-info-circle"></i> Sobre</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="campaign-form">
+                <div class="form-header">
+                    <h1>Criação / Nova Campanha</h1>
+                </div>
+
+                <!-- Seção Objetivo -->
+                <section class="form-section">
+                    <h2>Objetivo</h2>
+                    <p class="section-description">Escolha o objetivo da sua campanha</p>
+                    <div class="option-cards">
+                        <div class="option-card" data-option="vendas">
+                            <i class="fas fa-shopping-cart"></i>
+                            <h3>Vendas</h3>
+                            <p>Aumentar vendas e conversões</p>
+                        </div>
+                        <div class="option-card" data-option="engajamento">
+                            <i class="fas fa-heart"></i>
+                            <h3>Engajamento</h3>
+                            <p>Aumentar engajamento e seguidores</p>
+                        </div>
+                        <div class="option-card" data-option="cadastros">
+                            <i class="fas fa-user-plus"></i>
+                            <h3>Cadastros</h3>
+                            <p>Capturar leads e cadastros</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Seção Direcionamento -->
+                <section class="form-section">
+                    <h2>Direcionamento</h2>
+                    <p class="section-description">Escolha onde deseja direcionar o público</p>
+                    <div class="option-cards">
+                        <div class="option-card" data-option="rede-social">
+                            <i class="fas fa-share-alt"></i>
+                            <h3>Rede social</h3>
+                            <p>Redirecionar visitantes em seu Instagram ou WhatsApp</p>
+                        </div>
+                        <div class="option-card" data-option="site">
+                            <i class="fas fa-globe"></i>
+                            <h3>Site</h3>
+                            <p>Fazer mais contatos e vendas em seu site</p>
+                        </div>
+                    </div>
+
+                    <!-- Campo Instagram -->
+                    <div id="instagram-section" class="hidden">
+                        <h3>Selecione a rede social:</h3>
+                        <div class="social-buttons">
+                            <button class="social-btn instagram-btn active" data-social="instagram">
+                                <i class="fab fa-instagram"></i> Instagram
+                            </button>
+                            <button class="social-btn whatsapp-btn" data-social="whatsapp">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                        </div>
+                        
+                        <div class="profile-input-section">
+                            <label for="instagram-profile">Seu perfil na rede social:</label>
+                            <input type="text" id="instagram-profile" placeholder="Digite seu nome de usuário ou cole o link do seu perfil" class="profile-input">
+                            <button id="validate-profile" class="validate-btn hidden">
+                                <i class="fab fa-instagram"></i> Validar Perfil
+                            </button>
+                            <div id="profile-validation-error" class="error-message hidden"></div>
+                            <div class="input-hint">
+                                <small>💡 Você pode colar o link completo do Instagram que extrairemos o usuário automaticamente</small>
+                            </div>
+                        </div>
+                        
+                        <div id="profile-info" class="profile-info hidden">
+                            <div class="profile-card">
+                                <img id="profile-image" src="" alt="Foto do perfil" class="profile-image">
+                                <div class="profile-details">
+                                    <h4 id="profile-username"></h4>
+                                    <div class="profile-stats">
+                                        <span id="followers-count">0 seguidores</span>
+                                        <span id="following-count">0 seguindo</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campo Site -->
+                    <div id="site-section" class="hidden">
+                        <label for="site-url">URL do seu site:</label>
+                        <input type="url" id="site-url" placeholder="https://seusite.com.br" class="site-input">
+                        <div id="site-validation-error" class="error-message hidden"></div>
+                    </div>
+                </section>
+
+                <!-- Seção Localização -->
+                <section class="form-section">
+                    <h2>Localização</h2>
+                    <p class="section-description">Defina onde sua campanha será exibida</p>
+                    <div class="option-cards">
+                        <div class="option-card" data-option="brasil">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h3>Brasil</h3>
+                            <p>Campanhas em todo o território nacional</p>
+                        </div>
+                        <div class="option-card" data-option="estado">
+                            <i class="fas fa-map"></i>
+                            <h3>Estado Específico</h3>
+                            <p>Selecione um estado brasileiro</p>
+                        </div>
+                        <div class="option-card" data-option="cidade">
+                            <i class="fas fa-building"></i>
+                            <h3>Cidade Específica</h3>
+                            <p>Selecione uma cidade específica</p>
+                        </div>
+                    </div>
+
+                    <div id="estado-selection" class="location-selection hidden">
+                        <label for="estado-select">Selecione o estado:</label>
+                        <select id="estado-select" class="location-select">
+                            <option value="">Escolha um estado</option>
+                        </select>
+                    </div>
+
+                    <div id="cidade-selection" class="location-selection hidden">
+                        <div class="estado-cidade-container">
+                            <div class="estado-select-container">
+                                <label for="estado-select-cidade">Selecione o estado:</label>
+                                <select id="estado-select-cidade" class="location-select">
+                                    <option value="">Escolha um estado</option>
+                                </select>
+                            </div>
+                            
+                            <div class="cidade-search-container">
+                                <label for="cidade-search">Buscar cidade:</label>
+                                <input type="text" id="cidade-search" placeholder="Digite o nome da cidade" class="location-input">
+                                <div id="cidade-results" class="cidade-results"></div>
+                            </div>
+                        </div>
+                        
+                        <div id="cidade-selecionada" class="cidade-selecionada hidden">
+                            <h4>Cidade Selecionada:</h4>
+                            <div class="cidade-info">
+                                <div class="cidade-nome"></div>
+                                <div class="cidade-coordenadas">
+                                    <small>Coordenadas: <span class="lat"></span>, <span class="lng"></span></small>
+                                </div>
+                            </div>
+                            
+                            <!-- Slider de Quilometragem -->
+                            <div class="radius-selection">
+                                <h4>Raio de Alcance:</h4>
+                                <div class="radius-slider-container">
+                                    <label for="radius-slider">Quilometragem:</label>
+                                    <div class="slider-wrapper">
+                                        <input type="range" id="radius-slider" class="radius-slider" min="10" max="70" value="25" step="5">
+                                        <div class="slider-labels">
+                                            <span>10km</span>
+                                            <span>70km</span>
+                                        </div>
+                                    </div>
+                                    <div class="radius-display">
+                                        <span id="radius-value">25</span> km
+                                    </div>
+                                    <p class="radius-description">Sua campanha será exibida em um raio de <strong><span id="radius-text">25</span> quilômetros</strong> da cidade selecionada.</p>
+                                </div>
+                                
+                                <!-- Mapa com Raio -->
+                                <div class="map-container">
+                                    <h4>Visualização do Raio:</h4>
+                                    <div id="map" class="map-display"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Seção Público -->
+                <section class="form-section">
+                    <h2>Público</h2>
+                    <div class="advantage-plus-container">
+                        <button class="advantage-plus-btn" id="advantage-plus-btn">
+                            <i class="fas fa-star"></i>
+                            <span>Público Advantage+</span>
+                        </button>
+                        <i class="fas fa-info-circle advantage-info-icon" id="advantage-info-icon" title="Informações sobre Público Advantage+"></i>
+                    </div>
+                    
+                    <!-- Pop-up de informações do Advantage+ -->
+                    <div class="advantage-popup" id="advantage-popup">
+                        <div class="advantage-popup-content">
+                            <div class="advantage-popup-header">
+                                <h3>Público Advantage+</h3>
+                                <button class="advantage-popup-close" id="advantage-popup-close">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="advantage-popup-body">
+                                <p><strong>O que é o Público Advantage+?</strong></p>
+                                <p>O Público Advantage+ é uma tecnologia avançada do Meta Ads que utiliza inteligência artificial para otimizar automaticamente o direcionamento dos seus anúncios.</p>
+                                
+                                <p><strong>Como funciona:</strong></p>
+                                <ul>
+                                    <li>Identifica automaticamente as melhores audiências para seus anúncios</li>
+                                    <li>Ajusta o direcionamento em tempo real com base no desempenho</li>
+                                    <li>Expande o alcance para pessoas similares aos seus melhores clientes</li>
+                                    <li>Melhora continuamente os resultados da campanha</li>
+                                </ul>
+                                
+                                <p><strong>Benefícios:</strong></p>
+                                <ul>
+                                    <li>Maior eficiência na entrega de anúncios</li>
+                                    <li>Melhor custo-benefício (CPM e CPC otimizados)</li>
+                                    <li>Alcance de audiências de alta qualidade</li>
+                                </ul>
+                                
+                                <div class="advantage-popup-note">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span><strong>Nota:</strong> Esta funcionalidade já vem ativada automaticamente na sua campanha para garantir os melhores resultados.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Campo de Nicho/Interesse -->
+                    <div class="nicho-section">
+                        <h3>Nicho/Interesse</h3>
+                        <p class="nicho-description">Digite o nicho ou interesse do seu público para obter sugestões de mercado</p>
+                        <div class="nicho-input-container">
+                            <input type="text" id="nicho-input" placeholder="Ex: fitness, culinária, tecnologia, moda..." class="nicho-input">
+                            <button id="buscar-mercado-btn" class="buscar-mercado-btn">
+                                <i class="fas fa-search"></i>
+                                Buscar Mercado
+                            </button>
+                        </div>
+                        <div class="character-counter">
+                        <span id="char-count">0</span>/120
+                    </div>
+                        <div id="mercado-loading" class="mercado-loading hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Buscando mercados semelhantes...
+                        </div>
+                        <div id="mercado-results" class="mercado-results hidden"></div>
+                    </div>
+                    
+
+                    
+                    <!-- Gênero -->
+                    <div class="subsection">
+                        <h3>Gênero</h3>
+                        <div class="gender-buttons">
+                            <button class="gender-btn active" data-gender="todos">
+                                <i class="fas fa-infinity"></i> Todos
+                            </button>
+                            <button class="gender-btn" data-gender="masculino">
+                                <i class="fas fa-mars"></i> Masculino
+                            </button>
+                            <button class="gender-btn" data-gender="feminino">
+                                <i class="fas fa-venus"></i> Feminino
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Idade -->
+                    <div class="subsection">
+                        <h3>Idade</h3>
+                        <div class="age-selection">
+                            <div class="age-input-group">
+                                <label for="idade-minima">Idade mínima:</label>
+                                <select id="idade-minima" class="age-input">
+                                    <option value="18">18 anos</option>
+                                </select>
+                            </div>
+                            <div class="age-input-group">
+                                <label for="idade-maxima">Idade máxima:</label>
+                                <select id="idade-maxima" class="age-input">
+                                    <option value="65">65 anos</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Seção Criativo -->
+                <section class="form-section">
+                    <h2>Criativo</h2>
+                    <p class="section-description">Faça upload das imagens e vídeos da sua campanha</p>
+                    
+                    <div class="upload-cards">
+                        <div class="upload-card" data-type="imagens">
+                            <i class="fas fa-image"></i>
+                            <h3>Imagens</h3>
+                            <p>JPG, PNG, HEIC, WebP, DNG até 5MB</p>
+                        </div>
+                        <div class="upload-card" data-type="videos">
+                            <i class="fas fa-video"></i>
+                            <h3>Vídeos</h3>
+                            <p>MP4, MOV, AVI, WEBM, 3GP, MKV, TS até 50MB</p>
+                        </div>
+                    </div>
+                    
+                    <div class="upload-zone" id="upload-zone">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="upload-text">Arraste e solte seus arquivos aqui</div>
+                        <button id="select-files-btn" class="upload-btn">Selecionar Arquivos</button>
+                        <div class="upload-hint">ou clique para selecionar (JPG, PNG, HEIC, WebP, DNG, MP4, MOV, AVI, WEBM, 3GP, MKV, TS)</div>
+                    </div>
+                    
+                    <input type="file" id="image-upload" multiple accept="image/*,.heic,.webp,.dng" style="display: none;">
+                    <input type="file" id="video-upload" multiple accept="video/*,.mp4,.mov,.avi,.webm,.3gp,.mkv,.ts" style="display: none;">
+                    
+                    <!-- Mensagem de erro para exclusividade de arquivos -->
+                    <div id="file-exclusivity-message" class="file-message hidden">
+                        <div class="message-content">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Você só pode selecionar um tipo de criativo por vez. Remova os arquivos existentes para adicionar um tipo diferente.</span>
+                            <button class="message-close" onclick="campaignCreator.hideFileMessage()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="uploaded-files" class="uploaded-files hidden"></div>
+                </section>
+                
+                <div id="file-preview" class="file-preview"></div>
+                </section>
+
+                <!-- Botão Confirmar -->
+                <div class="form-actions">
+                    <button id="confirm-campaign" class="confirm-btn">
+                        Criar Campanha  ➤
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <script src="script.js"></script>
+    
+    <!-- JavaScript para menu mobile -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            // Garantir que o menu inicie fechado
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // Função para abrir menu
+            function openMenu() {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            // Função para fechar menu
+            function closeMenu() {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            // Eventos para abrir menu (click e touch)
+             mobileMenuBtn.addEventListener('click', openMenu);
+             mobileMenuBtn.addEventListener('touchend', function(e) {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 openMenu();
+             });
+             
+             // Eventos para fechar menu (click e touch)
+             closeMenuBtn.addEventListener('click', closeMenu);
+             closeMenuBtn.addEventListener('touchend', function(e) {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 closeMenu();
+             });
+             
+             overlay.addEventListener('click', closeMenu);
+             overlay.addEventListener('touchend', function(e) {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 closeMenu();
+             });
+             
+             // Fechar menu ao clicar em um link de navegação
+             navLinks.forEach(link => {
+                 link.addEventListener('click', closeMenu);
+                 link.addEventListener('touchend', function(e) {
+                     e.stopPropagation();
+                     closeMenu();
+                     // Não usar preventDefault aqui para permitir navegação
+                 });
+             });
+            
+            // Fechar menu com tecla ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+                    closeMenu();
+                }
+            });
+        });
+    </script>
+
+    <footer style="background-color: #f8f9fa; padding: 0.8rem; text-align: center; margin-top: 2rem; border-top: 1px solid #dee2e6; position: absolute; left: 15%; right: 0; padding-right: 2rem; font-family: Arial, sans-serif;">
+    <p style="color: #6c757d; margin: 0; font-size: 0.7rem;">
+        <i class="fas fa-copyright"></i> 2025 Next Ads. Todos os direitos reservados.
+    </p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Woovi PIX - Turbo Impulsione</title>
+    <link rel="stylesheet" href="debug-woovi.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="debug-header">
+            <h1><i class="fas fa-bug"></i> Debug Woovi PIX</h1>
+            <p>Ambiente de teste para integração com API Woovi PIX Sandbox</p>
+        </header>
+
+        <div class="debug-grid">
+            <!-- Seção de Configuração -->
+            <div class="debug-section config-section">
+                <h2><i class="fas fa-cog"></i> Configuração</h2>
+                <div class="config-form">
+                    <div class="form-group">
+                        <label for="woovi-app-id">App ID Woovi:</label>
+                        <input type="text" id="woovi-app-id" placeholder="Insira o App ID da Woovi">
+                        <button type="button" id="test-connection" class="btn btn-secondary">
+                            <i class="fas fa-plug"></i> Testar Conexão
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label for="base-url">Base URL:</label>
+                        <select id="base-url">
+                            <option value="https://api.woovi.com">Produção</option>
+                            <option value="https://api.woovi-sandbox.com" selected>Sandbox</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Criação de Cobrança -->
+            <div class="debug-section charge-section">
+                <h2><i class="fas fa-credit-card"></i> Criar Cobrança PIX</h2>
+                <form id="charge-form" class="charge-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="charge-value">Valor (R$):</label>
+                            <input type="number" id="charge-value" step="0.01" min="0.01" value="0.30" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="charge-comment">Comentário:</label>
+                            <input type="text" id="charge-comment" value="Teste de cobrança PIX" maxlength="140">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expires-in">Expira em (segundos):</label>
+                            <input type="number" id="expires-in" value="900" min="60" max="86400">
+                        </div>
+                        <div class="form-group">
+                            <label for="correlation-id">Correlation ID:</label>
+                            <input type="text" id="correlation-id" placeholder="Auto-gerado" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Dados do Cliente (Opcional) -->
+                    <div class="customer-section">
+                        <h3><i class="fas fa-user"></i> Dados do Cliente (Opcional)</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="customer-name">Nome:</label>
+                                <input type="text" id="customer-name" placeholder="Nome do cliente">
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-email">Email:</label>
+                                <input type="email" id="customer-email" placeholder="email@exemplo.com">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="customer-phone">Telefone:</label>
+                                <input type="tel" id="customer-phone" placeholder="(11) 99999-9999">
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-tax-id">CPF/CNPJ:</label>
+                                <input type="text" id="customer-tax-id" placeholder="000.000.000-00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-qrcode"></i> Criar Cobrança PIX
+                    </button>
+                </form>
+            </div>
+
+            <!-- Seção de Resultado -->
+            <div class="debug-section result-section">
+                <h2><i class="fas fa-receipt"></i> Resultado</h2>
+                <div id="result-container" class="result-container">
+                    <div class="no-result">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Nenhuma cobrança criada ainda</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Logs -->
+            <div class="debug-section logs-section">
+                <h2><i class="fas fa-terminal"></i> Logs de Debug</h2>
+                <div class="logs-controls">
+                    <button type="button" id="clear-logs" class="btn btn-secondary">
+                        <i class="fas fa-trash"></i> Limpar Logs
+                    </button>
+                    <button type="button" id="export-logs" class="btn btn-secondary">
+                        <i class="fas fa-download"></i> Exportar Logs
+                    </button>
+                </div>
+                <div id="logs-container" class="logs-container">
+                    <div class="log-entry info">
+                        <span class="log-time">[00:00:00]</span>
+                        <span class="log-level">INFO</span>
+                        <span class="log-message">Debug Woovi PIX iniciado</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Status de Cobrança -->
+            <div class="debug-section status-section">
+                <h2><i class="fas fa-search"></i> Verificar Status</h2>
+                <div class="status-form">
+                    <div class="form-group">
+                        <label for="status-correlation-id">Correlation ID:</label>
+                        <input type="text" id="status-correlation-id" placeholder="Digite o Correlation ID">
+                        <button type="button" id="check-status" class="btn btn-secondary">
+                            <i class="fas fa-sync"></i> Verificar Status
+                        </button>
+                    </div>
+                    <div id="status-result" class="status-result"></div>
+                </div>
+            </div>
+
+            <!-- Seção de Webhook Test -->
+            <div class="debug-section webhook-section">
+                <h2><i class="fas fa-webhook"></i> Webhook Test</h2>
+                <div class="webhook-info">
+                    <p><strong>URL do Webhook:</strong> <code id="webhook-url">http://localhost:4000/api/woovi-webhook</code></p>
+                    <button type="button" id="copy-webhook-url" class="btn btn-secondary">
+                        <i class="fas fa-copy"></i> Copiar URL
+                    </button>
+                </div>
+                <div class="webhook-events">
+                    <h3>Eventos Recebidos:</h3>
+                    <div id="webhook-events-container" class="webhook-events-container">
+                        <div class="no-events">
+                            <i class="fas fa-clock"></i>
+                            <p>Aguardando eventos do webhook...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de QR Code -->
+    <div id="qr-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-qrcode"></i> QR Code PIX</h3>
+                <button type="button" class="close-modal" id="close-qr-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="qr-code-container" class="qr-code-container">
+                    <!-- QR Code será inserido aqui -->
+                </div>
+                <div class="pix-info">
+                    <div class="form-group">
+                        <label>Código PIX Copia e Cola:</label>
+                        <div class="copy-container">
+                            <input type="text" id="pix-copy-paste" readonly>
+                            <button type="button" id="copy-pix-code" class="btn btn-secondary">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="charge-details">
+                        <p><strong>Valor:</strong> <span id="charge-value-display"></span></p>
+                        <p><strong>Expira em:</strong> <span id="charge-expires-display"></span></p>
+                        <p><strong>Status:</strong> <span id="charge-status-display">ACTIVE</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p id="loading-message">Processando...</p>
+        </div>
+    </div>
+
+    <script src="debug-woovi.js"></script>
+</body>
+</html>
