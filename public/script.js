@@ -1440,39 +1440,22 @@ class CampaignCreator {
                 const processedFile = await this.uploadFileToServer(file);
                 // Arquivo processado pelo servidor com sucesso
                 
-                // Criar objeto File válido para visualização (imagens e vídeos)
-                let displayFile = processedFile;
-                try {
-                    // Criando objeto File a partir da URL
-                    // Criar um objeto File a partir da URL do servidor
-                    const response = await fetch(processedFile.url);
-                    // Response status obtido
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    
-                    const blob = await response.blob();
-                    // Blob criado
-                    
-                    const fileForDisplay = new File([blob], processedFile.name, { type: processedFile.type || blob.type });
-                    // File object criado
-                    
-                    if (processedFile.type && processedFile.type.startsWith('image/')) {
+                // Para vídeos, usar o arquivo original para display
+                // Para imagens, tentar otimizar
+                let displayFile = file;
+                
+                if (processedFile.type && processedFile.type.startsWith('image/')) {
+                    try {
                         // Iniciando otimização da imagem para visualização...
-                        displayFile = await this.optimizeImage(fileForDisplay);
+                        displayFile = await this.optimizeImage(file);
                         // Imagem otimizada para visualização
-                    } else {
-                        // Para vídeos, usar o objeto File criado
-                        displayFile = fileForDisplay;
-                        // Objeto File criado para vídeo
+                    } catch (error) {
+                        console.error('❌ Erro na otimização da imagem:', error);
+                        // Usar arquivo original se a otimização falhar
+                        displayFile = file;
                     }
-                } catch (error) {
-                    console.error('❌ Erro ao criar objeto File para visualização:', error);
-                    // Usando arquivo original como fallback
-                    // Manter o arquivo original se a criação falhar
-                    displayFile = file;
                 }
+                // Para vídeos, usar arquivo original diretamente
                 
                 // Adicionando arquivo à lista e exibindo...
                 this.uploadedFiles.push(processedFile);
@@ -1810,8 +1793,13 @@ class CampaignCreator {
             
             const fileExtension = file.name.split('.').pop().toUpperCase();
             
+            // Tamanho responsivo: mobile usa viewport, desktop usa tamanho fixo
+            const isMobile = window.innerWidth <= 768;
+            const containerWidth = isMobile ? 'min(90vw, 400px)' : '338px';
+            const containerHeight = isMobile ? 'min(calc(90vw * 16/9), calc(400px * 16/9))' : '601px';
+            
             previewHTML = `
-                <div style="position: relative; width: 338px; height: 601px; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin: 0 auto; background: white;">
+                <div style="position: relative; width: ${containerWidth}; height: ${containerHeight}; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin: 0 auto; background: white;">
                     <div class="image-placeholder" style="width: 100%; height: 100%; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; text-align: center; padding: 0; box-sizing: border-box;">
                         <div style="background: rgba(102, 126, 234, 0.1); border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
                             <i class="fas fa-image" style="font-size: 24px;"></i>
@@ -1837,7 +1825,7 @@ class CampaignCreator {
             // Processando vídeo
             
             previewHTML = `
-                <div style="position: relative; width: 338px; height: 601px; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin: 0 auto; background: white;">
+                <div style="position: relative; width: ${containerWidth}; height: ${containerHeight}; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin: 0 auto; background: white;">
                     <div class="video-placeholder" style="width: 100%; height: 100%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #666; flex-direction: column;">
                         <i class="fas fa-video" style="font-size: 48px; margin-bottom: 10px; color: #999;"></i>
                         <div>Gerando thumbnail...</div>

@@ -708,8 +708,15 @@ div.file-preview-container .file-preview-image {
     margin: 0 !important;
 }
 
-/* Mobile: Forçar object-fit: cover para preencher completamente */
+/* Mobile: Aumentar tamanho do preview e forçar object-fit: cover */
 @media (max-width: 768px) {
+    .file-item {
+        width: 90vw !important;
+        max-width: 400px !important;
+        height: calc(90vw * 16/9) !important;
+        max-height: calc(400px * 16/9) !important;
+    }
+    
     .file-preview-video,
     .video-thumbnail-img,
     .file-preview-image,
