@@ -1881,11 +1881,16 @@ class CampaignCreator {
     }
 
     generateVideoThumbnail(fileItem, file) {
-        // Gerando thumbnail real para vídeo
+        console.log('🎬 [THUMBNAIL] Iniciando geração de thumbnail para vídeo:', {
+            fileName: file?.name,
+            fileSize: file?.size,
+            fileType: file?.type,
+            isFileValid: file instanceof File
+        });
         
         // Validar se o file é um objeto File/Blob válido
         if (!file || !(file instanceof File) || !file.name) {
-            // Arquivo inválido para geração de thumbnail
+            console.error('❌ [THUMBNAIL] Arquivo inválido para geração de thumbnail');
             this.generateSimpleVideoPreview(fileItem, file);
             return;
         }
@@ -1908,7 +1913,11 @@ class CampaignCreator {
         const ctx = canvas.getContext('2d');
         
         video.onloadedmetadata = () => {
-            // Metadados do vídeo carregados
+            console.log('📹 [THUMBNAIL] Metadados do vídeo carregados:', {
+                duration: video.duration,
+                videoWidth: video.videoWidth,
+                videoHeight: video.videoHeight
+            });
             
             // Definir dimensões do canvas para aspect ratio 9:16
             const targetWidth = 338;
@@ -1918,11 +1927,12 @@ class CampaignCreator {
             
             // Ir para 1 segundo do vídeo (ou 10% da duração, o que for menor)
             const seekTime = Math.min(1, video.duration * 0.1);
+            console.log('⏰ [THUMBNAIL] Buscando frame no tempo:', seekTime);
             video.currentTime = seekTime;
         };
         
         video.onseeked = () => {
-            // Frame capturado
+            console.log('🎯 [THUMBNAIL] Frame capturado, iniciando desenho no canvas');
             
             try {
                 // Calcular dimensões para manter aspect ratio
@@ -1954,7 +1964,7 @@ class CampaignCreator {
                 
                 // Converter canvas para base64
                 const thumbnailBase64 = canvas.toDataURL('image/jpeg', 0.8);
-                // Thumbnail gerado com sucesso em base64
+                console.log('✅ [THUMBNAIL] Thumbnail gerado com sucesso, tamanho base64:', thumbnailBase64.length);
                 
                 // Atualizar o placeholder com o thumbnail real
                 placeholder.innerHTML = `
@@ -1980,13 +1990,13 @@ class CampaignCreator {
                 // Recursos de base64 são automaticamente gerenciados pelo navegador
                 
             } catch (error) {
-                // Erro ao capturar frame
+                console.error('❌ [THUMBNAIL] Erro ao capturar frame:', error);
                 this.generateSimpleVideoPreview(fileItem, file);
             }
         };
         
         video.onerror = (error) => {
-            // Erro ao carregar vídeo
+            console.error('❌ [THUMBNAIL] Erro ao carregar vídeo:', error);
             this.generateSimpleVideoPreview(fileItem, file);
         };
         
@@ -1995,12 +2005,12 @@ class CampaignCreator {
         
         try {
             const objectURL = URL.createObjectURL(file);
-            // Object URL criado
+            console.log('🔗 [THUMBNAIL] Object URL criado:', objectURL);
             
             video.preload = 'metadata';
             video.muted = true;
             video.src = objectURL;
-            // Video src definido com Object URL
+            console.log('📺 [THUMBNAIL] Video src definido com Object URL');
             
             // Limpar o Object URL após o uso para evitar vazamentos de memória
             video.addEventListener('loadedmetadata', () => {
@@ -2009,13 +2019,13 @@ class CampaignCreator {
             }, { once: true });
             
         } catch (error) {
-            // Erro ao criar Object URL, tentando fallback
+            console.error('❌ [THUMBNAIL] Erro ao criar Object URL:', error);
             this.generateSimpleVideoPreview(fileItem, file);
         }
     }
     
     generateSimpleVideoPreview(fileItem, file) {
-        // Gerando preview simples para vídeo (fallback)
+        console.log('🎬 [FALLBACK] Gerando preview simples para vídeo (fallback):', file?.name);
         
         const formatFileSize = (bytes) => {
             if (bytes === 0) return '0 Bytes';
