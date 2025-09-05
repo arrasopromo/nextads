@@ -43,28 +43,30 @@
         }
         
         .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
             background: #f8f9fa;
-            border: 2px solid #dee2e6;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px 20px;
             color: #495057;
-            font-size: 24px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
         }
         
         .back-button:hover {
             background: #e9ecef;
-            border-color: #adb5bd;
-            transform: scale(1.1);
+            border-color: #dee2e6;
+            transform: translateY(-2px);
+        }
+        
+        .back-button i {
+            font-size: 16px;
         }
         
         .loading-content {
@@ -249,16 +251,17 @@
         /* Footer responsivo */
         footer {
             background-color: #f8f9fa;
-            padding: 20px;
+            padding: 0.8rem;
             text-align: center;
             border-top: 1px solid #dee2e6;
             margin-top: auto;
+            font-family: Arial, sans-serif;
         }
         
         footer p {
             margin: 0;
             color: #6c757d;
-            font-size: 14px;
+            font-size: 0.8rem;
         }
         
         /* Responsividade adicional */
@@ -284,12 +287,12 @@
     </style>
 </head>
 <body>
-    <!-- Botão Voltar -->
-    <button class="back-button" onclick="history.back()">
-        <i class="fas fa-arrow-left"></i>
-    </button>
-    
     <div class="payment-container">
+        <!-- Botão Voltar -->
+         <button class="back-button" id="back-button">
+             <i class="fas fa-arrow-left"></i>
+             Voltar
+         </button>
         <!-- Cabeçalho -->
         <div class="payment-header">
             <div class="campaign-title">
