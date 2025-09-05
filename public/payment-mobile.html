@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento PIX - Next Ads</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Estilos específicos para página de pagamento mobile */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .payment-container {
+            flex: 1;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .payment-header {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 0;
+        }
+        
+        .payment-content {
+            background: white;
+            border-radius: 0 0 20px 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 40px 20px;
+            min-height: 300px;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #667eea;
+            border-right: 4px solid #764ba2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .campaign-title h2 {
+            margin: 0;
+            color: #333;
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        
+        .campaign-metrics {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .metric-item {
+            text-align: center;
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .metric-value.price {
+            color: #007bff;
+        }
+        
+        .timer-section {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 8px;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .countdown {
+            font-size: 24px;
+            font-weight: bold;
+            color: #dc3545;
+            font-family: 'Courier New', monospace;
+            display: block;
+            margin-top: 5px;
+        }
+        
+        .qr-code-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .qr-code-container img {
+            width: 200px;
+            height: 200px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .pix-code-section {
+            margin: 30px 0;
+        }
+        
+        .pix-code-label {
+            font-size: 16px;
+            color: #333;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .pix-code-input {
+            margin-bottom: 15px;
+        }
+        
+        .pix-code-input input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: monospace;
+            background: #f8f9fa;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        
+        .copy-btn {
+            width: 100%;
+            padding: 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .error-content, .success-content {
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .error-content {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .success-content {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .retry-btn, .view-campaign-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        .retry-btn {
+            background: #007bff;
+            color: white;
+        }
+        
+        .view-campaign-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        /* Footer responsivo */
+        footer {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: auto;
+        }
+        
+        footer p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+        
+        /* Responsividade adicional */
+        @media (max-width: 480px) {
+            .payment-container {
+                padding: 10px;
+            }
+            
+            .payment-header, .payment-content {
+                padding: 15px;
+            }
+            
+            .qr-code-container img {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .campaign-metrics {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Botão Voltar -->
+    <button class="back-button" onclick="history.back()">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+    
+    <div class="payment-container">
+        <!-- Cabeçalho -->
+        <div class="payment-header">
+            <div class="campaign-title">
+                <h2 id="payment-header-title">🚀 Finalizar Lançamento da Campanha</h2>
+            </div>
+        </div>
+        
+        <!-- Conteúdo Principal -->
+        <div class="payment-content">
+            <!-- Loading -->
+            <div id="payment-loading" class="loading-content">
+                <div class="spinner"></div>
+                <h3 id="loading-message">Carregando ambiente seguro...</h3>
+                <p>Aguarde alguns instantes...</p>
+            </div>
+            
+            <!-- Pagamento PIX -->
+            <div id="payment-pix" style="display: none;">
+                <!-- Título -->
+                <div class="campaign-title">
+                    <h3>A campanha será criada automaticamente após confirmação do pagamento</h3>
+                </div>
+                
+                <!-- Resumo da Campanha -->
+                <div class="campaign-metrics">
+                    <div class="metric-item">
+                        <div class="metric-label">Duração</div>
+                        <div class="metric-value" id="payment-duration">7 dias</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Investimento</div>
+                        <div class="metric-value price" id="payment-value">R$ 297,00</div>
+                    </div>
+                </div>
+                
+                <!-- Timer -->
+                <div class="timer-section">
+                    <p>🕐 Aguardando - Expira em</p>
+                    <span id="payment-countdown" class="countdown">15:00</span>
+                </div>
+                
+                <!-- QR Code -->
+                <div class="qr-code-container">
+                    <div id="qr-loading" class="loading-content" style="min-height: 200px;">
+                        <div class="spinner"></div>
+                        <p>Gerando QR Code...</p>
+                    </div>
+                    <div id="qr-content" style="display: none;">
+                        <img id="payment-qr-image" src="" alt="QR Code PIX" />
+                    </div>
+                </div>
+                
+                <!-- Código PIX -->
+                <div class="pix-code-section">
+                    <div class="pix-code-label">Código PIX (copie e cole no seu banco)</div>
+                    <div class="pix-code-input">
+                        <input type="text" id="payment-pix-code" readonly />
+                    </div>
+                    <button type="button" class="copy-btn" id="copy-payment-code">
+                        <i class="fas fa-copy"></i> Copiar Código PIX
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Erro -->
+            <div id="payment-error" style="display: none;">
+                <div class="error-content">
+                    <h3>❌ Pagamento Expirado</h3>
+                    <p id="payment-error-message">Ocorreu um erro ao processar o pagamento.</p>
+                    <button class="retry-btn" id="retry-payment-btn">Gerar Novo Pagamento</button>
+                </div>
+            </div>
+            
+            <!-- Sucesso -->
+            <div id="payment-success" style="display: none;">
+                <div class="success-content">
+                    <h3>🎉 Pagamento Confirmado!</h3>
+                    <p>Sua campanha foi criada com sucesso e já está ativa!</p>
+                    <button class="view-campaign-btn" id="view-payment-campaign">👀 Visualizar Campanha</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer Responsivo -->
+    <footer>
+        <p>
+            <i class="fas fa-copyright"></i> 2025 Next Ads. Todos os direitos reservados.
+        </p>
+    </footer>
+    
+    <script src="script.js"></script>
+    <script>
+        // Inicializar página de pagamento mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se é dispositivo mobile
+            if (!isMobileDevice()) {
+                // Redirecionar para desktop se não for mobile
+                window.location.href = 'campaign-config.html';
+                return;
+            }
+            
+            // Recuperar dados da campanha do localStorage
+            const campaignData = JSON.parse(localStorage.getItem('campaignData') || '{}');
+            
+            // Atualizar dados da campanha na página
+            updatePaymentPageData(campaignData);
+            
+            // Iniciar processo de pagamento
+            initializePaymentProcess();
+            
+            // Configurar event listeners
+            setupPaymentEventListeners();
+            
+            // Iniciar temporizador
+            startPaymentTimer(900); // 15 minutos
+        });
+        
+        // Função para detectar dispositivo mobile
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                   (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform));
+        }
+        
+        // Atualizar dados da página de pagamento
+        function updatePaymentPageData(campaignData) {
+            if (campaignData.duration) {
+                document.getElementById('payment-duration').textContent = campaignData.duration;
+            }
+            if (campaignData.budget) {
+                document.getElementById('payment-value').textContent = `R$ ${campaignData.budget}`;
+            }
+        }
+        
+        // Inicializar processo de pagamento
+        function initializePaymentProcess() {
+            // Simular carregamento
+            setTimeout(() => {
+                document.getElementById('payment-loading').style.display = 'none';
+                document.getElementById('payment-pix').style.display = 'block';
+                
+                // Simular geração do QR Code
+                setTimeout(() => {
+                    generatePaymentQRCode();
+                }, 1000);
+            }, 2000);
+        }
+        
+        // Gerar QR Code de pagamento
+        function generatePaymentQRCode() {
+            // Simular geração do QR Code
+            const qrCodeData = 'PIX_CODE_EXAMPLE_' + Date.now();
+            
+            document.getElementById('qr-loading').style.display = 'none';
+            document.getElementById('qr-content').style.display = 'block';
+            
+            // Definir código PIX
+            document.getElementById('payment-pix-code').value = qrCodeData;
+            
+            // Gerar QR Code (aqui você integraria com uma API real)
+            document.getElementById('payment-qr-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeData)}`;
+        }
+        
+        // Configurar event listeners
+        function setupPaymentEventListeners() {
+            // Botão copiar código PIX
+            document.getElementById('copy-payment-code').addEventListener('click', function() {
+                const pixCode = document.getElementById('payment-pix-code');
+                pixCode.select();
+                pixCode.setSelectionRange(0, 99999);
+                navigator.clipboard.writeText(pixCode.value);
+                
+                // Feedback visual
+                this.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-copy"></i> Copiar Código PIX';
+                }, 2000);
+            });
+            
+            // Botão retry
+            document.getElementById('retry-payment-btn').addEventListener('click', function() {
+                location.reload();
+            });
+            
+            // Botão visualizar campanha
+            document.getElementById('view-payment-campaign').addEventListener('click', function() {
+                window.location.href = 'index.html';
+            });
+        }
+        
+        // Timer de pagamento
+        function startPaymentTimer(seconds) {
+            let timeLeft = seconds;
+            const countdownElement = document.getElementById('payment-countdown');
+            
+            const timer = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                
+                countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    showPaymentError('Tempo esgotado para pagamento');
+                }
+                
+                timeLeft--;
+            }, 1000);
+        }
+        
+        // Mostrar erro de pagamento
+        function showPaymentError(message) {
+            document.getElementById('payment-pix').style.display = 'none';
+            document.getElementById('payment-error').style.display = 'block';
+            document.getElementById('payment-error-message').textContent = message;
+        }
+        
+        // Mostrar sucesso de pagamento
+        function showPaymentSuccess() {
+            document.getElementById('payment-pix').style.display = 'none';
+            document.getElementById('payment-success').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

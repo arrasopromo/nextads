@@ -287,25 +287,27 @@
 
         // Função para lançar campanha com PIX
         function launchCampaignWithPix() {
+            // Verificar se é dispositivo mobile e redirecionar para página específica
+            if (isMobileDevice()) {
+                // Salvar dados da campanha no localStorage para a página mobile
+                const campaignData = {
+                    duration: document.querySelector('.duration-option.selected')?.textContent || '7 dias',
+                    budget: document.querySelector('.budget-input')?.value || '297,00',
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('campaignData', JSON.stringify(campaignData));
+                
+                // Redirecionar para página de pagamento mobile
+                window.location.href = 'payment-mobile.html';
+                return;
+            }
+            
+            // Comportamento original para desktop
             const modal = document.getElementById('pix-modal');
             modal.style.display = 'flex';
             
             // Resetar modal para estado inicial
             showPixLoading();
-            
-            // Scroll automático para o modal em dispositivos mobile
-            if (isMobileDevice()) {
-                setTimeout(() => {
-                    const modalContent = modal.querySelector('.modal-content');
-                    if (modalContent) {
-                        modalContent.scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'center',
-                            inline: 'nearest'
-                        });
-                    }
-                }, 100); // Pequeno delay para garantir que o modal esteja visível
-            }
         }
         
         // CSS para animação do spinner
