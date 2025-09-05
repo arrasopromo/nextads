@@ -63,11 +63,6 @@
                     <h3>Duração da Campanha</h3>
                     <p>Escolha por quantos dias sua campanha ficará ativa</p>
                     <div class="duration-cards">
-                        <div class="duration-card" data-days="0">
-                            <h3>Teste</h3>
-                            <p>Apenas para teste</p>
-                            <div class="price">R$ 0,30</div>
-                        </div>
                         <div class="duration-card" data-days="1">
                             <h3>1 Dia</h3>
                             <p>Campanha rápida</p>
@@ -279,6 +274,12 @@
             }, 1000);
         });
         
+        // Função para detectar dispositivo mobile
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                   (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform));
+        }
+
         // Função para lançar campanha com PIX
         function launchCampaignWithPix() {
             const modal = document.getElementById('pix-modal');
@@ -286,6 +287,20 @@
             
             // Resetar modal para estado inicial
             showPixLoading();
+            
+            // Scroll automático para o modal em dispositivos mobile
+            if (isMobileDevice()) {
+                setTimeout(() => {
+                    const modalContent = modal.querySelector('.modal-content');
+                    if (modalContent) {
+                        modalContent.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center',
+                            inline: 'nearest'
+                        });
+                    }
+                }, 100); // Pequeno delay para garantir que o modal esteja visível
+            }
         }
         
         // CSS para animação do spinner
