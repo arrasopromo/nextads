@@ -1703,6 +1703,20 @@ class CampaignCreator {
         
 
         
+        // Criar preview visual - definir variáveis comuns primeiro
+        const formatFileSize = (bytes) => {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        };
+        
+        // Tamanho responsivo: mobile usa viewport, desktop usa tamanho fixo
+        const isMobile = window.innerWidth <= 768;
+        const containerWidth = isMobile ? 'min(90vw, 400px)' : '338px';
+        const containerHeight = isMobile ? 'min(calc(90vw * 16/9), calc(400px * 16/9))' : '601px';
+        
         let previewHTML = '';
         
         if (isImage) {
@@ -1772,22 +1786,6 @@ class CampaignCreator {
             };
             reader.readAsDataURL(file);
             
-            // Criar preview visual para imagens (incluindo HEIC)
-            const formatFileSize = (bytes) => {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-            };
-            
-            const fileExtension = file.name.split('.').pop().toUpperCase();
-            
-            // Tamanho responsivo: mobile usa viewport, desktop usa tamanho fixo
-            const isMobile = window.innerWidth <= 768;
-            const containerWidth = isMobile ? 'min(90vw, 400px)' : '338px';
-            const containerHeight = isMobile ? 'min(calc(90vw * 16/9), calc(400px * 16/9))' : '601px';
-            
             previewHTML = `
                 <div style="position: relative; width: ${containerWidth}; height: ${containerHeight}; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin: 0 auto; background: white;">
                     <div class="image-placeholder" style="width: 100%; height: 100%; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; text-align: center; padding: 0; box-sizing: border-box;">
@@ -1798,7 +1796,7 @@ class CampaignCreator {
                             ${file.name.length > 25 ? file.name.substring(0, 22) + '...' : file.name}
                         </div>
                         <div style="font-size: 11px; opacity: 0.9; margin-bottom: 5px;">
-                            ${fileExtension} • ${formatFileSize(file.size)}
+                            ${fileExtension.toUpperCase()} • ${formatFileSize(file.size)}
                         </div>
                         <div style="font-size: 10px; opacity: 0.7;">
                             Arquivo de imagem
@@ -1882,7 +1880,6 @@ class CampaignCreator {
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         };
         
-        const fileExtension = file.name.split('.').pop().toUpperCase();
         const placeholder = fileItem.querySelector('.video-placeholder');
         if (!placeholder) {
             return;
@@ -1960,7 +1957,7 @@ class CampaignCreator {
                             <i class="fas fa-play" style="color: white; font-size: 20px; margin-left: 3px;"></i>
                         </div>
                         <div style="position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.8); color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px;">
-                            ${fileExtension} • ${formatFileSize(file.size)}
+                            ${fileExtension.toUpperCase()} • ${formatFileSize(file.size)}
                         </div>
                         <div style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; border-radius: 4px; font-size: 9px;">
                             ${Math.floor(video.duration / 60)}:${String(Math.floor(video.duration % 60)).padStart(2, '0')}
@@ -2008,7 +2005,6 @@ class CampaignCreator {
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         };
         
-        const fileExtension = file.name.split('.').pop().toUpperCase();
         const placeholder = fileItem.querySelector('.video-placeholder');
         if (!placeholder) return;
         
@@ -2022,7 +2018,7 @@ class CampaignCreator {
                     ${file.name.length > 25 ? file.name.substring(0, 22) + '...' : file.name}
                 </div>
                 <div style="font-size: 11px; opacity: 0.9; margin-bottom: 3px;">
-                    ${fileExtension} • ${formatFileSize(file.size)}
+                    ${fileExtension.toUpperCase()} • ${formatFileSize(file.size)}
                 </div>
                 <div style="font-size: 10px; opacity: 0.7;">
                     Arquivo de vídeo
