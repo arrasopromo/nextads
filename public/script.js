@@ -1398,7 +1398,7 @@ class CampaignCreator {
                 this.handleFiles(e.target.files);
             });
         }
-        
+
         if (videoUpload) {
             videoUpload.addEventListener('change', (e) => {
                 this.handleFiles(e.target.files);
@@ -1407,39 +1407,28 @@ class CampaignCreator {
     }
 
     async handleFiles(files) {
-        // handleFiles chamada com arquivos
-        
         // Verificar se há arquivos válidos
         if (!files || files.length === 0) {
-            // Nenhum arquivo fornecido, ignorando...
             return;
         }
         
         // Se já existe arquivo, remover automaticamente para permitir substituição
         if (this.uploadedFiles.length > 0) {
-            // Já existe arquivo anexado, removendo para substituir...
-            // Limpar arquivos existentes
             this.clearAllFiles();
         }
         
         // Processar apenas o primeiro arquivo
         const file = files[0];
-        // Arquivo selecionado
         
         // Verificar se o arquivo é válido antes de prosseguir
         if (!file || !file.name || file.name === '') {
-            // Arquivo inválido ou vazio, ignorando...
             return;
         }
         
         if (file && await this.validateFile(file)) {
-            // Arquivo validado com sucesso
-            
             try {
                 // Enviar arquivo para o backend para processamento (incluindo conversão HEIC)
-                // Enviando arquivo para o servidor...
                 const processedFile = await this.uploadFileToServer(file);
-                // Arquivo processado pelo servidor com sucesso
                 
                 // Para vídeos, usar o arquivo original para display
                 // Para imagens, tentar otimizar
@@ -1712,7 +1701,7 @@ class CampaignCreator {
         const isImage = file.type.startsWith('image/') || imageExtensions.includes(fileExtension) || isHEIC;
         const isVideo = file.type.startsWith('video/') || videoExtensions.includes(fileExtension);
         
-        // Detecção de tipo de arquivo
+
         
         let previewHTML = '';
         
@@ -1846,17 +1835,15 @@ class CampaignCreator {
         
         // Gerar thumbnail real para vídeo APÓS adicionar ao DOM
         if (isVideo) {
+            const self = this;
             setTimeout(() => {
-                this.generateVideoThumbnail(fileItem, file);
+                self.generateVideoThumbnail(fileItem, file);
             }, 100);
         }
-        
-        // FileItem adicionado ao DOM. Verificando se imagem está visível...
         
         // Verificar se a imagem foi criada corretamente
         if (isImage) {
             const img = fileItem.querySelector('.file-preview-image');
-            // Elemento img encontrado
         }
         
         // Adicionar event listener para o botão de remoção
@@ -1866,7 +1853,6 @@ class CampaignCreator {
                 e.preventDefault();
                 e.stopPropagation();
                 const filename = removeBtn.getAttribute('data-filename');
-                // Botão de remoção clicado
                 this.removeFile(filename);
             };
             
@@ -1879,21 +1865,11 @@ class CampaignCreator {
         }
         
         // Preview para vídeo já foi configurado no setTimeout acima
-        
-        // displayUploadedFile CONCLUÍDO
     }
 
     generateVideoThumbnail(fileItem, file) {
-        console.log('🎬 [THUMBNAIL] Iniciando geração de thumbnail para vídeo:', {
-            fileName: file?.name,
-            fileSize: file?.size,
-            fileType: file?.type,
-            isFileValid: file instanceof File
-        });
-        
         // Validar se o file é um objeto File/Blob válido
         if (!file || !(file instanceof File) || !file.name) {
-            console.error('❌ [THUMBNAIL] Arquivo inválido para geração de thumbnail');
             this.generateSimpleVideoPreview(fileItem, file);
             return;
         }
@@ -1908,7 +1884,9 @@ class CampaignCreator {
         
         const fileExtension = file.name.split('.').pop().toUpperCase();
         const placeholder = fileItem.querySelector('.video-placeholder');
-        if (!placeholder) return;
+        if (!placeholder) {
+            return;
+        }
         
         // Criar elemento de vídeo para extrair frame
         const video = document.createElement('video');
@@ -1967,7 +1945,7 @@ class CampaignCreator {
                 
                 // Converter canvas para base64
                 const thumbnailBase64 = canvas.toDataURL('image/jpeg', 0.8);
-                console.log('✅ [THUMBNAIL] Thumbnail gerado com sucesso, tamanho base64:', thumbnailBase64.length);
+
                 
                 // Atualizar o placeholder com o thumbnail real
                 placeholder.innerHTML = `
@@ -1993,42 +1971,34 @@ class CampaignCreator {
                 // Recursos de base64 são automaticamente gerenciados pelo navegador
                 
             } catch (error) {
-                console.error('❌ [THUMBNAIL] Erro ao capturar frame:', error);
                 this.generateSimpleVideoPreview(fileItem, file);
             }
         };
         
         video.onerror = (error) => {
-            console.error('❌ [THUMBNAIL] Erro ao carregar vídeo:', error);
             this.generateSimpleVideoPreview(fileItem, file);
         };
         
         // Usar URL.createObjectURL para vídeos (mais eficiente que data URL)
-        // Criando Object URL para vídeo
         
         try {
             const objectURL = URL.createObjectURL(file);
-            console.log('🔗 [THUMBNAIL] Object URL criado:', objectURL);
             
             video.preload = 'metadata';
             video.muted = true;
             video.src = objectURL;
-            console.log('📺 [THUMBNAIL] Video src definido com Object URL');
             
             // Limpar o Object URL após o uso para evitar vazamentos de memória
             video.addEventListener('loadedmetadata', () => {
-                // Metadata do vídeo carregada, limpando Object URL
                 URL.revokeObjectURL(objectURL);
             }, { once: true });
             
         } catch (error) {
-            console.error('❌ [THUMBNAIL] Erro ao criar Object URL:', error);
             this.generateSimpleVideoPreview(fileItem, file);
         }
     }
     
     generateSimpleVideoPreview(fileItem, file) {
-        console.log('🎬 [FALLBACK] Gerando preview simples para vídeo (fallback):', file?.name);
         
         const formatFileSize = (bytes) => {
             if (bytes === 0) return '0 Bytes';
