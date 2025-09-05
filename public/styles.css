@@ -3025,9 +3025,9 @@ div.file-preview-container .file-preview-image {
     .pix-modal-content {
         width: 98%;
         max-width: none;
-        max-height: 95vh;
+        max-height: 120vh;
         min-height: 85vh;
-        margin: 2.5vh auto;
+        margin: 0 auto;
         border-radius: 12px;
         overflow-y: auto;
     }
