@@ -12,7 +12,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #ffffff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -46,9 +46,9 @@
             position: absolute;
             top: 20px;
             left: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            color: #495057;
             font-size: 24px;
             width: 50px;
             height: 50px;
@@ -57,12 +57,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(10px);
             transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .back-button:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: #e9ecef;
+            border-color: #adb5bd;
             transform: scale(1.1);
         }
         
@@ -247,17 +248,16 @@
         
         /* Footer responsivo */
         footer {
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background-color: #f8f9fa;
             padding: 20px;
             text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-top: 1px solid #dee2e6;
             margin-top: auto;
         }
         
         footer p {
             margin: 0;
-            color: rgba(255, 255, 255, 0.8);
+            color: #6c757d;
             font-size: 14px;
         }
         
@@ -431,26 +431,121 @@
                 document.getElementById('payment-loading').style.display = 'none';
                 document.getElementById('payment-pix').style.display = 'block';
                 
-                // Simular geração do QR Code
+                // Criar cobrança PIX real
                 setTimeout(() => {
-                    generatePaymentQRCode();
+                    createPixCharge();
                 }, 1000);
             }, 2000);
         }
         
-        // Gerar QR Code de pagamento
-        function generatePaymentQRCode() {
-            // Simular geração do QR Code
-            const qrCodeData = 'PIX_CODE_EXAMPLE_' + Date.now();
+        // Função para criar cobrança PIX real
+        async function createPixCharge() {
+            try {
+                const campaignData = JSON.parse(localStorage.getItem('campaignData') || '{}');
+                const duration = parseInt(campaignData.duration?.replace(' dias', '')) || 7;
+                const budget = parseFloat(campaignData.budget?.replace(',', '.')) || 297.00;
+                
+                // Dados para a API Woovi
+                const pixData = {
+                    value: Math.round(budget * 100), // converter para centavos
+                    days: duration,
+                    expiresIn: 900, // 15 minutos em segundos
+                    campaignType: 'Publicidade Digital',
+                    comment: `Campanha de ${duration} dias - Mobile`,
+                    useSandbox: false
+                };
+                
+                // Fazer requisição para a API Woovi
+                const response = await fetch('/api/create-pix-charge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(pixData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.status} - ${response.statusText}`);
+                }
+                
+                const responseData = await response.json();
+                const charge = responseData.data;
+                
+                showPixPayment(charge, duration, `R$ ${budget.toFixed(2).replace('.', ',')}`);                
+                startPaymentMonitoring(charge.correlationID);
+                
+            } catch (error) {
+                console.error('Erro ao criar cobrança PIX:', error);
+                showPaymentError('Erro ao gerar PIX. Tente novamente.');
+            }
+        }
+        
+        // Função para mostrar pagamento PIX
+        function showPixPayment(charge, duration, priceText) {
+            // Atualizar resumo da campanha
+            document.getElementById('payment-duration').textContent = `${duration} dias`;
+            document.getElementById('payment-value').textContent = priceText;
             
-            document.getElementById('qr-loading').style.display = 'none';
-            document.getElementById('qr-content').style.display = 'block';
+            // Atualizar QR Code e código PIX
+            const qrCodeImage = charge.charge?.qrCodeImage || charge.charge?.paymentMethods?.pix?.qrCodeImage;
+            const pixCode = charge.brCode || charge.charge?.brCode;
             
-            // Definir código PIX
-            document.getElementById('payment-pix-code').value = qrCodeData;
+            if (qrCodeImage) {
+                const qrImage = document.getElementById('payment-qr-image');
+                const loadingElement = document.getElementById('qr-loading');
+                const contentElement = document.getElementById('qr-content');
+                
+                qrImage.onload = function() {
+                    loadingElement.style.display = 'none';
+                    contentElement.style.display = 'block';
+                };
+                
+                qrImage.onerror = function() {
+                    console.error('Erro ao carregar QR Code');
+                    loadingElement.innerHTML = '<p style="color: red;">Erro ao carregar QR Code</p>';
+                };
+                
+                qrImage.src = qrCodeImage;
+                
+                if (qrImage.complete && qrImage.naturalHeight !== 0) {
+                    qrImage.onload();
+                }
+            } else {
+                console.error('QR Code não encontrado na resposta');
+                document.getElementById('qr-loading').innerHTML = '<p style="color: red;">QR Code não disponível</p>';
+            }
             
-            // Gerar QR Code (aqui você integraria com uma API real)
-            document.getElementById('payment-qr-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeData)}`;
+            if (pixCode) {
+                document.getElementById('payment-pix-code').value = pixCode;
+            } else {
+                console.error('Código PIX não encontrado na resposta');
+            }
+        }
+        
+        // Função para monitorar pagamento
+        function startPaymentMonitoring(correlationID) {
+            if (!correlationID) {
+                console.error('CorrelationID não fornecido para monitoramento');
+                return;
+            }
+            
+            // Verificar status do pagamento a cada 5 segundos
+            window.paymentChecker = setInterval(async () => {
+                try {
+                    const response = await fetch(`/api/check-payment-status/${correlationID}`);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        if (data.status === 'COMPLETED') {
+                            clearInterval(window.paymentChecker);
+                            showPaymentSuccess();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao verificar status do pagamento:', error);
+                }
+            }, 5000);
         }
         
         // Configurar event listeners
@@ -458,19 +553,32 @@
             // Botão copiar código PIX
             document.getElementById('copy-payment-code').addEventListener('click', function() {
                 const pixCode = document.getElementById('payment-pix-code');
-                pixCode.select();
-                pixCode.setSelectionRange(0, 99999);
-                navigator.clipboard.writeText(pixCode.value);
                 
-                // Feedback visual
-                this.innerHTML = '<i class="fas fa-check"></i> Copiado!';
-                setTimeout(() => {
-                    this.innerHTML = '<i class="fas fa-copy"></i> Copiar Código PIX';
-                }, 2000);
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(pixCode.value).then(() => {
+                        // Feedback visual
+                        this.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                        setTimeout(() => {
+                            this.innerHTML = '<i class="fas fa-copy"></i> Copiar Código PIX';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Erro ao copiar:', err);
+                        fallbackCopyTextToClipboard(pixCode.value, this);
+                    });
+                } else {
+                    fallbackCopyTextToClipboard(pixCode.value, this);
+                }
             });
             
             // Botão retry
             document.getElementById('retry-payment-btn').addEventListener('click', function() {
+                // Limpar timers antes de recarregar
+                if (window.pixTimer) {
+                    clearInterval(window.pixTimer);
+                }
+                if (window.paymentChecker) {
+                    clearInterval(window.paymentChecker);
+                }
                 location.reload();
             });
             
@@ -480,19 +588,50 @@
             });
         }
         
+        // Função fallback para copiar texto
+        function fallbackCopyTextToClipboard(text, button) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                button.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-copy"></i> Copiar Código PIX';
+                }, 2000);
+            } catch (err) {
+                console.error('Erro ao copiar texto:', err);
+                button.innerHTML = '<i class="fas fa-times"></i> Erro ao copiar';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-copy"></i> Copiar Código PIX';
+                }, 2000);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
         // Timer de pagamento
         function startPaymentTimer(seconds) {
             let timeLeft = seconds;
             const countdownElement = document.getElementById('payment-countdown');
             
-            const timer = setInterval(() => {
+            window.pixTimer = setInterval(() => {
                 const minutes = Math.floor(timeLeft / 60);
                 const secs = timeLeft % 60;
                 
                 countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
                 
                 if (timeLeft <= 0) {
-                    clearInterval(timer);
+                    clearInterval(window.pixTimer);
+                    if (window.paymentChecker) {
+                        clearInterval(window.paymentChecker);
+                    }
                     showPaymentError('Tempo esgotado para pagamento');
                 }
                 
