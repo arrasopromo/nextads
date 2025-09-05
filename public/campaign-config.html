@@ -264,6 +264,11 @@
                 launchCampaignWithPix();
             });
             
+            // Configurar botão lançar campanha mobile
+            document.getElementById('mobile-launch-campaign').addEventListener('click', function() {
+                launchCampaignWithPix();
+            });
+            
             // Configurar event listeners do modal PIX
             setupPixModalEventListeners();
             
@@ -1216,6 +1221,14 @@
                     <!-- Código PIX -->
                     <div class="pix-code-container">
                         <label>Código PIX (Copiar e Colar):</label>
+                        
+                        <!-- Botão Lançar Campanha Mobile (apenas mobile) -->
+                        <div class="mobile-launch-btn" style="display: none;">
+                            <button id="mobile-launch-campaign" class="primary-btn mobile-only-btn">
+                                🚀 Lançar Campanha
+                            </button>
+                        </div>
+                        
                         <div class="pix-code-input">
                             <input type="text" id="pix-code" readonly />
                             <button id="copy-pix-code" class="copy-btn">

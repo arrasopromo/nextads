@@ -3169,6 +3169,41 @@ div.file-preview-container .file-preview-image {
         padding: 0.4rem 0.8rem;
         font-size: 0.75rem;
     }
+    
+    /* Botão Lançar Campanha Mobile */
+    .mobile-launch-btn {
+        display: block !important;
+        margin: 15px 0;
+        text-align: center;
+    }
+    
+    .mobile-only-btn {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .mobile-only-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .mobile-only-btn:active {
+        transform: translateY(0);
+    }
+}
+
+/* Esconder botão mobile em desktop */
+.mobile-launch-btn {
+    display: none;
 }
 
 /* PIX Payment Integrated Styles */
