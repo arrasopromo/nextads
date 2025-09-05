@@ -1866,11 +1866,16 @@ class CampaignCreator {
     }
 
     generateVideoThumbnail(fileItem, file) {
+        console.log('🚀 [THUMBNAIL] Iniciando geração de thumbnail para:', file.name);
+        
         // Validar se o file é um objeto File/Blob válido
         if (!file || !(file instanceof File) || !file.name) {
+            console.log('❌ [THUMBNAIL] Arquivo inválido, usando preview simples');
             this.generateSimpleVideoPreview(fileItem, file);
             return;
         }
+        
+        const fileExtension = file.name.split('.').pop();
         
         const formatFileSize = (bytes) => {
             if (bytes === 0) return '0 Bytes';
@@ -1881,9 +1886,12 @@ class CampaignCreator {
         };
         
         const placeholder = fileItem.querySelector('.video-placeholder');
+        console.log('🔍 [THUMBNAIL] Buscando placeholder:', placeholder);
         if (!placeholder) {
+            console.log('❌ [THUMBNAIL] Placeholder não encontrado!');
             return;
         }
+        console.log('✅ [THUMBNAIL] Placeholder encontrado, continuando...');
         
         // Criar elemento de vídeo para extrair frame
         const video = document.createElement('video');
@@ -1896,6 +1904,7 @@ class CampaignCreator {
                 videoWidth: video.videoWidth,
                 videoHeight: video.videoHeight
             });
+            console.log('🔧 [THUMBNAIL] Placeholder encontrado:', placeholder);
             
             // Definir dimensões do canvas para aspect ratio 9:16
             const targetWidth = 338;
@@ -1942,9 +1951,10 @@ class CampaignCreator {
                 
                 // Converter canvas para base64
                 const thumbnailBase64 = canvas.toDataURL('image/jpeg', 0.8);
-
+                console.log('🖼️ [THUMBNAIL] Thumbnail gerada com sucesso, tamanho:', thumbnailBase64.length, 'caracteres');
                 
                 // Atualizar o placeholder com o thumbnail real
+                console.log('🔄 [THUMBNAIL] Atualizando placeholder com thumbnail real');
                 placeholder.innerHTML = `
                     <div class="video-thumbnail-container" style="position: relative; width: 100%; height: 100%; border-radius: 8px; overflow: hidden;">
                         <img src="${thumbnailBase64}" 
@@ -2004,6 +2014,8 @@ class CampaignCreator {
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         };
+        
+        const fileExtension = file.name.split('.').pop();
         
         const placeholder = fileItem.querySelector('.video-placeholder');
         if (!placeholder) return;
