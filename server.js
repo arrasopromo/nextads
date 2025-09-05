@@ -687,6 +687,9 @@ app.post('/api/test-fetch-profile', async (req, res) => {
 // API para obter municípios
 app.get('/api/municipios', (req, res) => {
     try {
+        console.log('🏙️ [MUNICIPIOS] Requisição recebida');
+        console.log('🏙️ [MUNICIPIOS] Headers da requisição:', req.headers);
+        
         // Ler arquivo com tratamento de BOM
         let rawData = fs.readFileSync(path.join(__dirname, 'municipios.json'), 'utf8');
         
@@ -699,7 +702,17 @@ app.get('/api/municipios', (req, res) => {
         rawData = rawData.trim();
         
         const municipios = JSON.parse(rawData);
+        console.log('🏙️ [MUNICIPIOS] Dados carregados:', municipios.length, 'municípios');
+        
+        // Desabilitar cache para debug
+        res.set({
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        });
+        
         res.json(municipios);
+        console.log('🏙️ [MUNICIPIOS] Resposta enviada com sucesso');
         
     } catch (error) {
         console.error('💥 Erro detalhado:', {

@@ -37,8 +37,9 @@ class CampaignCreator {
 
     async loadMunicipios() {
         try {
-            // Carregando municípios
+            console.log('🔄 Iniciando carregamento de municípios...');
             const response = await fetch('/api/municipios');
+            console.log('📡 Resposta recebida:', response.status, response.statusText);
 
             
             if (!response.ok) {
@@ -46,15 +47,16 @@ class CampaignCreator {
             }
             
             const data = await response.json();
+            console.log('📊 Dados recebidos:', data ? `${data.length} municípios` : 'dados inválidos');
 
             
             // Verificar se é array
             if (Array.isArray(data)) {
                 this.municipios = data;
-                // Municípios carregados
+                console.log('✅ Municípios carregados com sucesso:', this.municipios.length);
 
             } else {
-                console.error('Erro: dados de municípios inválidos');
+                console.error('❌ Erro: dados de municípios inválidos');
                 this.municipios = [];
             }
             
@@ -62,7 +64,8 @@ class CampaignCreator {
             this.populateEstados();
             
         } catch (error) {
-            console.error('Erro ao carregar municípios');
+            console.error('❌ Erro ao carregar municípios:', error.message);
+            console.error('📋 Stack trace:', error.stack);
             this.municipios = [];
             this.estados = [];
         }

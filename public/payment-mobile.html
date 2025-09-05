@@ -3,51 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagamento PIX - Next Ads</title>
+    <title>Pagamento PIX - Turbo Impulsione</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Estilos específicos para página de pagamento mobile */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #ffffff;
+        /* Estilos específicos para página mobile de pagamento */
+        .mobile-payment-container {
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 0;
+            margin: 0;
         }
         
-        .payment-container {
-            flex: 1;
-            padding: 20px;
-            max-width: 500px;
-            margin: 0 auto;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        
-        .payment-header {
-            background: white;
-            border-radius: 20px 20px 0 0;
-            padding: 20px;
+        .mobile-payment-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
             text-align: center;
-            margin-bottom: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .payment-content {
+        .mobile-payment-header h1 {
+            color: white;
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .mobile-payment-content {
             background: white;
-            border-radius: 0 0 20px 20px;
-            padding: 20px;
+            margin: 1rem;
+            border-radius: 20px;
+            padding: 1.5rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
         
-        .back-button {
+        .campaign-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .campaign-title h2 {
+            color: #333;
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin: 0;
+        }
+        
+        .campaign-summary {
             background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .campaign-metrics {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .metric-item {
+            text-align: center;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+        
+        .metric-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .metric-value.price {
+            color: #007bff;
+        }
+        
+        .timer-section {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #fff3cd;
+            border-radius: 8px;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .timer-text {
+            font-size: 0.9rem;
+            color: #856404;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .countdown {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #dc3545;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .qr-code-container {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .qr-code-image {
+            width: 200px;
+            height: 200px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .pix-code-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .pix-code-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .pix-code-input {
+            width: 100%;
+            padding: 0.75rem;
             border: 2px solid #e9ecef;
             border-radius: 8px;
-            padding: 10px 20px;
-            color: #495057;
+            font-size: 0.8rem;
+            font-family: monospace;
+            background: #f8f9fa;
+            margin-bottom: 1rem;
+            word-break: break-all;
+        }
+        
+        .copy-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+        
+        .copy-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .loading-container {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #667eea;
+            border-right: 4px solid #764ba2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .loading-message {
+            color: #333;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .loading-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .error-container, .success-container {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        
+        .error-content {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .success-content {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .retry-btn, .view-campaign-btn {
+            width: 100%;
+            padding: 0.875rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        
+        .retry-btn {
+            background: #007bff;
+            color: white;
+        }
+        
+        .view-campaign-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mobile-footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .mobile-footer p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.85rem;
+            margin: 0.5rem 0;
+            font-weight: 500;
+        }
+        
+        .mobile-footer .security-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .mobile-footer .security-icon {
+            color: #28a745;
+            font-size: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 480px) {
+            .mobile-payment-content {
+                margin: 0.5rem;
+                padding: 1rem;
+            }
+            
+            .qr-code-image {
+                width: 180px;
+                height: 180px;
+            }
+        }
+        
+        .back-button {
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
@@ -89,179 +335,67 @@
             animation: spin 1s linear infinite;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+
         
-        .campaign-title h2 {
-            margin: 0;
-            color: #333;
-            font-size: 20px;
-            font-weight: 600;
-            line-height: 1.4;
-        }
+
         
-        .campaign-metrics {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+
         
-        .metric-item {
-            text-align: center;
-        }
+
         
-        .metric-label {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        
-        .metric-value {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-        }
-        
-        .metric-value.price {
-            color: #007bff;
-        }
-        
-        .timer-section {
-            text-align: center;
-            margin: 20px 0;
-            padding: 15px;
-            background: #fff3cd;
-            border-radius: 8px;
-            border: 1px solid #ffeaa7;
-        }
-        
-        .countdown {
-            font-size: 24px;
-            font-weight: bold;
-            color: #dc3545;
-            font-family: 'Courier New', monospace;
-            display: block;
-            margin-top: 5px;
-        }
-        
-        .qr-code-container {
-            text-align: center;
-            margin: 30px 0;
-        }
-        
-        .qr-code-container img {
-            width: 200px;
-            height: 200px;
-            border: 2px solid #ddd;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        .pix-code-section {
-            margin: 30px 0;
-        }
-        
-        .pix-code-label {
-            font-size: 16px;
-            color: #333;
-            text-align: center;
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-        
-        .pix-code-input {
-            margin-bottom: 15px;
-        }
-        
-        .pix-code-input input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 12px;
-            font-family: monospace;
-            background: #f8f9fa;
-            box-sizing: border-box;
-            text-align: center;
-        }
-        
-        .copy-btn {
-            width: 100%;
-            padding: 15px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .copy-btn:hover {
-            background: #0056b3;
-            transform: translateY(-2px);
-        }
-        
-        .error-content, .success-content {
-            text-align: center;
-            padding: 30px 20px;
-            border-radius: 12px;
-            margin: 20px 0;
-        }
-        
-        .error-content {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-        
-        .success-content {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-        }
-        
-        .retry-btn, .view-campaign-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            margin-top: 15px;
-        }
-        
-        .retry-btn {
-            background: #007bff;
-            color: white;
-        }
-        
-        .view-campaign-btn {
-            background: #28a745;
-            color: white;
-        }
+
         
         /* Footer responsivo */
         footer {
-            background-color: #f8f9fa;
-            padding: 0.8rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem 1rem;
             text-align: center;
-            border-top: 1px solid #dee2e6;
+            border-top: 2px solid #dee2e6;
             margin-top: auto;
             font-family: Arial, sans-serif;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
         
         footer p {
-            margin: 0;
-            color: #6c757d;
+            margin: 0.5rem 0;
+            color: #495057;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        footer .footer-links a {
+            color: #007bff;
+            text-decoration: none;
             font-size: 0.8rem;
+            transition: color 0.3s ease;
+        }
+        
+        footer .footer-links a:hover {
+            color: #0056b3;
+        }
+        
+        @media (max-width: 768px) {
+            footer {
+                padding: 1rem 0.5rem;
+                margin-top: 2rem;
+            }
+            
+            footer .footer-links {
+                gap: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            footer .footer-links a {
+                font-size: 0.75rem;
+            }
         }
         
         /* Responsividade adicional */
@@ -287,98 +421,114 @@
     </style>
 </head>
 <body>
-    <div class="payment-container">
-        <!-- Botão Voltar -->
-         <button class="back-button" id="back-button">
-             <i class="fas fa-arrow-left"></i>
-             Voltar
-         </button>
-        <!-- Cabeçalho -->
-        <div class="payment-header">
-            <div class="campaign-title">
-                <h2 id="payment-header-title">🚀 Finalizar Lançamento da Campanha</h2>
-            </div>
+    <div class="mobile-payment-container">
+        <!-- Header -->
+        <div class="mobile-payment-header">
+            <button class="back-btn" id="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>Pagamento PIX</h1>
         </div>
         
-        <!-- Conteúdo Principal -->
-        <div class="payment-content">
-            <!-- Loading -->
-            <div id="payment-loading" class="loading-content">
+        <!-- Content -->
+        <div class="mobile-payment-content">
+            <!-- Loading State -->
+            <div id="payment-loading" class="loading-container">
                 <div class="spinner"></div>
-                <h3 id="loading-message">Carregando ambiente seguro...</h3>
-                <p>Aguarde alguns instantes...</p>
+                <h3 class="loading-message" id="loading-message">Carregando ambiente seguro...</h3>
+                <p class="loading-subtitle">Aguarde alguns instantes...</p>
             </div>
             
-            <!-- Pagamento PIX -->
+            <!-- Payment State -->
             <div id="payment-pix" style="display: none;">
-                <!-- Título -->
+                <!-- Title -->
                 <div class="campaign-title">
-                    <h3>A campanha será criada automaticamente após confirmação do pagamento</h3>
+                    <h2>A campanha será criada automaticamente após confirmação do pagamento</h2>
                 </div>
                 
-                <!-- Resumo da Campanha -->
-                <div class="campaign-metrics">
-                    <div class="metric-item">
-                        <div class="metric-label">Duração</div>
-                        <div class="metric-value" id="payment-duration">7 dias</div>
-                    </div>
-                    <div class="metric-item">
-                        <div class="metric-label">Investimento</div>
-                        <div class="metric-value price" id="payment-value">R$ 297,00</div>
+                <!-- Campaign Summary -->
+                <div class="campaign-summary">
+                    <div class="campaign-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">Duração</div>
+                            <div class="metric-value" id="payment-duration">7 dias</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Investimento</div>
+                            <div class="metric-value price" id="payment-value">R$ 297,00</div>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Timer -->
                 <div class="timer-section">
-                    <p>🕐 Aguardando - Expira em</p>
-                    <span id="payment-countdown" class="countdown">15:00</span>
+                    <p class="timer-text">🕐 Aguardando - Expira em</p>
+                    <div class="countdown" id="payment-countdown">15:00</div>
                 </div>
                 
                 <!-- QR Code -->
                 <div class="qr-code-container">
-                    <div id="qr-loading" class="loading-content" style="min-height: 200px;">
-                        <div class="spinner"></div>
+                    <div id="qr-loading" class="loading-container" style="padding: 2rem;">
+                        <div class="spinner" style="width: 40px; height: 40px;"></div>
                         <p>Gerando QR Code...</p>
                     </div>
                     <div id="qr-content" style="display: none;">
-                        <img id="payment-qr-image" src="" alt="QR Code PIX" />
+                        <img id="payment-qr-image" class="qr-code-image" src="" alt="QR Code PIX" />
                     </div>
                 </div>
                 
-                <!-- Código PIX -->
+                <!-- PIX Code -->
                 <div class="pix-code-section">
                     <div class="pix-code-label">Código PIX (copie e cole no seu banco)</div>
-                    <div class="pix-code-input">
-                        <input type="text" id="payment-pix-code" readonly />
-                    </div>
+                    <textarea id="payment-pix-code" class="pix-code-input" readonly rows="4"></textarea>
                     <button type="button" class="copy-btn" id="copy-payment-code">
                         <i class="fas fa-copy"></i> Copiar Código PIX
                     </button>
                 </div>
             </div>
             
-            <!-- Erro -->
-            <div id="payment-error" style="display: none;">
+            <!-- Error State -->
+            <div id="payment-error" class="error-container" style="display: none;">
                 <div class="error-content">
-                    <h3>❌ Pagamento Expirado</h3>
-                    <p id="payment-error-message">Ocorreu um erro ao processar o pagamento.</p>
+                    <h3 style="color: #721c24; margin: 0 0 1rem 0;">❌ Pagamento Expirado</h3>
+                    <p id="payment-error-message" style="color: #721c24; margin: 0 0 1rem 0;">Ocorreu um erro ao processar o pagamento.</p>
                     <button class="retry-btn" id="retry-payment-btn">Gerar Novo Pagamento</button>
                 </div>
             </div>
             
-            <!-- Sucesso -->
-            <div id="payment-success" style="display: none;">
+            <!-- Success State -->
+            <div id="payment-success" class="success-container" style="display: none;">
                 <div class="success-content">
-                    <h3>🎉 Pagamento Confirmado!</h3>
-                    <p>Sua campanha foi criada com sucesso e já está ativa!</p>
+                    <h3 style="color: #155724; margin: 0 0 1rem 0;">🎉 Pagamento Confirmado!</h3>
+                    <p style="color: #155724; margin: 0 0 1rem 0;">Sua campanha foi criada com sucesso e já está ativa!</p>
                     <button class="view-campaign-btn" id="view-payment-campaign">👀 Visualizar Campanha</button>
                 </div>
             </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="mobile-footer">
+            <div class="security-info">
+                <i class="fas fa-shield-alt security-icon"></i>
+                <p>Pagamento 100% seguro via PIX</p>
+            </div>
+            <p><i class="fas fa-lock"></i> Criptografia SSL 256-bits • Turbo Impulsione</p>
+            <p style="font-size: 0.75rem; opacity: 0.8;">Processado pela Woovi Pagamentos</p>
         </div>
     </div>
     
     <!-- Footer Responsivo -->
     <footer>
+        <div class="footer-links">
+            <a href="#">Política de Privacidade</a>
+            <a href="#">Termos de Uso</a>
+            <a href="#">Suporte</a>
+            <a href="#">FAQ</a>
+        </div>
+        <p>
+            <i class="fas fa-shield-alt" style="color: #28a745;"></i> 
+            Pagamentos processados com segurança pela Woovi
+        </p>
         <p>
             <i class="fas fa-copyright"></i> 2025 Next Ads. Todos os direitos reservados.
         </p>
@@ -386,29 +536,22 @@
     
     <script src="script.js"></script>
     <script>
-        // Inicializar página de pagamento mobile
+        // Inicialização da página mobile de pagamento
         document.addEventListener('DOMContentLoaded', function() {
-            // Verificar se é dispositivo mobile
-            if (!isMobileDevice()) {
-                // Redirecionar para desktop se não for mobile
-                window.location.href = 'campaign-config.html';
-                return;
-            }
-            
             // Recuperar dados da campanha do localStorage
             const campaignData = JSON.parse(localStorage.getItem('campaignData') || '{}');
             
-            // Atualizar dados da campanha na página
-            updatePaymentPageData(campaignData);
+            // Atualizar dados da campanha na interface
+            updateCampaignData(campaignData);
             
-            // Iniciar processo de pagamento
-            initializePaymentProcess();
+            // Simular carregamento e iniciar pagamento
+            setTimeout(() => {
+                showPaymentState();
+                startPixTimer(900); // 15 minutos
+            }, 2000);
             
             // Configurar event listeners
-            setupPaymentEventListeners();
-            
-            // Iniciar temporizador
-            startPaymentTimer(900); // 15 minutos
+            setupMobileEventListeners();
         });
         
         // Função para detectar dispositivo mobile
@@ -417,28 +560,30 @@
                    (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform));
         }
         
-        // Atualizar dados da página de pagamento
-        function updatePaymentPageData(campaignData) {
-            if (campaignData.duration) {
-                document.getElementById('payment-duration').textContent = campaignData.duration;
+        function updateCampaignData(data) {
+            if (data.duration) {
+                document.getElementById('payment-duration').textContent = data.duration;
             }
-            if (campaignData.budget) {
-                document.getElementById('payment-value').textContent = `R$ ${campaignData.budget}`;
+            if (data.budget) {
+                document.getElementById('payment-value').textContent = `R$ ${data.budget}`;
             }
         }
         
-        // Inicializar processo de pagamento
-        function initializePaymentProcess() {
-            // Simular carregamento
+        function showPaymentState() {
+            document.getElementById('payment-loading').style.display = 'none';
+            document.getElementById('payment-pix').style.display = 'block';
+            
+            // Simular carregamento do QR Code
             setTimeout(() => {
-                document.getElementById('payment-loading').style.display = 'none';
-                document.getElementById('payment-pix').style.display = 'block';
+                document.getElementById('qr-loading').style.display = 'none';
+                document.getElementById('qr-content').style.display = 'block';
                 
-                // Criar cobrança PIX real
-                setTimeout(() => {
-                    createPixCharge();
-                }, 1000);
-            }, 2000);
+                // Simular QR Code (placeholder)
+                document.getElementById('payment-qr-image').src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5RUiBDb2RlIFBJWDwvdGV4dD48L3N2Zz4=';
+                
+                // Simular código PIX
+                document.getElementById('payment-pix-code').value = '00020126580014BR.GOV.BCB.PIX013636c4b8e8-4c8a-4b8e-9f8a-1234567890ab5204000053039865802BR5925TURBO IMPULSIONE LTDA6009SAO PAULO62070503***6304ABCD';
+            }, 1500);
         }
         
         // Função para criar cobrança PIX real
@@ -551,37 +696,34 @@
             }, 5000);
         }
         
-        // Configurar event listeners
-        function setupPaymentEventListeners() {
+        function setupMobileEventListeners() {
+            // Botão voltar
+            document.getElementById('back-button').addEventListener('click', function() {
+                window.history.back();
+            });
+            
             // Botão copiar código PIX
             document.getElementById('copy-payment-code').addEventListener('click', function() {
                 const pixCode = document.getElementById('payment-pix-code');
+                pixCode.select();
+                pixCode.setSelectionRange(0, 99999);
                 
-                if (navigator.clipboard && window.isSecureContext) {
-                    navigator.clipboard.writeText(pixCode.value).then(() => {
-                        // Feedback visual
-                        this.innerHTML = '<i class="fas fa-check"></i> Copiado!';
-                        setTimeout(() => {
-                            this.innerHTML = '<i class="fas fa-copy"></i> Copiar Código PIX';
-                        }, 2000);
-                    }).catch(err => {
-                        console.error('Erro ao copiar:', err);
-                        fallbackCopyTextToClipboard(pixCode.value, this);
-                    });
-                } else {
-                    fallbackCopyTextToClipboard(pixCode.value, this);
+                try {
+                    document.execCommand('copy');
+                    this.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                    this.style.background = '#28a745';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-copy"></i> Copiar Código PIX';
+                        this.style.background = '#007bff';
+                    }, 2000);
+                } catch (err) {
+                    console.error('Erro ao copiar:', err);
                 }
             });
             
             // Botão retry
             document.getElementById('retry-payment-btn').addEventListener('click', function() {
-                // Limpar timers antes de recarregar
-                if (window.pixTimer) {
-                    clearInterval(window.pixTimer);
-                }
-                if (window.paymentChecker) {
-                    clearInterval(window.paymentChecker);
-                }
                 location.reload();
             });
             
@@ -619,38 +761,32 @@
             document.body.removeChild(textArea);
         }
         
-        // Timer de pagamento
-        function startPaymentTimer(seconds) {
-            let timeLeft = seconds;
+        function startPixTimer(seconds) {
             const countdownElement = document.getElementById('payment-countdown');
+            let timeLeft = seconds;
             
-            window.pixTimer = setInterval(() => {
+            const timer = setInterval(() => {
                 const minutes = Math.floor(timeLeft / 60);
                 const secs = timeLeft % 60;
                 
                 countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
                 
                 if (timeLeft <= 0) {
-                    clearInterval(window.pixTimer);
-                    if (window.paymentChecker) {
-                        clearInterval(window.paymentChecker);
-                    }
-                    showPaymentError('Tempo esgotado para pagamento');
+                    clearInterval(timer);
+                    showErrorState('Tempo expirado. Gere um novo pagamento.');
                 }
                 
                 timeLeft--;
             }, 1000);
         }
         
-        // Mostrar erro de pagamento
-        function showPaymentError(message) {
+        function showErrorState(message) {
             document.getElementById('payment-pix').style.display = 'none';
             document.getElementById('payment-error').style.display = 'block';
             document.getElementById('payment-error-message').textContent = message;
         }
         
-        // Mostrar sucesso de pagamento
-        function showPaymentSuccess() {
+        function showSuccessState() {
             document.getElementById('payment-pix').style.display = 'none';
             document.getElementById('payment-success').style.display = 'block';
         }
