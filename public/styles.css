@@ -3020,6 +3020,138 @@ div.file-preview-container .file-preview-image {
     100% { transform: rotate(360deg); }
 }
 
+/* PIX Modal Mobile Optimization */
+@media (max-width: 768px) {
+    .pix-modal-content {
+        width: 95%;
+        max-width: none;
+        max-height: 95vh;
+        margin: 0.5rem;
+        border-radius: 15px;
+    }
+    
+    .pix-header {
+        padding: 1rem 1rem 0.5rem 1rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .pix-header h2 {
+        font-size: 1.1rem;
+        line-height: 1.2;
+        margin: 0;
+    }
+    
+    .pix-close {
+        font-size: 1.5rem;
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+    
+    .pix-body {
+        padding: 0.75rem 1rem 1rem 1rem;
+    }
+    
+    .campaign-summary {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+    }
+    
+    .campaign-summary h3 {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .summary-row {
+        margin-bottom: 0.4rem;
+        font-size: 0.9rem;
+    }
+    
+    .summary-row:last-child {
+        font-size: 1rem;
+    }
+    
+    .persuasive-message {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+    }
+    
+    .persuasive-message p {
+        font-size: 0.85rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .campaign-status {
+        margin-bottom: 1rem;
+    }
+    
+    .status-item {
+        padding: 0.75rem;
+        margin-bottom: 0.4rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+    }
+    
+    .status-item i {
+        margin-right: 0.5rem;
+        font-size: 1rem;
+    }
+    
+    .pix-payment {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+    }
+    
+    .pix-payment h3 {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .pix-timer {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .qr-code-container {
+        margin-bottom: 1rem;
+    }
+    
+    .qr-code-container img {
+        max-width: 160px;
+        padding: 8px;
+        border-radius: 8px;
+    }
+    
+    .pix-code-container {
+        margin-bottom: 1rem;
+    }
+    
+    .pix-code-container label {
+        font-size: 0.85rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .pix-code-input {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .pix-code-input input {
+        font-size: 0.8rem;
+        padding: 0.6rem;
+        border-radius: 8px;
+    }
+    
+    .copy-btn {
+        width: 100%;
+        padding: 0.6rem;
+        font-size: 0.85rem;
+        border-radius: 8px;
+    }
+}
+
 /* PIX Payment Integrated Styles */
 .pix-payment-integrated {
     margin-top: 2rem;
@@ -3707,51 +3839,130 @@ div.file-preview-container .file-preview-image {
 @media (max-width: 768px) {
     .modal-content {
         width: 95%;
-        margin: 1rem;
+        margin: 0.5rem;
+        max-height: 95vh;
     }
     
     .modal-header {
-        padding: 1.5rem 1.5rem 1rem 1.5rem;
+        padding: 1rem 1rem 0.5rem 1rem;
     }
     
     .modal-header h2 {
-        font-size: 1.3rem;
+        font-size: 1.1rem;
+        line-height: 1.2;
     }
     
     .modal-body {
-        padding: 1rem 1.5rem 1.5rem 1.5rem;
+        padding: 0.5rem 1rem 1rem 1rem;
     }
     
     .campaign-summary {
-        padding: 1rem;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .campaign-summary h3 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary-row {
+        margin-bottom: 0.25rem;
+        font-size: 0.9rem;
     }
     
     .persuasive-message {
-        padding: 1rem;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .persuasive-message p {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
     }
     
     .pix-section {
-        padding: 1rem;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .pix-section h3 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .qr-code-container img {
+        max-width: 180px;
+        height: auto;
+    }
+    
+    .timer-section {
+        margin-bottom: 0.75rem;
+    }
+    
+    .timer-section h4 {
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
     }
     
     .timer-display {
-        font-size: 2rem;
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .timer-warning {
+        font-size: 0.8rem;
+        margin: 0;
+    }
+    
+    .campaign-status {
+        margin-bottom: 0.75rem;
+    }
+    
+    .campaign-status h4 {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .status-timeline {
+        gap: 0.5rem;
+    }
+    
+    .status-item {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .status-icon {
+        font-size: 0.8rem;
     }
     
     .modal-actions {
         flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
     }
     
     .pix-code-input {
         flex-direction: column;
+        gap: 0.5rem;
     }
     
     #pix-code {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0;
+        font-size: 0.8rem;
+        padding: 0.5rem;
     }
     
     .copy-btn {
         width: 100%;
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .pix-code-section label {
+        font-size: 0.85rem;
+        margin-bottom: 0.25rem;
     }
 }
 
