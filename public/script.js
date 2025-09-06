@@ -902,17 +902,26 @@ class CampaignCreator {
     }
 
     addValidationConfirmation() {
+        console.log('🔍 [DEBUG] addValidationConfirmation chamada');
+        
         // Verificar se é dispositivo mobile
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
                         (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform));
         
+        console.log('📱 [DEBUG] É mobile?', isMobile);
+        console.log('🔍 [DEBUG] User Agent:', navigator.userAgent);
+        console.log('🔍 [DEBUG] maxTouchPoints:', navigator.maxTouchPoints);
+        
         if (isMobile) {
             // Encontrar o botão de validação
             const validateBtn = document.getElementById('validate-profile');
+            console.log('🔍 [DEBUG] Botão de validação encontrado:', validateBtn);
+            
             if (validateBtn) {
                 // Remover mensagem anterior se existir
                 const existingConfirmation = document.querySelector('.validation-confirmation');
                 if (existingConfirmation) {
+                    console.log('🗑️ [DEBUG] Removendo mensagem anterior');
                     existingConfirmation.remove();
                 }
                 
@@ -938,6 +947,8 @@ class CampaignCreator {
                     </span>
                 `;
                 
+                console.log('✅ [DEBUG] Elemento de confirmação criado:', confirmationElement);
+                
                 // Adicionar CSS da animação se não existir
                 if (!document.querySelector('#validation-animation-styles')) {
                     const styleElement = document.createElement('style');
@@ -955,11 +966,21 @@ class CampaignCreator {
                         }
                     `;
                     document.head.appendChild(styleElement);
+                    console.log('🎨 [DEBUG] CSS de animação adicionado');
                 }
                 
                 // Inserir após o botão de validação
                 validateBtn.parentNode.insertBefore(confirmationElement, validateBtn.nextSibling);
+                console.log('🎯 [DEBUG] Mensagem inserida no DOM');
+                
+                // Verificar se o elemento foi realmente inserido
+                const insertedElement = document.querySelector('.validation-confirmation');
+                console.log('🔍 [DEBUG] Elemento inserido encontrado no DOM:', insertedElement);
+            } else {
+                console.log('❌ [DEBUG] Botão de validação não encontrado');
             }
+        } else {
+            console.log('💻 [DEBUG] Não é mobile, mensagem não será exibida');
         }
     }
     
@@ -1025,6 +1046,9 @@ class CampaignCreator {
             <i class="fas fa-check-circle" style="color: #25D366; margin-right: 5px;"></i>
             WhatsApp Ativo
         `;
+        
+        // Adicionar mensagem de confirmação visual no mobile
+        this.addValidationConfirmation();
         
         // Perfil WhatsApp configurado
     }

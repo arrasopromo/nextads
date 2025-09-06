@@ -555,8 +555,8 @@
         function setupPaymentEventListeners() {
             // Botão voltar
             document.getElementById('back-button').addEventListener('click', function() {
-                // Limpar dados do localStorage
-                localStorage.removeItem('campaignData');
+                // Manter dados do localStorage para preservar configuração da campanha
+                // localStorage.removeItem('campaignData'); // Removido para manter dados
                 // Voltar para a página anterior
                 window.location.href = 'campaign-config.html';
             });
