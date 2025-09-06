@@ -210,9 +210,9 @@ class CampaignCreator {
     }
 
     setupMobileHints() {
-        // Mostrar dica do Instagram apenas no mobile
+        // Mostrar dica apenas no mobile
         if (this.isMobile) {
-            const mobileHint = document.querySelector('.mobile-instagram-hint');
+            const mobileHint = document.querySelector('.mobile-hint');
             if (mobileHint) {
                 mobileHint.style.display = 'block';
             }
@@ -609,6 +609,14 @@ class CampaignCreator {
             // Atualizar mensagem de dica para Instagram
             inputHint.textContent = '💡 Você pode colar o link completo do Instagram que extrairemos o usuário automaticamente';
             
+            // Atualizar dica mobile para Instagram
+            if (this.isMobile) {
+                const mobileHintText = document.getElementById('mobile-hint-text');
+                if (mobileHintText) {
+                    mobileHintText.textContent = '💡 Você pode colar o link completo do Instagram que extrairemos o usuário automaticamente';
+                }
+            }
+            
             const cleanInput = this.removePhoneMask(profileInput);
             cleanInput.addEventListener('input', (e) => this.handleProfileInput(e));
             
@@ -627,6 +635,14 @@ class CampaignCreator {
             
             // Atualizar mensagem de dica para WhatsApp
             inputHint.textContent = '💡 Caso você tenha configurado seu WhatsApp para ocultar a foto do perfil, ela não será carregada aqui.';
+            
+            // Atualizar dica mobile para WhatsApp
+            if (this.isMobile) {
+                const mobileHintText = document.getElementById('mobile-hint-text');
+                if (mobileHintText) {
+                    mobileHintText.textContent = '💡 Caso você tenha configurado seu WhatsApp para ocultar a foto do perfil, ela não será carregada aqui.';
+                }
+            }
             
             profileInput.value = '';
             this.applyPhoneMask(profileInput);

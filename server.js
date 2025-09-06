@@ -1546,7 +1546,7 @@ async function createPixCharge(data) {
                     'Authorization': appId,
                     'Content-Type': 'application/json'
                 },
-                timeout: 30000 // 30 segundos
+                timeout: 60000 // 1 minuto
             }
         );
         

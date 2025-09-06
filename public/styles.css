@@ -2478,6 +2478,16 @@ div.file-preview-container .file-preview-image {
         gap: 0.8rem;
         flex-wrap: wrap;
     }
+    
+    /* Esconder mensagem inferior no mobile */
+    .input-hint.desktop-only {
+        display: none !important;
+    }
+    
+    /* Mostrar apenas dica mobile */
+    .mobile-hint {
+        display: block !important;
+    }
 }
 
 /* Estilos para resumo do perfil */
