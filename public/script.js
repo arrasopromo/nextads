@@ -26,6 +26,7 @@ class CampaignCreator {
         this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
         this.init();
+        this.setupMobileHints();
     }
 
     async init() {
@@ -64,8 +65,7 @@ class CampaignCreator {
             this.populateEstados();
             
         } catch (error) {
-            console.error('❌ Erro ao carregar municípios:', error.message);
-            console.error('📋 Stack trace:', error.stack);
+            // Erro silenciado - carregamento de municípios falhou
             this.municipios = [];
             this.estados = [];
         }
@@ -206,6 +206,16 @@ class CampaignCreator {
                 e.stopPropagation();
                 this.handleConfirmClick(e);
             });
+        }
+    }
+
+    setupMobileHints() {
+        // Mostrar dica do Instagram apenas no mobile
+        if (this.isMobile) {
+            const mobileHint = document.querySelector('.mobile-instagram-hint');
+            if (mobileHint) {
+                mobileHint.style.display = 'block';
+            }
         }
     }
 
@@ -902,86 +912,9 @@ class CampaignCreator {
     }
 
     addValidationConfirmation() {
-        console.log('🔍 [DEBUG] addValidationConfirmation chamada');
-        
-        // Verificar se é dispositivo mobile
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-                        (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform));
-        
-        console.log('📱 [DEBUG] É mobile?', isMobile);
-        console.log('🔍 [DEBUG] User Agent:', navigator.userAgent);
-        console.log('🔍 [DEBUG] maxTouchPoints:', navigator.maxTouchPoints);
-        
-        if (isMobile) {
-            // Encontrar o botão de validação
-            const validateBtn = document.getElementById('validate-profile');
-            console.log('🔍 [DEBUG] Botão de validação encontrado:', validateBtn);
-            
-            if (validateBtn) {
-                // Remover mensagem anterior se existir
-                const existingConfirmation = document.querySelector('.validation-confirmation');
-                if (existingConfirmation) {
-                    console.log('🗑️ [DEBUG] Removendo mensagem anterior');
-                    existingConfirmation.remove();
-                }
-                
-                // Criar elemento de confirmação
-                const confirmationElement = document.createElement('div');
-                confirmationElement.className = 'validation-confirmation';
-                confirmationElement.innerHTML = `
-                    <span style="
-                        display: inline-flex;
-                        align-items: center;
-                        background: #28a745;
-                        color: white;
-                        padding: 8px 12px;
-                        border-radius: 20px;
-                        font-size: 14px;
-                        font-weight: 600;
-                        margin-left: 10px;
-                        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
-                        animation: slideInRight 0.3s ease-out;
-                    ">
-                        <i class="fas fa-check-circle" style="margin-right: 6px;"></i>
-                        Perfil validado
-                    </span>
-                `;
-                
-                console.log('✅ [DEBUG] Elemento de confirmação criado:', confirmationElement);
-                
-                // Adicionar CSS da animação se não existir
-                if (!document.querySelector('#validation-animation-styles')) {
-                    const styleElement = document.createElement('style');
-                    styleElement.id = 'validation-animation-styles';
-                    styleElement.textContent = `
-                        @keyframes slideInRight {
-                            from {
-                                opacity: 0;
-                                transform: translateX(20px);
-                            }
-                            to {
-                                opacity: 1;
-                                transform: translateX(0);
-                            }
-                        }
-                    `;
-                    document.head.appendChild(styleElement);
-                    console.log('🎨 [DEBUG] CSS de animação adicionado');
-                }
-                
-                // Inserir após o botão de validação
-                validateBtn.parentNode.insertBefore(confirmationElement, validateBtn.nextSibling);
-                console.log('🎯 [DEBUG] Mensagem inserida no DOM');
-                
-                // Verificar se o elemento foi realmente inserido
-                const insertedElement = document.querySelector('.validation-confirmation');
-                console.log('🔍 [DEBUG] Elemento inserido encontrado no DOM:', insertedElement);
-            } else {
-                console.log('❌ [DEBUG] Botão de validação não encontrado');
-            }
-        } else {
-            console.log('💻 [DEBUG] Não é mobile, mensagem não será exibida');
-        }
+        // Função removida - não exibe mais mensagem de validação no mobile
+        console.log('🔍 [DEBUG] addValidationConfirmation chamada - mensagem removida para mobile');
+        return;
     }
     
     removeValidationConfirmation() {
