@@ -887,7 +887,72 @@ class CampaignCreator {
         document.getElementById('followers-count').textContent = `${this.formatNumber(user.follower_count)} seguidores`;
         document.getElementById('following-count').textContent = `${this.formatNumber(user.following_count)} seguindo`;
         
+        // Adicionar mensagem de confirmação visual no mobile
+        this.addValidationConfirmation();
+        
         // Perfil configurado
+    }
+
+    addValidationConfirmation() {
+        // Verificar se é dispositivo mobile
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                        (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform));
+        
+        if (isMobile) {
+            // Encontrar o botão de validação
+            const validateBtn = document.getElementById('validate-profile');
+            if (validateBtn) {
+                // Remover mensagem anterior se existir
+                const existingConfirmation = document.querySelector('.validation-confirmation');
+                if (existingConfirmation) {
+                    existingConfirmation.remove();
+                }
+                
+                // Criar elemento de confirmação
+                const confirmationElement = document.createElement('div');
+                confirmationElement.className = 'validation-confirmation';
+                confirmationElement.innerHTML = `
+                    <span style="
+                        display: inline-flex;
+                        align-items: center;
+                        background: #28a745;
+                        color: white;
+                        padding: 8px 12px;
+                        border-radius: 20px;
+                        font-size: 14px;
+                        font-weight: 600;
+                        margin-left: 10px;
+                        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+                        animation: slideInRight 0.3s ease-out;
+                    ">
+                        <i class="fas fa-check-circle" style="margin-right: 6px;"></i>
+                        OK
+                    </span>
+                `;
+                
+                // Adicionar CSS da animação se não existir
+                if (!document.querySelector('#validation-animation-styles')) {
+                    const styleElement = document.createElement('style');
+                    styleElement.id = 'validation-animation-styles';
+                    styleElement.textContent = `
+                        @keyframes slideInRight {
+                            from {
+                                opacity: 0;
+                                transform: translateX(20px);
+                            }
+                            to {
+                                opacity: 1;
+                                transform: translateX(0);
+                            }
+                        }
+                    `;
+                    document.head.appendChild(styleElement);
+                }
+                
+                // Inserir após o botão de validação
+                validateBtn.parentNode.insertBefore(confirmationElement, validateBtn.nextSibling);
+            }
+        }
     }
 
     displayWhatsAppProfileInfo(profileData) {
@@ -1550,13 +1615,15 @@ class CampaignCreator {
         // Nome do arquivo e extensão obtidos
         
         // Extensões de imagem suportadas
-        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'heic', 'webp', 'dng'];
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'heic', 'heif', 'webp', 'dng'];
         // Extensões de vídeo suportadas
         const videoExtensions = ['mp4', 'mov', 'avi', 'webm', '3gp', 'mkv', 'ts'];
         
         // Verificar se é HEIC original (não convertido)
-        const isHEIC = (fileExtension === 'heic' || fileExtension === 'HEIC') && !file.type.startsWith('image/jpeg');
-        const isImage = file.type.startsWith('image/') || imageExtensions.includes(fileExtension);
+        const isHEIC = (fileExtension === 'heic' || fileExtension === 'heif' || fileExtension === 'HEIC' || fileExtension === 'HEIF') && 
+                       !file.type.startsWith('image/jpeg');
+        const isImage = file.type.startsWith('image/') || imageExtensions.includes(fileExtension) || 
+                       file.type === 'image/heic' || file.type === 'image/heif' || file.type === 'image/heic-sequence';
         const isVideo = file.type.startsWith('video/') || videoExtensions.includes(fileExtension);
         
         // Verificações de tipo de arquivo
@@ -1695,13 +1762,14 @@ class CampaignCreator {
         const fileExtension = fileName.split('.').pop();
         
         // Extensões de imagem suportadas
-        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'heic', 'webp', 'dng'];
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'heic', 'heif', 'webp', 'dng'];
         // Extensões de vídeo suportadas
         const videoExtensions = ['mp4', 'mov', 'avi', 'webm', '3gp', 'mkv', 'ts'];
         
         // Arquivos HEIC podem não ter MIME type correto, forçar detecção por extensão
-        const isHEIC = fileExtension === 'heic' || fileExtension === 'HEIC';
-        const isImage = file.type.startsWith('image/') || imageExtensions.includes(fileExtension) || isHEIC;
+        const isHEIC = fileExtension === 'heic' || fileExtension === 'heif' || fileExtension === 'HEIC' || fileExtension === 'HEIF';
+        const isImage = file.type.startsWith('image/') || imageExtensions.includes(fileExtension) || isHEIC || 
+                       file.type === 'image/heic' || file.type === 'image/heif' || file.type === 'image/heic-sequence';
         const isVideo = file.type.startsWith('video/') || videoExtensions.includes(fileExtension);
         
 
