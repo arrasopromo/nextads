@@ -215,6 +215,11 @@ class CampaignCreator {
         const section = card.closest('.form-section');
         const sectionTitle = section.querySelector('h2').textContent;
         
+        // Remover mensagem de confirmação ao selecionar card do site
+        if (option === 'site') {
+            this.removeValidationConfirmation();
+        }
+        
         // Verificar se é mobile e implementar duplo clique
         if (this.isMobile) {
             let clickStateKey = null;
@@ -369,6 +374,9 @@ class CampaignCreator {
     handleSocialSelection(e) {
         const btn = e.currentTarget;
         const social = btn.dataset.social;
+        
+        // Remover mensagem de confirmação ao trocar de rede social
+        this.removeValidationConfirmation();
         
         document.querySelectorAll('.social-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -926,7 +934,7 @@ class CampaignCreator {
                         animation: slideInRight 0.3s ease-out;
                     ">
                         <i class="fas fa-check-circle" style="margin-right: 6px;"></i>
-                        OK
+                        Perfil validado
                     </span>
                 `;
                 
@@ -952,6 +960,13 @@ class CampaignCreator {
                 // Inserir após o botão de validação
                 validateBtn.parentNode.insertBefore(confirmationElement, validateBtn.nextSibling);
             }
+        }
+    }
+    
+    removeValidationConfirmation() {
+        const existingConfirmation = document.querySelector('.validation-confirmation');
+        if (existingConfirmation) {
+            existingConfirmation.remove();
         }
     }
 
