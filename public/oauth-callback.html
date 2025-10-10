@@ -155,12 +155,15 @@
                     return;
                 }
                 
-                // Estratégia 4: Fallback - redirecionar para integrações
-                console.log('✅ Redirecionando para integrações...');
-                const redirectUrl = status === 'success' 
-                    ? 'integracoes.html?oauth_success=true'
-                    : 'integracoes.html?oauth_error=true';
-                window.location.href = redirectUrl;
+                // Estratégia 4: Fallback - tentar fechar sem redirecionamento
+                console.log('✅ Tentando fechar sem redirecionamento...');
+                try {
+                    window.close();
+                } catch (e) {
+                    console.log('❌ Não foi possível fechar automaticamente');
+                    // Apenas mostrar mensagem para o usuário fechar manualmente
+                    document.querySelector('.processing-text').textContent = 'Você pode fechar esta janela';
+                }
                 
             } catch (e) {
                 console.log('❌ Erro ao fechar callback:', e);

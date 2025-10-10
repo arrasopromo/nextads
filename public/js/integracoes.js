@@ -829,35 +829,44 @@ class IntegrationManager {
 
     // Verificar se houve retorno do OAuth
     checkOAuthReturn() {
-        // Verificar se já foi processado via URL para evitar execução dupla
+        // Verificar se já foi processado para evitar execução dupla
         if (this.oauthProcessed) {
-            console.log('⚠️ OAuth já foi processado via URL, ignorando localStorage');
+            console.log('⚠️ OAuth já foi processado, ignorando verificação');
             return;
         }
         
         const oauthCompleted = localStorage.getItem('facebook_oauth_completed');
-        const facebookConnected = localStorage.getItem('facebook_connected');
         
-        if (oauthCompleted === 'true' || facebookConnected === 'true') {
+        // Apenas processar se oauth_completed estiver definido como 'true'
+        // Não processar baseado apenas em facebook_connected para evitar loops
+        if (oauthCompleted === 'true') {
             console.log('✅ Detectado retorno do OAuth via localStorage');
-            this.oauthProcessed = true; // Marcar como processado
             this.handleOAuthReturn();
         }
     }
 
     // Lidar com retorno do OAuth
     handleOAuthReturn() {
+        // Verificar se já está processando para evitar execução dupla
+        if (this.oauthProcessed) {
+            console.log('⚠️ OAuth já está sendo processado, ignorando chamada duplicada');
+            return;
+        }
+        
         console.log('🔄 Processando retorno do OAuth...');
+        this.oauthProcessed = true; // Marcar imediatamente como processado
         
         // Limpar flags temporários
         localStorage.removeItem('facebook_oauth_completed');
-        localStorage.removeItem('facebook_connected');
+        
+        // Marcar como conectado permanentemente
+        localStorage.setItem('facebook_connected', 'true');
         
         // Recarregar conexões apenas uma vez com delay otimizado
         setTimeout(() => {
             console.log('🔄 Recarregando conexões após OAuth...');
             this.loadStoredConnections();
-        }, 1000);
+        }, 500);
         
         // Mostrar notificação de sucesso
         this.showSuccess('Facebook conectado com sucesso!');
@@ -866,7 +875,7 @@ class IntegrationManager {
         setTimeout(() => {
             this.oauthProcessed = false;
             console.log('🔄 Flag oauthProcessed resetada para futuras conexões');
-        }, 3000);
+        }, 5000);
     }
 
     // Conectar Instagram
