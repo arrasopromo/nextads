@@ -274,6 +274,9 @@ class IntegrationManager {
             return;
         }
         
+        // Declarar popup fora do try para ter escopo correto
+        let popup;
+        
         try {
             // Abrir popup diretamente para o endpoint do servidor com token na URL
             const serverEndpoint = this.apiConfig.getOAuthServerUrl();
@@ -283,7 +286,7 @@ class IntegrationManager {
             // Criar URL com token como parâmetro para autenticação
             const oauthUrl = `${serverEndpoint}?token=${encodeURIComponent(token)}`;
             
-            const popup = window.open(
+            popup = window.open(
                 oauthUrl,
                 'facebook-oauth',
                 'width=600,height=700,scrollbars=yes,resizable=yes,status=yes,location=yes,toolbar=no,menubar=no'
@@ -793,6 +796,15 @@ class IntegrationManager {
                      console.log(`📱 Conta Instagram ${index + 1}:`, account);
                  });
              }
+
+             // Atualizar UI das páginas do Facebook
+             if (userData.pages) {
+                 console.log('📄 Páginas do Facebook encontradas:', userData.pages);
+                 this.updatePagesUI(userData.pages);
+             } else {
+                 console.log('❌ Nenhuma página encontrada em userData.pages');
+                 this.updatePagesUI([]);
+             }
              
          } else {
             // Usuário desconectado - ocultar informações e mostrar botão de conectar
@@ -888,6 +900,68 @@ class IntegrationManager {
                     </div>
                 </div>
             `).join('');
+            }
+        }
+    }
+
+    // Atualizar UI das Páginas do Facebook
+    updatePagesUI(pages) {
+        const pagesSection = document.getElementById('facebook-pages-section');
+        const pagesList = document.getElementById('facebook-pages-list');
+        const pagesEmpty = document.getElementById('facebook-pages-empty');
+
+        console.log('🔍 DEBUG - updatePagesUI chamada com:', {
+            pages: pages,
+            pagesLength: pages ? pages.length : 0,
+            pagesSection: !!pagesSection,
+            pagesList: !!pagesList,
+            pagesEmpty: !!pagesEmpty
+        });
+
+        // Verificar se os elementos existem
+        if (!pagesSection) {
+            console.warn('⚠️ Elemento facebook-pages-section não encontrado');
+            return;
+        }
+
+        // Se não há páginas, esconder a seção
+        if (!pages || pages.length === 0) {
+            pagesSection.style.display = 'none';
+            console.log('❌ Nenhuma página encontrada, escondendo seção');
+            return;
+        }
+
+        // Mostrar seção
+        pagesSection.style.display = 'block';
+        console.log('✅ Seção de páginas exibida');
+
+        if (pages.length === 0) {
+            if (pagesList) pagesList.style.display = 'none';
+            if (pagesEmpty) pagesEmpty.style.display = 'block';
+        } else {
+            if (pagesList) pagesList.style.display = 'block';
+            if (pagesEmpty) pagesEmpty.style.display = 'none';
+
+            // Renderizar Páginas
+            if (pagesList) {
+                pagesList.innerHTML = pages.map(page => `
+                    <div class="page-item" data-page-id="${page.id}" style="display: flex; align-items: center; padding: 12px; margin-bottom: 8px; background: white; border-radius: 6px; border: 1px solid #e9ecef; transition: all 0.2s ease;">
+                        <img src="${page.picture?.data?.url || 'https://via.placeholder.com/40x40/1877F2/white?text=FB'}" 
+                             alt="${page.name}" 
+                             style="width: 40px; height: 40px; border-radius: 50%; margin-right: 12px; border: 2px solid #e9ecef;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: #495057; margin-bottom: 2px;">${page.name}</div>
+                            <div style="font-size: 12px; color: #6c757d;">${page.category || 'Página do Facebook'}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="background: #1877f2; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">
+                                <i class="fas fa-flag" style="margin-right: 4px;"></i>
+                                CONECTADA
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                console.log(`✅ ${pages.length} páginas renderizadas`);
             }
         }
     }
