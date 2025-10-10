@@ -559,15 +559,71 @@ app.get('/auth/facebook/callback', async (req, res) => {
         
         const adAccounts = adAccountsResponse.data.data || [];
         
-        // Obter páginas do Facebook
-        const pagesResponse = await axios.get(`https://graph.facebook.com/v21.0/me/accounts`, {
+        // Obter páginas do Facebook - Implementação completa para múltiplos Business Managers
+        console.log('🔍 Buscando páginas do Facebook...');
+        
+        // Passo 1: Buscar páginas padrão (/me/accounts)
+        console.log('📄 Buscando páginas diretas da conta...');
+        const mePages = await axios.get(`https://graph.facebook.com/v21.0/me/accounts`, {
             params: {
                 access_token: longLivedToken,
-                fields: 'id,name,access_token,instagram_business_account'
+                fields: 'id,name,access_token,instagram_business_account,category,picture'
             }
         });
         
-        const pages = pagesResponse.data.data || [];
+        let allPages = [...(mePages.data.data || [])];
+        console.log(`✅ Encontradas ${allPages.length} páginas diretas`);
+        
+        // Passo 2: Buscar páginas via Business Managers (/me/businesses)
+        try {
+            console.log('🏢 Buscando Business Managers...');
+            const businessList = await axios.get(`https://graph.facebook.com/v21.0/me/businesses`, {
+                params: {
+                    access_token: longLivedToken,
+                    fields: 'id,name'
+                }
+            });
+            
+            const businesses = businessList.data.data || [];
+            console.log(`✅ Encontrados ${businesses.length} Business Managers`);
+            
+            // Passo 3: Para cada Business Manager, buscar suas páginas
+            for (const biz of businesses) {
+                try {
+                    console.log(`🔍 Buscando páginas do Business Manager: ${biz.name} (${biz.id})`);
+                    const bizPages = await axios.get(`https://graph.facebook.com/v21.0/${biz.id}/owned_pages`, {
+                        params: {
+                            access_token: longLivedToken,
+                            fields: 'id,name,access_token,instagram_business_account,category,picture'
+                        }
+                    });
+                    
+                    const bizPagesData = bizPages.data.data || [];
+                    console.log(`✅ Encontradas ${bizPagesData.length} páginas no BM ${biz.name}`);
+                    allPages = [...allPages, ...bizPagesData];
+                } catch (bizError) {
+                    console.warn(`⚠️ Erro ao buscar páginas do Business Manager ${biz.name}:`, bizError.response?.data || bizError.message);
+                }
+            }
+        } catch (businessError) {
+            console.warn('⚠️ Erro ao buscar Business Managers (pode não ter permissão business_management):', businessError.response?.data || businessError.message);
+        }
+        
+        // Passo 4: Remover páginas duplicadas por ID
+        const uniquePages = Object.values(
+            allPages.reduce((acc, page) => {
+                if (page && page.id) {
+                    // Se já existe uma página com este ID, manter a que tem mais dados
+                    if (!acc[page.id] || Object.keys(page).length > Object.keys(acc[page.id]).length) {
+                        acc[page.id] = page;
+                    }
+                }
+                return acc;
+            }, {})
+        );
+        
+        const pages = uniquePages;
+        console.log(`🎯 Total final: ${pages.length} páginas únicas encontradas`);
         
         console.log('✅ OAuth 2.0 Facebook concluído:', {
             user: userData.name,
@@ -734,16 +790,71 @@ app.get('/auth/callback', async (req, res) => {
         const adAccounts = adAccountsResponse.data.data || [];
         console.log(`✅ ${adAccounts.length} conta(s) de anúncios encontrada(s) (callback genérico)`);
         
-        // Obter páginas do Facebook
-        const pagesResponse = await axios.get('https://graph.facebook.com/me/accounts', {
+        // Obter páginas do Facebook - Implementação completa para múltiplos Business Managers
+        console.log('🔍 Buscando páginas do Facebook (callback genérico)...');
+        
+        // Passo 1: Buscar páginas padrão (/me/accounts)
+        console.log('📄 Buscando páginas diretas da conta (callback genérico)...');
+        const mePages = await axios.get('https://graph.facebook.com/me/accounts', {
             params: {
                 access_token: accessToken,
-                fields: 'id,name,access_token'
+                fields: 'id,name,access_token,instagram_business_account,category,picture'
             }
         });
         
-        const pages = pagesResponse.data.data || [];
-        console.log(`✅ ${pages.length} página(s) encontrada(s) (callback genérico)`);
+        let allPages = [...(mePages.data.data || [])];
+        console.log(`✅ Encontradas ${allPages.length} páginas diretas (callback genérico)`);
+        
+        // Passo 2: Buscar páginas via Business Managers (/me/businesses)
+        try {
+            console.log('🏢 Buscando Business Managers (callback genérico)...');
+            const businessList = await axios.get('https://graph.facebook.com/me/businesses', {
+                params: {
+                    access_token: accessToken,
+                    fields: 'id,name'
+                }
+            });
+            
+            const businesses = businessList.data.data || [];
+            console.log(`✅ Encontrados ${businesses.length} Business Managers (callback genérico)`);
+            
+            // Passo 3: Para cada Business Manager, buscar suas páginas
+            for (const biz of businesses) {
+                try {
+                    console.log(`🔍 Buscando páginas do Business Manager: ${biz.name} (${biz.id}) (callback genérico)`);
+                    const bizPages = await axios.get(`https://graph.facebook.com/v21.0/${biz.id}/owned_pages`, {
+                        params: {
+                            access_token: accessToken,
+                            fields: 'id,name,access_token,instagram_business_account,category,picture'
+                        }
+                    });
+                    
+                    const bizPagesData = bizPages.data.data || [];
+                    console.log(`✅ Encontradas ${bizPagesData.length} páginas no BM ${biz.name} (callback genérico)`);
+                    allPages = [...allPages, ...bizPagesData];
+                } catch (bizError) {
+                    console.warn(`⚠️ Erro ao buscar páginas do Business Manager ${biz.name} (callback genérico):`, bizError.response?.data || bizError.message);
+                }
+            }
+        } catch (businessError) {
+            console.warn('⚠️ Erro ao buscar Business Managers (callback genérico) (pode não ter permissão business_management):', businessError.response?.data || businessError.message);
+        }
+        
+        // Passo 4: Remover páginas duplicadas por ID
+        const uniquePages = Object.values(
+            allPages.reduce((acc, page) => {
+                if (page && page.id) {
+                    // Se já existe uma página com este ID, manter a que tem mais dados
+                    if (!acc[page.id] || Object.keys(page).length > Object.keys(acc[page.id]).length) {
+                        acc[page.id] = page;
+                    }
+                }
+                return acc;
+            }, {})
+        );
+        
+        const pages = uniquePages;
+        console.log(`🎯 Total final: ${pages.length} páginas únicas encontradas (callback genérico)`);
         
         // Gerar token de longo prazo (60 dias)
         console.log('🔄 Gerando token de longo prazo (callback genérico)...');
