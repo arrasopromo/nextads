@@ -397,6 +397,8 @@ class IntegrationManager {
 
     // Lidar com Facebook conectado
     handleFacebookConnected(authResponseOrData) {
+        console.log('🔄 handleFacebookConnected chamado com:', authResponseOrData);
+        
         // Se recebeu dados diretamente (do OAuth callback)
         if (authResponseOrData && typeof authResponseOrData === 'object' && authResponseOrData.user_id) {
             console.log('📊 Processando dados do Facebook do OAuth callback:', authResponseOrData);
@@ -411,8 +413,16 @@ class IntegrationManager {
                 instagramAccounts: [],
                 connectedAt: authResponseOrData.connected_at || new Date().toISOString(),
                 ad_accounts_count: authResponseOrData.ad_accounts_count,
-                pages_count: authResponseOrData.pages_count
+                pages_count: authResponseOrData.pages_count,
+                // Adicionar estrutura compatível com updateFacebookUI
+                user: {
+                    id: authResponseOrData.user_id,
+                    name: authResponseOrData.user_name,
+                    email: authResponseOrData.user_email
+                }
             };
+
+            console.log('✅ Dados estruturados para UI:', userData);
 
             // Salvar no localStorage
             localStorage.setItem('facebook_integration', JSON.stringify(userData));
@@ -420,8 +430,21 @@ class IntegrationManager {
             // Salvar no servidor se usuário estiver logado
             this.saveFacebookIntegrationToServer(authResponseOrData);
             
-            // Atualizar UI
+            // Atualizar UI - FORÇAR atualização
+            console.log('🎨 Atualizando UI do Facebook...');
             this.updateFacebookUI(userData, true);
+            
+            // Forçar múltiplas tentativas de atualização da UI
+            setTimeout(() => {
+                console.log('🎨 Segunda tentativa de atualização da UI...');
+                this.updateFacebookUI(userData, true);
+            }, 500);
+            
+            setTimeout(() => {
+                console.log('🎨 Terceira tentativa de atualização da UI...');
+                this.updateFacebookUI(userData, true);
+            }, 1000);
+            
             this.showSuccess(authResponseOrData.message || 'Facebook conectado com sucesso!');
             
             return;
@@ -571,20 +594,32 @@ class IntegrationManager {
             userDataKeys: userData ? Object.keys(userData) : []
         });
         
+        // Aguardar um pouco para garantir que o DOM esteja pronto
+        setTimeout(() => {
+            this.doUpdateFacebookUI(userData, isConnected);
+        }, 100);
+    }
+    
+    // Método interno para atualizar UI do Facebook
+    doUpdateFacebookUI(userData, isConnected) {
+        console.log('🎨 doUpdateFacebookUI executando...');
+        
         // Usar os IDs corretos que existem no HTML
         const connectBtn = document.getElementById('facebook-oauth-btn');
         const disconnectBtn = document.getElementById('facebook-disconnect-btn');
         const controlButtons = document.getElementById('facebook-control-buttons');
         const loginContainer = document.getElementById('facebook-login-button-container');
+        const connectedProfile = document.getElementById('facebook-connected-profile');
 
         console.log('🔍 DEBUG - Elementos DOM encontrados:', {
             connectBtn: !!connectBtn,
             disconnectBtn: !!disconnectBtn,
             controlButtons: !!controlButtons,
-            loginContainer: !!loginContainer
+            loginContainer: !!loginContainer,
+            connectedProfile: !!connectedProfile
         });
 
-        if (isConnected) {
+        if (isConnected && userData) {
             console.log('✅ Facebook conectado - atualizando UI...');
             
             // Esconder botão de conectar
@@ -620,8 +655,17 @@ class IntegrationManager {
             const pagesCountElement = document.getElementById('facebook-pages-count');
             const adAccountsCountElement = document.getElementById('facebook-ad-accounts-count');
             
+            console.log('🔍 DEBUG - Elementos de perfil encontrados:', {
+                avatarElement: !!avatarElement,
+                nameElement: !!nameElement,
+                typeElement: !!typeElement,
+                followersElement: !!followersElement,
+                pagesCountElement: !!pagesCountElement,
+                adAccountsCountElement: !!adAccountsCountElement
+            });
+            
             // Extrair dados do usuário - melhorar a extração para trabalhar com diferentes estruturas
-            let userInfo, userName, userEmail, userId;
+            let userInfo, userName, userEmail, userId, userPicture, pagesCount, adAccountsCount;
             
             // Verificar se os dados estão em userData.user (estrutura do servidor)
             if (userData.user && userData.user.name) {
@@ -629,43 +673,54 @@ class IntegrationManager {
                 userName = userData.user.name;
                 userEmail = userData.user.email;
                 userId = userData.user.id;
-                console.log('🔍 DEBUG - Dados extraídos de userData.user:', { userName, userEmail, userId });
+                userPicture = userData.user.picture;
+                pagesCount = userData.pages_count || userData.user.pages_count;
+                adAccountsCount = userData.ad_accounts_count || userData.user.ad_accounts_count;
+                console.log('🔍 DEBUG - Dados extraídos de userData.user:', { userName, userEmail, userId, pagesCount, adAccountsCount });
             }
             // Fallback para dados diretos em userData (estrutura do localStorage)
-            else if (userData.name) {
+            else if (userData.name || userData.user_name) {
                 userInfo = userData;
-                userName = userData.name;
-                userEmail = userData.email;
-                userId = userData.id;
-                console.log('🔍 DEBUG - Dados extraídos diretamente de userData:', { userName, userEmail, userId });
-            }
-            // Fallback adicional para outras possíveis estruturas
-            else {
-                userInfo = userData;
-                userName = userData.user_name || userData.userName || userData.name;
-                userEmail = userData.user_email || userData.userEmail || userData.email;
-                userId = userData.user_id || userData.userId || userData.id;
-                console.log('🔍 DEBUG - Dados extraídos com fallback:', { userName, userEmail, userId });
+                userName = userData.name || userData.user_name;
+                userEmail = userData.email || userData.user_email;
+                userId = userData.id || userData.user_id;
+                userPicture = userData.picture || userData.user_picture;
+                pagesCount = userData.pages_count;
+                adAccountsCount = userData.ad_accounts_count;
+                console.log('🔍 DEBUG - Dados extraídos diretamente de userData:', { userName, userEmail, userId, pagesCount, adAccountsCount });
             }
             
             console.log('🔍 DEBUG - Dados finais do usuário extraídos:', {
                 userName: userName,
                 userEmail: userEmail,
                 userId: userId,
+                userPicture: userPicture,
+                pagesCount: pagesCount,
+                adAccountsCount: adAccountsCount,
                 hasUserInfo: !!userInfo,
-                userDataStructure: Object.keys(userData),
-                userInfoStructure: userInfo ? Object.keys(userInfo) : null
+                userDataStructure: Object.keys(userData)
             });
             
-            if (avatarElement && userData.picture) {
-                avatarElement.src = userData.picture;
-                avatarElement.style.display = 'block';
+            // Atualizar avatar
+            if (avatarElement) {
+                if (userPicture) {
+                    avatarElement.src = userPicture;
+                    avatarElement.style.display = 'block';
+                    console.log('✅ Avatar atualizado:', userPicture);
+                } else {
+                    // Usar avatar padrão se não tiver foto
+                    avatarElement.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMxODc3RjIiLz4KPHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSI4IiB5PSI4Ij4KPHBhdGggZD0iTTEyIDEyQzE0LjIwOTEgMTIgMTYgMTAuMjA5MSAxNiA4QzE2IDUuNzkwODYgMTQuMjA5MSA0IDEyIDRDOS43OTA4NiA0IDggNS43OTA4NiA4IDhDOCAxMC4yMDkxIDkuNzkwODYgMTIgMTIgMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTIgMTRDOC42ODYyOSAxNCA2IDE2LjY4NjMgNiAyMFYyMkgxOFYyMEMxOCAxNi42ODYzIDE1LjMxMzcgMTQgMTIgMTRaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9zdmc+';
+                    avatarElement.style.display = 'block';
+                    console.log('✅ Avatar padrão definido');
+                }
             }
             
+            // Atualizar nome
             if (nameElement && userName) {
                 // Extrair apenas o primeiro nome (nome de usuário)
                 const firstName = userName.split(' ')[0];
                 nameElement.textContent = firstName;
+                nameElement.style.display = 'block';
                 console.log('✅ Nome do usuário atualizado:', firstName);
             } else {
                 console.log('❌ Não foi possível atualizar o nome do usuário:', {
@@ -675,46 +730,58 @@ class IntegrationManager {
                 });
             }
 
+            // Atualizar tipo de conta
             if (typeElement) {
                 const accountType = userData.accountType || 'Conta Pessoal';
                 typeElement.textContent = accountType;
+                typeElement.style.display = 'block';
                 console.log('✅ Tipo de conta atualizado:', accountType);
             }
             
+            // Atualizar seguidores
             if (followersElement) {
                 // Mostrar informação de seguidores se disponível
                 const followers = userData.followers || Math.floor(Math.random() * 10000) + 1000;
                 followersElement.textContent = `${this.formatNumber(followers)} seguidores`;
+                followersElement.style.display = 'block';
+                console.log('✅ Seguidores atualizados:', followers);
             }
             
-            // Atualizar contadores de páginas e contas de anúncios
-             if (pagesCountElement) {
-                 let pagesCount = 0;
-                 
-                 // Verificar diferentes estruturas de dados para páginas
-                 if (userData.pages && userData.pages.length) {
-                     pagesCount = userData.pages.length;
-                 } else if (userData.pages_count) {
-                     pagesCount = userData.pages_count;
-                 }
-                 
-                 pagesCountElement.innerHTML = `<i class="fas fa-flag" style="margin-right: 6px; color: #1877f2;"></i>${pagesCount} página(s) conectada(s)`;
-                 console.log('✅ Contador de páginas atualizado:', pagesCount);
-             }
-             
-             if (adAccountsCountElement) {
-                 let adAccountsCount = 0;
-                 
-                 // Verificar diferentes estruturas de dados para contas de anúncios
-                 if (userData.adAccounts && userData.adAccounts.length) {
-                     adAccountsCount = userData.adAccounts.length;
-                 } else if (userData.ad_accounts_count) {
-                     adAccountsCount = userData.ad_accounts_count;
-                 }
-                 
-                 adAccountsCountElement.innerHTML = `<i class="fas fa-bullhorn" style="margin-right: 6px; color: #1877f2;"></i>${adAccountsCount} conta(s) de anúncios`;
-                 console.log('✅ Contador de contas de anúncios atualizado:', adAccountsCount);
-             }
+            // Atualizar contadores de páginas
+            if (pagesCountElement) {
+                let finalPagesCount = 0;
+                
+                // Verificar diferentes estruturas de dados para páginas
+                if (pagesCount !== undefined && pagesCount !== null) {
+                    finalPagesCount = pagesCount;
+                } else if (userData.pages && userData.pages.length) {
+                    finalPagesCount = userData.pages.length;
+                } else if (userData.pages_count !== undefined) {
+                    finalPagesCount = userData.pages_count;
+                }
+                
+                pagesCountElement.innerHTML = `<i class="fas fa-flag" style="margin-right: 6px; color: #1877f2;"></i>${finalPagesCount} página(s) conectada(s)`;
+                pagesCountElement.style.display = 'block';
+                console.log('✅ Contador de páginas atualizado:', finalPagesCount);
+            }
+            
+            // Atualizar contadores de contas de anúncios
+            if (adAccountsCountElement) {
+                let finalAdAccountsCount = 0;
+                
+                // Verificar diferentes estruturas de dados para contas de anúncios
+                if (adAccountsCount !== undefined && adAccountsCount !== null) {
+                    finalAdAccountsCount = adAccountsCount;
+                } else if (userData.adAccounts && userData.adAccounts.length) {
+                    finalAdAccountsCount = userData.adAccounts.length;
+                } else if (userData.ad_accounts_count !== undefined) {
+                    finalAdAccountsCount = userData.ad_accounts_count;
+                }
+                
+                adAccountsCountElement.innerHTML = `<i class="fas fa-bullhorn" style="margin-right: 6px; color: #1877f2;"></i>${finalAdAccountsCount} conta(s) de anúncios`;
+                adAccountsCountElement.style.display = 'block';
+                console.log('✅ Contador de contas de anúncios atualizado:', finalAdAccountsCount);
+            }
             
             // Adicionar informações detalhadas se disponível
              if (userData.instagram_accounts && userData.instagram_accounts.length > 0) {
@@ -728,26 +795,41 @@ class IntegrationManager {
              }
              
          } else {
-             // Usuário desconectado - ocultar informações e mostrar botão de conectar
-             console.log('❌ Usuário Facebook desconectado');
-             
-             if (connectedProfileElement) {
-                 connectedProfileElement.style.display = 'none';
-                 console.log('🔒 Perfil conectado ocultado');
-             }
-             
-             if (controlButtonsElement) {
-                 controlButtonsElement.style.display = 'none';
-                 console.log('🔒 Botões de controle ocultados');
-             }
-             
-             if (loginContainerElement) {
-                 loginContainerElement.style.display = 'block';
-                 console.log('🔓 Container de login exibido');
-             }
-         }
-         
-         console.log('✅ updateFacebookUI concluída');
+            // Usuário desconectado - ocultar informações e mostrar botão de conectar
+            console.log('❌ Usuário Facebook desconectado');
+            
+            if (connectedProfile) {
+                connectedProfile.style.display = 'none';
+                console.log('🔒 Perfil conectado ocultado');
+            }
+            
+            if (controlButtons) {
+                controlButtons.style.display = 'none';
+                console.log('🔒 Botões de controle ocultados');
+            }
+            
+            if (loginContainer) {
+                loginContainer.style.display = 'block';
+                console.log('🔓 Container de login exibido');
+            }
+            
+            if (connectBtn) {
+                connectBtn.style.display = 'block';
+                console.log('🔓 Botão de conectar exibido');
+            }
+        }
+        
+        // Verificação final para garantir que a UI foi atualizada corretamente
+        setTimeout(() => {
+            console.log('🔍 Verificação final da UI:', {
+                connectedProfileVisible: connectedProfile ? connectedProfile.style.display !== 'none' : false,
+                loginContainerVisible: loginContainer ? loginContainer.style.display !== 'none' : false,
+                connectBtnVisible: connectBtn ? connectBtn.style.display !== 'none' : false,
+                controlButtonsVisible: controlButtons ? controlButtons.style.display !== 'none' : false
+            });
+        }, 200);
+        
+        console.log('✅ doUpdateFacebookUI concluída');
      }
 
     // Desconectar Facebook
