@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conectando com Facebook - NextAds</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        .processing-container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 400px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1877f2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .processing-text {
+            color: #666;
+            font-size: 16px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="processing-container">
+        <div class="spinner"></div>
+        <p class="processing-text">Processando...</p>
+    </div>
+
+    <script>
+        // Processar callback OAuth silenciosamente
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔄 OAuth callback iniciado...');
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+            const error = urlParams.get('error');
+            
+            // Extrair dados dinâmicos do usuário
+            let userName = urlParams.get('user_name');
+            const message = urlParams.get('message');
+            const adAccountsCount = urlParams.get('ad_accounts_count');
+            const pagesCount = urlParams.get('pages_count');
+            
+            // Se não tiver user_name nos parâmetros, extrair da mensagem
+            if (!userName && message) {
+                const userMatch = message.match(/Usuário:\s*([^,]+)/);
+                if (userMatch) {
+                    userName = userMatch[1].trim();
+                    console.log('📝 Nome extraído da mensagem:', userName);
+                }
+            }
+            
+            // Verificar se estamos em um popup
+            const isPopup = window.opener && window.opener !== window;
+            
+            // Processar imediatamente sem mostrar interface
+            if (success === 'true') {
+                console.log('✅ OAuth bem-sucedido, processando...');
+                
+                // Marcar como conectado no localStorage
+                localStorage.setItem('facebook_connected', 'true');
+                localStorage.setItem('facebook_oauth_completed', Date.now().toString());
+                
+                // Notificar a janela pai se estivermos em popup
+                if (isPopup && window.opener) {
+                    try {
+                        const successMessage = {
+                            type: 'FACEBOOK_OAUTH_SUCCESS',
+                            data: { 
+                                success: true,
+                                timestamp: Date.now(),
+                                reload: true,
+                                user_name: userName,
+                                ad_accounts_count: adAccountsCount,
+                                pages_count: pagesCount
+                            }
+                        };
+                        
+                        // Enviar mensagem múltiplas vezes para garantir recebimento
+                        window.opener.postMessage(successMessage, '*');
+                        setTimeout(() => window.opener.postMessage(successMessage, '*'), 50);
+                        setTimeout(() => window.opener.postMessage(successMessage, '*'), 100);
+                        
+                        console.log('📤 Mensagem de sucesso enviada para janela pai');
+                    } catch (e) {
+                        console.warn('Erro ao notificar janela pai:', e);
+                    }
+                }
+                
+                // Fechar automaticamente após processamento
+                setTimeout(() => {
+                    console.log('🔄 Fechando callback automaticamente...');
+                    closeCallback();
+                }, 300); // Fechar rapidamente
+                
+            } else {
+                console.log('❌ OAuth com erro:', error);
+                
+                // Mesmo com erro, fechar automaticamente
+                setTimeout(() => {
+                    console.log('🔄 Fechando callback após erro...');
+                    closeCallback('error');
+                }, 500);
+            }
+        });
+        
+        function closeCallback(status = 'success') {
+            try {
+                // Estratégia 1: Fechar se for popup
+                if (window.opener) {
+                    console.log('✅ Fechando popup...');
+                    window.close();
+                    return;
+                }
+                
+                // Estratégia 2: Se for nova guia com histórico mínimo
+                if (window.history.length <= 1) {
+                    console.log('✅ Fechando nova guia...');
+                    window.close();
+                    return;
+                }
+                
+                // Estratégia 3: Voltar no histórico
+                if (window.history.length > 1) {
+                    console.log('✅ Voltando no histórico...');
+                    window.history.back();
+                    return;
+                }
+                
+                // Estratégia 4: Fallback - redirecionar para integrações
+                console.log('✅ Redirecionando para integrações...');
+                const redirectUrl = status === 'success' 
+                    ? 'integracoes.html?oauth_success=true'
+                    : 'integracoes.html?oauth_error=true';
+                window.location.href = redirectUrl;
+                
+            } catch (e) {
+                console.log('❌ Erro ao fechar callback:', e);
+                // Fallback final
+                window.location.href = 'integracoes.html?oauth_success=true';
+            }
+        }
+        
+        // Fallback de segurança - fechar após 3 segundos no máximo
+        setTimeout(() => {
+            console.log('⏰ Timeout de segurança - fechando callback...');
+            closeCallback();
+        }, 3000);
+    </script>
+</body>
+</html>

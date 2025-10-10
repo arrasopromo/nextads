@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://track.nextads.pro *.nextads.pro https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; media-src 'self' data: blob:; connect-src 'self' https: wss: ws: http://localhost:4000 https://nextads.pro https://api.instagram.com https://graph.instagram.com https://api.openai.com https://api.openpix.com.br https://api.woovi-sandbox.com https://api.woovi.com https://track.nextads.pro *.nextads.pro https://connect.facebook.net https://graph.facebook.com https://www.facebook.com; frame-src 'self' https://www.facebook.com; object-src 'none'; base-uri 'self';">
+    <meta name="facebook-domain-verification" content="19edbsmxgaqjmko3heo7par226ybjm" />
+    <title>Integrações - NextAds</title>
+    <link rel="stylesheet" href="./styles.css" type="text/css">
+    <link rel="stylesheet" href="css/integracoes.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Botão de Login Desktop -->
+        <div class="user-menu-container" id="user-menu-container">
+            <button class="login-btn-desktop" id="loginBtnDesktop">
+                <i class="fas fa-user"></i>
+                <span>Entrar</span>
+            </button>
+            <!-- Botão do Usuário Desktop -->
+            <button class="user-btn-desktop" id="userBtnDesktop" style="display: none;">
+                <i class="fas fa-user-circle"></i>
+                <span id="userNameBtnDesktop">Usuário</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="user-dropdown" id="userDropdownDesktop" style="display: none;">
+                <a href="#" id="minha-conta-link" data-action="account">
+                    <i class="fas fa-user-cog"></i>
+                    Minha conta
+                </a>
+                <a href="#" id="logout-link" data-action="logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Deslogar
+                </a>
+            </div>
+        </div>
+        
+        <!-- Botão de Login Mobile -->
+        <div class="user-menu-container-mobile" id="user-menu-container-mobile">
+            <button class="login-btn-mobile" id="loginBtnMobile">
+                <i class="fas fa-user"></i>
+                <span>Entrar</span>
+            </button>
+            <!-- Botão do Usuário Mobile -->
+            <button class="user-btn-mobile" id="userBtnMobile" style="display: none;">
+                <i class="fas fa-user-circle"></i>
+                <span id="userNameBtnMobile">Usuário</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="user-dropdown-mobile" id="userDropdownMobile" style="display: none;">
+                <a href="#" id="minha-conta-link-mobile" data-action="account">
+                    <i class="fas fa-user-cog"></i>
+                    Minha conta
+                </a>
+                <a href="#" id="logout-link-mobile" data-action="logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Deslogar
+                </a>
+            </div>
+        </div>
+        
+        <!-- Botão do menu mobile -->
+        <button class="mobile-menu-btn" id="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <!-- Overlay para fechar o menu -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html"><img src="logo.png" alt="Next Ads" class="sidebar-logo"></a>
+                <button class="close-menu-btn" id="close-menu-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html" class="nav-link"><i class="fas fa-plus"></i> Criar Campanha</a></li>
+                    <li><a href="minhas-campanhas.html" class="nav-link"><i class="fas fa-list"></i> Minhas Campanhas</a></li>
+                    <li><a href="integracoes.html" class="nav-link active"><i class="fas fa-plug"></i> Integrações</a></li>
+                    <li><a href="sobre.html" class="nav-link"><i class="fas fa-info-circle"></i> Sobre</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <!-- Loading State -->
+            <div id="loading-state" class="loading" style="display: block;">
+                <i class="fas fa-spinner"></i>
+                <p>Carregando integrações...</p>
+            </div>
+
+            <!-- Login Required State -->
+            <div id="login-required" class="login-required" style="display: none;">
+                <i class="fas fa-user-lock"></i>
+                <h2>Acesso Restrito</h2>
+                <p>Para acessar as integrações, você precisa estar logado em sua conta.</p>
+                <button class="login-btn-desktop" id="login-required-btn">
+                    <i class="fas fa-user"></i>
+                    <span>Entrar</span>
+                </button>
+            </div>
+
+            <!-- Integration Content -->
+            <div id="integration-content" style="display: none;">
+                <div class="page-header">
+                    <h1>Integrações</h1>
+                    <p>Conecte suas contas de redes sociais para criar campanhas</p>
+                </div>
+
+                <!-- Simplified Integration Section -->
+                <div class="simple-integration-section">
+                    <div class="simple-integration-card">
+                        <div class="integration-icons">
+                            <div class="icon facebook-icon">
+                                <i class="fab fa-facebook-f"></i>
+                            </div>
+                            <div class="icon-connector">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <div class="icon instagram-icon">
+                                <i class="fab fa-instagram"></i>
+                            </div>
+                        </div>
+                        <h2>Conectar Facebook + Instagram</h2>
+                        <p>Integre seus perfis Meta para veicular os anúncios diretamente deles</p>
+                    
+                    <!-- Botão oficial do Facebook Login -->
+                    <div class="facebook-login-section">
+                        <h3>Login com Facebook</h3>
+                        <p>Use o botão oficial do Facebook para uma conexão segura:</p>
+                        
+
+                        
+                        <div id="facebook-login-button-container" style="margin-bottom: 15px; min-height: 40px;">
+                            <button id="facebook-oauth-btn" 
+                                    onclick="connectFacebook()" 
+                                    style="background: #1877f2; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s ease; width: 280px; height: 40px; display: flex; align-items: center; justify-content: center; gap: 8px;"
+                                    onmouseover="this.style.background='#166fe5'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)'"
+                                    onmouseout="this.style.background='#1877f2'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'">
+                                <i class="fab fa-facebook-f" style="font-size: 16px;"></i>
+                                Conectar com Facebook
+                            </button>
+                        </div>
+                        <!-- Botão de fallback caso o oficial não carregue -->
+                        <button id="facebook-fallback-btn" style="display: none; background: #1877f2; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; margin-top: 10px; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s ease;" 
+                                onmouseover="this.style.background='#166fe5'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)'"
+                                onmouseout="this.style.background='#1877f2'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'"
+                                onclick="testFallbackConnection()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px; vertical-align: middle;">
+                                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                             </svg>
+                            Conectar com Facebook
+                        </button>
+                        
+                        <!-- Perfil Facebook Conectado -->
+                        <div id="facebook-connected-profile" style="display: none; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #1877f2;">
+                            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                <img id="facebook-avatar" src="" alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 12px; border: 2px solid #1877f2;">
+                                <div>
+                                    <div id="facebook-name" style="font-weight: 600; color: #333; font-size: 16px; margin-bottom: 2px;"></div>
+                                    <div id="facebook-type" style="color: #666; font-size: 13px; margin-bottom: 2px;"></div>
+                                    <div id="facebook-followers" style="color: #888; font-size: 12px;"></div>
+                                </div>
+                                <div style="margin-left: auto;">
+                                    <span style="background: #28a745; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600;">
+                                        <i class="fas fa-check-circle" style="margin-right: 4px;"></i>
+                                        CONECTADO
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Informações adicionais -->
+                            <div id="facebook-additional-info" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e9ecef;">
+                                <div id="facebook-pages-count" style="color: #666; font-size: 13px; margin-bottom: 4px;"></div>
+                                <div id="facebook-ad-accounts-count" style="color: #666; font-size: 13px;"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Botões de controle do Facebook -->
+                        <div id="facebook-control-buttons" style="display: none; margin-top: 15px; gap: 10px;">
+                            <button id="facebook-disconnect-btn" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s ease; margin-right: 10px;" 
+                                    onmouseover="this.style.background='#c82333'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)'"
+                                    onmouseout="this.style.background='#dc3545'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'"
+                                    onclick="disconnectFacebook()">
+                                <i class="fas fa-sign-out-alt" style="margin-right: 6px;"></i>
+                                Desconectar
+                            </button>
+                            
+                            <button id="facebook-switch-account-btn" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s ease;" 
+                                    onmouseover="this.style.background='#218838'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)'"
+                                    onmouseout="this.style.background='#28a745'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'"
+                                    onclick="switchFacebookAccount()">
+                                <i class="fas fa-user-friends" style="margin-right: 6px;"></i>
+                                Trocar Conta
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            </div>
+        </main>
+
+
+
+    <!-- OAuth 2.0 Facebook Integration -->
+    <script>
+      console.log('🔐 Sistema OAuth 2.0 do Facebook inicializado');
+    </script>
+
+    <!-- Scripts da aplicação -->
+    <script src="js/config.js"></script>
+    <script src="js/session-manager.js"></script>
+    <script src="js/api-keys.js"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/integracoes.js"></script>
+    
+    <!-- Scripts de autenticação -->
+    <script src="js/user-button-component.js"></script>
+    <script src="js/login-component.js"></script>
+    <script src="js/auth-sync.js"></script>
+    
+    <!-- Configuração do Facebook SDK -->
+    <script>
+      // Função para verificar status OAuth
+      function checkOAuthStatus() {
+        console.log('🔍 Verificando status OAuth...');
+        
+        // Verificar se há tokens salvos
+        const accessToken = localStorage.getItem('facebook_access_token');
+        const userId = localStorage.getItem('facebook_user_id');
+        
+        if (accessToken && userId) {
+          console.log('✅ Tokens OAuth encontrados');
+          if (window.integrationManager) {
+            window.integrationManager.handleFacebookConnected({
+              accessToken: accessToken,
+              userID: userId
+            });
+          }
+        } else {
+          console.log('❌ Nenhum token OAuth encontrado');
+        }
+      }
+
+      // Função para iniciar autenticação OAuth
+      function startOAuthFlow() {
+        console.log('🚀 Iniciando fluxo OAuth...');
+        
+        // Redirecionar para endpoint OAuth do servidor
+        const oauthUrl = '/login/facebook';
+        window.location.href = oauthUrl;
+      }
+
+      // Função para verificar status de login (compatibilidade)
+      function checkLoginState() {
+        console.log('🔍 checkLoginState() chamado - usando OAuth');
+        checkOAuthStatus();
+      }
+
+      // Inicialização OAuth 2.0
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('🔧 Inicializando sistema OAuth 2.0...');
+        
+        // Configurar botão OAuth
+        setupOAuthButton();
+        
+        // Verificar se há parâmetros de callback OAuth na URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get('success');
+        const oauthSuccess = urlParams.get('oauth_success');
+        const error = urlParams.get('error');
+        
+        if (success === 'true' || oauthSuccess === 'true') {
+          console.log('✅ Callback OAuth bem-sucedido detectado na URL!');
+          
+          // Extrair dados do Facebook da URL
+          let userName = urlParams.get('facebook_user_name');
+          const message = urlParams.get('message');
+          
+          // Se não tiver user_name nos parâmetros, extrair da mensagem
+          if (!userName && message) {
+            const userMatch = message.match(/Usuário:\s*([^,]+)/);
+            if (userMatch) {
+              userName = userMatch[1].trim();
+              console.log('📝 Nome extraído da mensagem:', userName);
+            }
+          }
+          
+          const facebookData = {
+            user_id: urlParams.get('facebook_user_id'),
+            user_name: userName,
+            user_email: urlParams.get('facebook_user_email'),
+            ad_accounts_count: parseInt(urlParams.get('ad_accounts_count')) || 0,
+            pages_count: parseInt(urlParams.get('pages_count')) || 0,
+            connected_at: urlParams.get('connected_at'),
+            message: message
+          };
+          
+          console.log('📊 Dados do Facebook recebidos:', facebookData);
+          
+          // Salvar dados no localStorage para exibição imediata
+          if (facebookData.user_name) {
+            localStorage.setItem('facebook_user_data', JSON.stringify(facebookData));
+            localStorage.setItem('facebook_connected', 'true');
+            localStorage.setItem('facebook_oauth_completed', Date.now().toString());
+            
+            console.log('💾 Dados do Facebook salvos no localStorage');
+          }
+          
+          // Limpar parâmetros da URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+          
+          // Processar integração do Facebook imediatamente
+          setTimeout(function() {
+            console.log('🔄 Processando integração do Facebook...');
+            
+            // Atualizar interface com dados do Facebook
+            if (window.integrationManager && typeof window.integrationManager.handleFacebookConnected === 'function') {
+              window.integrationManager.handleFacebookConnected(facebookData);
+            }
+            
+            // Forçar recarregamento das integrações
+            if (window.integrationManager && typeof window.integrationManager.loadStoredConnections === 'function') {
+              window.integrationManager.loadStoredConnections();
+            }
+            
+            checkOAuthStatus();
+          }, 500);
+          
+          // Mostrar notificação de sucesso
+          setTimeout(function() {
+            if (window.integrationManager && typeof window.integrationManager.showNotification === 'function') {
+              const message = facebookData.message || 'Facebook conectado com sucesso!';
+              window.integrationManager.showNotification(message, 'success');
+            }
+          }, 1000);
+          
+        } else if (error) {
+          console.error('❌ Erro no callback OAuth:', error);
+          alert('Erro na autenticação: ' + error);
+          // Limpar parâmetros da URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+        
+        // Verificar se há timestamp de OAuth completado no localStorage
+        const oauthCompleted = localStorage.getItem('facebook_oauth_completed');
+        if (oauthCompleted) {
+          const timestamp = parseInt(oauthCompleted);
+          const now = Date.now();
+          
+          // Se foi completado nos últimos 10 segundos, forçar atualização
+          if (now - timestamp < 10000) {
+            console.log('✅ OAuth completado recentemente detectado no localStorage!');
+            localStorage.removeItem('facebook_oauth_completed');
+            
+            setTimeout(function() {
+              console.log('🔄 Forçando recarregamento das integrações após localStorage...');
+              if (window.integrationManager && typeof window.integrationManager.loadStoredConnections === 'function') {
+                window.integrationManager.loadStoredConnections();
+              }
+              checkOAuthStatus();
+            }, 500);
+          }
+        }
+        
+        // Verificar status OAuth atual
+        checkOAuthStatus();
+      });
+      
+      // Função para configurar botão OAuth
+       function setupOAuthButton() {
+         console.log('🔧 Configurando botão OAuth...');
+         
+         const container = document.getElementById('facebook-login-button-container');
+         if (container) {
+           // Limpar conteúdo anterior
+           container.innerHTML = '';
+           
+           // Criar botão OAuth personalizado
+           const oauthButton = document.createElement('button');
+           oauthButton.className = 'btn btn-primary facebook-btn';
+           oauthButton.innerHTML = '<i class="fab fa-facebook-f"></i> Conectar com Facebook';
+           oauthButton.onclick = function() {
+             connectFacebook();
+           };
+           
+           container.appendChild(oauthButton);
+           
+           console.log('✅ Botão OAuth configurado!');
+         }
+         
+         // Esconder botão de fallback se existir
+         const fallbackBtn = document.getElementById('facebook-fallback-btn');
+         if (fallbackBtn) {
+           fallbackBtn.style.display = 'none';
+         }
+       }
+       
+       // Função para testar a conexão do botão alternativo
+       function testFallbackConnection() {
+         console.log('🔄 Testando conexão via botão alternativo...');
+         
+         // Primeiro, tentar usar a função de login direta do Facebook SDK
+         if (typeof loginWithFacebook === 'function') {
+           console.log('✅ Usando loginWithFacebook diretamente...');
+           loginWithFacebook();
+         } else if (typeof connectFacebook === 'function') {
+           console.log('✅ Usando connectFacebook como fallback...');
+           connectFacebook();
+         } else {
+           console.error('❌ Nenhuma função de login encontrada');
+           alert('Erro: Sistema de login não está disponível. Recarregue a página e tente novamente.');
+         }
+       }
+  
+
+    </script>
+
+    <!-- Scripts de navegação e autenticação -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos do menu
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const sidebar = document.getElementById('sidebar');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+
+            // Função para abrir menu mobile
+            function openMobileMenu() {
+                sidebar.classList.add('active');
+                mobileMenuOverlay.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Função para fechar menu mobile
+            function closeMobileMenu() {
+                sidebar.classList.remove('active');
+                mobileMenuOverlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+
+            // Event listeners
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', openMobileMenu);
+            }
+
+            if (closeMenuBtn) {
+                closeMenuBtn.addEventListener('click', closeMobileMenu);
+            }
+
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+            }
+
+            // Fechar menu ao clicar em um link de navegação (mobile)
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        closeMobileMenu();
+                    }
+                });
+            });
+
+            // Gerenciamento de usuário
+            const loginBtnDesktop = document.getElementById('loginBtnDesktop');
+            const userBtnDesktop = document.getElementById('userBtnDesktop');
+            const userDropdownDesktop = document.getElementById('userDropdownDesktop');
+            const loginBtnMobile = document.getElementById('loginBtnMobile');
+            const userBtnMobile = document.getElementById('userBtnMobile');
+            const userDropdownMobile = document.getElementById('userDropdownMobile');
+
+            // Verificar se o usuário está logado
+            function checkUserStatus() {
+                console.log('🔍 Verificando status do usuário...');
+                console.log('🔍 sessionManager disponível:', !!window.sessionManager);
+                console.log('🔍 loginComponent disponível:', !!window.loginComponent);
+                
+                if (window.sessionManager) {
+                    const isLoggedIn = window.sessionManager.isLoggedIn();
+                    console.log('🔍 isLoggedIn():', isLoggedIn);
+                    
+                    if (isLoggedIn) {
+                        const user = window.sessionManager.getStoredUser();
+                        console.log('✅ Usuário logado detectado:', user);
+                        
+                        if (user && (user.nome || user.name)) {
+                            // Mostrar conteúdo de integrações
+                            showIntegrationContent();
+                            console.log('✅ Conteúdo de integrações exibido');
+                        } else {
+                            console.log('⚠️ Usuário sem nome válido:', user);
+                            showLoginRequired();
+                        }
+                    } else {
+                        console.log('❌ Usuário não logado');
+                        showLoginRequired();
+                    }
+                } else {
+                    console.log('❌ sessionManager não disponível');
+                    showLoginRequired();
+                }
+            }
+
+            // Mostrar estado de login obrigatório
+            function showLoginRequired() {
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('login-required').style.display = 'block';
+                document.getElementById('integration-content').style.display = 'none';
+            }
+
+            // Mostrar conteúdo de integrações
+            function showIntegrationContent() {
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('login-required').style.display = 'none';
+                document.getElementById('integration-content').style.display = 'block';
+            }
+
+            // Verificar status do usuário quando a página carregar (aguardar login-component.js)
+            setTimeout(checkUserStatus, 500);
+            
+            // Listener para mudanças de estado de login
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'authToken' || e.key === 'user') {
+                    console.log('🔄 Estado de login alterado, verificando novamente...');
+                    setTimeout(checkUserStatus, 100);
+                }
+            });
+            
+            // Listener customizado para login-component
+            document.addEventListener('loginStateChanged', function() {
+                console.log('🔄 Login state changed event recebido');
+                setTimeout(checkUserStatus, 100);
+            });
+
+            // Verificar periodicamente se o estado mudou (fallback)
+            setInterval(function() {
+                if (window.sessionManager && window.sessionManager.isLoggedIn()) {
+                    const loginRequired = document.getElementById('login-required');
+                    const integrationContent = document.getElementById('integration-content');
+                    
+                    // Se ainda está mostrando login-required mas usuário está logado, corrigir
+                    if (loginRequired && loginRequired.style.display !== 'none') {
+                        console.log('🔄 Corrigindo exibição - usuário logado mas mostrando login-required');
+                        checkUserStatus();
+                    }
+                }
+            }, 2000);
+
+            // Event listeners do dropdown são gerenciados pelo login-component.js
+            // para evitar conflitos e duplicação
+            
+            // Debug: verificar se login-component está carregado
+            setTimeout(() => {
+                console.log('🔍 Verificando login-component...');
+                console.log('🔍 window.loginComponent:', !!window.loginComponent);
+                console.log('🔍 userBtnDesktop:', !!userBtnDesktop);
+                console.log('🔍 userBtnMobile:', !!userBtnMobile);
+                console.log('🔍 userDropdownDesktop:', !!userDropdownDesktop);
+                console.log('🔍 userDropdownMobile:', !!userDropdownMobile);
+                
+                if (window.loginComponent) {
+                    console.log('✅ LoginComponent carregado, configurando event listeners...');
+                    window.loginComponent.setupEventListeners();
+                } else {
+                    console.log('❌ LoginComponent não encontrado');
+                }
+            }, 1000);
+
+
+        });
+
+
+
+        // Função para desconectar do Facebook (OAuth)
+        function disconnectFacebook() {
+            console.log('🔌 Desconectando do Facebook via OAuth...');
+            
+            // Limpar dados locais
+            clearFacebookData();
+            updateUIAfterDisconnect();
+            
+            // Opcional: revogar token no servidor
+            const apiConfig = new APIConfig();
+            const revokeUrl = apiConfig.getOAuthServerUrl().replace('/login/facebook', '/auth/facebook/revoke');
+            fetch(revokeUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: sessionManager?.getStoredUser()?.id || 'anonymous'
+                })
+            }).then(response => {
+                if (response.ok) {
+                    console.log('✅ Token revogado no servidor');
+                    showNotification('Desconectado do Facebook com sucesso!', 'success');
+                } else {
+                    console.warn('⚠️ Falha ao revogar token no servidor');
+                    showNotification('Desconectado com sucesso!', 'success');
+                }
+            }).catch(error => {
+                console.error('❌ Erro ao revogar token:', error);
+                showNotification('Desconectado com sucesso!', 'success');
+            });
+        }
+
+        // Função para trocar de conta (OAuth)
+        function switchFacebookAccount() {
+            console.log('🔄 Trocando conta do Facebook via OAuth...');
+            
+            // Limpar dados atuais
+            clearFacebookData();
+            
+            // Iniciar novo fluxo OAuth imediatamente
+            connectFacebook();
+            
+            showNotification('Trocando conta... Faça login novamente.', 'info');
+        }
+
+        // Função para limpar dados do Facebook
+        function clearFacebookData() {
+            console.log('🧹 Limpando dados do Facebook...');
+            
+            // Limpar localStorage
+            localStorage.removeItem('facebook_user_data');
+            localStorage.removeItem('facebook_access_token');
+            localStorage.removeItem('facebook_user_id');
+            localStorage.removeItem('facebook_connected');
+            localStorage.removeItem('facebook_integration');
+            
+            // Limpar sessionStorage
+            sessionStorage.removeItem('facebook_user_data');
+            sessionStorage.removeItem('facebook_access_token');
+            
+            // Resetar flag de inicialização se necessário
+            window.fbInitialized = window.fbInitialized || false;
+            
+            console.log('✅ Dados do Facebook limpos');
+        }
+
+        // Função para atualizar interface após desconexão
+        function updateUIAfterDisconnect() {
+            console.log('🎨 Atualizando interface após desconexão...');
+            
+            // Esconder botões de controle
+            const controlButtons = document.getElementById('facebook-control-buttons');
+            if (controlButtons) {
+                controlButtons.style.display = 'none';
+            }
+            
+            // Mostrar botão de login novamente
+            const loginContainer = document.getElementById('facebook-login-button-container');
+            if (loginContainer) {
+                loginContainer.style.display = 'block';
+            }
+            
+            const fallbackBtn = document.getElementById('facebook-fallback-btn');
+            if (fallbackBtn) {
+                fallbackBtn.style.display = 'none';
+            }
+            
+            // Atualizar status
+            const statusElement = document.getElementById('facebook-status');
+            if (statusElement) {
+                statusElement.innerHTML = ``;
+            }
+            
+            // Usar o IntegrationManager se disponível
+            if (window.integrationManager && typeof window.integrationManager.updateFacebookUI === 'function') {
+                window.integrationManager.updateFacebookUI({}, false);
+            }
+            
+            console.log('✅ Interface atualizada');
+        }
+
+        // Função para mostrar notificações
+        function showNotification(message, type = 'info') {
+            // Usar o sistema de notificação do IntegrationManager se disponível
+            if (window.integrationManager && typeof window.integrationManager.showNotification === 'function') {
+                window.integrationManager.showNotification(message, type);
+            } else {
+                // Fallback para alert simples
+                alert(message);
+            }
+        }
+
+        // Garantir que os botões de login funcionem corretamente
+        document.addEventListener('DOMContentLoaded', function() {
+            // Aguardar um pouco para garantir que todos os scripts foram carregados
+            setTimeout(() => {
+                const loginBtnDesktop = document.getElementById('loginBtnDesktop');
+                const loginBtnMobile = document.getElementById('loginBtnMobile');
+                
+                // Configurar botões de login se não tiverem listeners
+                if (loginBtnDesktop && !loginBtnDesktop.hasAttribute('data-login-listener')) {
+                    loginBtnDesktop.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        if (window.loginComponent && typeof window.loginComponent.openLoginModal === 'function') {
+                            window.loginComponent.openLoginModal();
+                        } else if (window.openLoginModal) {
+                            window.openLoginModal();
+                        }
+                    });
+                    loginBtnDesktop.setAttribute('data-login-listener', 'true');
+                }
+                
+                if (loginBtnMobile && !loginBtnMobile.hasAttribute('data-login-listener')) {
+                    loginBtnMobile.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        if (window.loginComponent && typeof window.loginComponent.openLoginModal === 'function') {
+                            window.loginComponent.openLoginModal();
+                        } else if (window.openLoginModal) {
+                            window.openLoginModal();
+                        }
+                    });
+                    loginBtnMobile.setAttribute('data-login-listener', 'true');
+                }
+            }, 500);
+        });
+    </script>
+
+    <!-- Modal de Login -->
+    <div class="login-modal-overlay" id="login-modal-overlay">
+        <div class="login-modal" id="login-modal">
+            <div class="login-modal-header">
+                <h2>Entrar na sua conta</h2>
+                <button class="close-login-modal" id="close-login-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="login-modal-body">
+                <!-- Formulário de Login -->
+                <div class="login-section" id="login-section">
+                    <form class="login-form" id="login-form">
+                        <div class="form-group">
+                            <label for="login-identifier">Email ou telefone</label>
+                            <input type="text" id="login-identifier" name="identifier" placeholder="Digite seu email ou telefone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Senha</label>
+                            <input type="password" id="login-password" name="password" placeholder="Digite sua senha" required>
+                        </div>
+                        <div class="form-group remember-me-group">
+                            <label class="remember-me-label">
+                                <input type="checkbox" id="remember-me" name="remember-me">
+                                <span class="checkmark"></span>
+                                Lembrar-me
+                            </label>
+                        </div>
+                        <button type="submit" class="login-submit-btn">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Entrar
+                        </button>
+                    </form>
+                    <div class="login-divider">
+                        <span>ou</span>
+                    </div>
+                    <button class="create-account-btn" id="create-account-btn">
+                        <i class="fas fa-user-plus"></i>
+                        Criar nova conta
+                    </button>
+                    <div class="login-links">
+                        <a href="#" class="forgot-password-link">Esqueci minha senha</a>
+                    </div>
+                </div>
+
+                <!-- Formulário de Criação de Conta -->
+                <div class="signup-section hidden" id="signup-section">
+                    <form class="signup-form" id="signup-form">
+                        <div class="form-group">
+                            <label for="signup-name">Nome Completo *</label>
+                            <input type="text" id="signup-name" name="name" placeholder="Ex: João Silva Santos" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-email">Endereço de E-mail *</label>
+                            <input type="email" id="signup-email" name="email" placeholder="Ex: joao@exemplo.com" required>
+                            <div id="email-error" class="error-message hidden" style="margin-top: 0.5rem; display: none;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Inclua um @ no endereço de email
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-whatsapp">Número do WhatsApp *</label>
+                            <input type="tel" id="signup-whatsapp" name="whatsapp" placeholder="+55 (11) 99999-9999" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-password">Criar Senha *</label>
+                            <input type="password" id="signup-password" name="password" placeholder="Mínimo 8 caracteres" required minlength="8">
+                        </div>
+                        <button type="submit" class="signup-submit-btn">
+                            <i class="fas fa-user-plus"></i>
+                            Criar Minha Conta
+                        </button>
+                    </form>
+                    <div class="login-divider">
+                        <span>ou</span>
+                    </div>
+                    <button class="back-to-login-btn" id="back-to-login-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Voltar ao login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuração dos formulários de login e signup
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 Configurando formulários de login e signup...');
+            
+            // Configurar abas do modal
+            const loginTabBtn = document.getElementById('login-tab-btn');
+            const signupTabBtn = document.getElementById('signup-tab-btn');
+            const createAccountBtn = document.getElementById('create-account-btn');
+            const backToLoginBtn = document.getElementById('back-to-login-btn');
+            
+            if (loginTabBtn) {
+                loginTabBtn.addEventListener('click', function() {
+                    showLoginSection();
+                });
+            }
+            
+            if (signupTabBtn) {
+                signupTabBtn.addEventListener('click', function() {
+                    showSignupSection();
+                });
+            }
+            
+            if (createAccountBtn) {
+                createAccountBtn.addEventListener('click', function() {
+                    showSignupSection();
+                });
+            }
+            
+            if (backToLoginBtn) {
+                backToLoginBtn.addEventListener('click', function() {
+                    showLoginSection();
+                });
+            }
+            
+            // Configurar formulário de login
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    await handleLoginSubmit(e);
+                });
+            }
+            
+            // Configurar formulário de signup
+            const signupForm = document.getElementById('signup-form');
+            if (signupForm) {
+                signupForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    await handleSignupSubmit(e);
+                });
+            }
+            
+            // Configurar botão "Entrar" da seção login-required
+            const loginRequiredBtn = document.getElementById('login-required-btn');
+            if (loginRequiredBtn) {
+                loginRequiredBtn.addEventListener('click', function() {
+                    console.log('🔐 Abrindo modal de login...');
+                    if (window.loginComponent && typeof window.loginComponent.openLoginModal === 'function') {
+                        window.loginComponent.openLoginModal();
+                    } else if (typeof openLoginModal === 'function') {
+                        openLoginModal();
+                    } else {
+                        console.error('❌ Função openLoginModal não encontrada');
+                    }
+                });
+            }
+            
+            console.log('✅ Formulários configurados com sucesso');
+        });
+        
+        function showLoginSection() {
+            const loginTabBtn = document.getElementById('login-tab-btn');
+            const signupTabBtn = document.getElementById('signup-tab-btn');
+            const loginSection = document.getElementById('login-section');
+            const signupSection = document.getElementById('signup-section');
+            
+            if (loginTabBtn) loginTabBtn.classList.add('active');
+            if (signupTabBtn) signupTabBtn.classList.remove('active');
+            if (loginSection) loginSection.classList.remove('hidden');
+            if (signupSection) signupSection.classList.add('hidden');
+        }
+        
+        function showSignupSection() {
+            const loginTabBtn = document.getElementById('login-tab-btn');
+            const signupTabBtn = document.getElementById('signup-tab-btn');
+            const loginSection = document.getElementById('login-section');
+            const signupSection = document.getElementById('signup-section');
+            
+            if (signupTabBtn) signupTabBtn.classList.add('active');
+            if (loginTabBtn) loginTabBtn.classList.remove('active');
+            if (signupSection) signupSection.classList.remove('hidden');
+            if (loginSection) loginSection.classList.add('hidden');
+        }
+        
+        async function handleLoginSubmit(e) {
+            console.log('🔐 Processando login...');
+            
+            const identifier = document.getElementById('login-identifier').value.trim();
+            const password = document.getElementById('login-password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
+            
+            if (!identifier || !password) {
+                alert('Por favor, preencha todos os campos.');
+                return;
+            }
+            
+            // Desabilitar botão durante o envio
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+            
+            try {
+                // Verificar se sessionManager está disponível
+                if (typeof sessionManager === 'undefined' || !sessionManager) {
+                    console.error('❌ sessionManager não está definido');
+                    alert('Erro interno: Sistema de login não carregado. Recarregue a página.');
+                    return;
+                }
+                
+                // Usar SessionManager para login
+                const result = await sessionManager.login({
+                    email: identifier.toLowerCase().trim(),
+                    password: password
+                }, rememberMe);
+                
+                if (result.success) {
+                    // Login bem-sucedido
+                    alert('Login realizado com sucesso!');
+                    
+                    // Fechar modal
+                    if (window.loginComponent && typeof window.loginComponent.closeLoginModal === 'function') {
+                        window.loginComponent.closeLoginModal();
+                    }
+                    
+                    // Recarregar página para atualizar estado
+                    window.location.reload();
+                    
+                    console.log('✅ Login realizado:', result.user);
+                    
+                } else {
+                    // Erro de login
+                    alert(result.error || 'Email ou senha incorretos.');
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro ao fazer login:', error);
+                alert('Erro de conexão. Verifique sua internet e tente novamente.');
+                
+            } finally {
+                // Reabilitar botão
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
+            }
+        }
+        
+        async function handleSignupSubmit(e) {
+            console.log('📝 Processando cadastro...');
+            
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const whatsapp = document.getElementById('signup-whatsapp').value.trim();
+            const password = document.getElementById('signup-password').value;
+            
+            if (!name || !email || !whatsapp || !password) {
+                alert('Por favor, preencha todos os campos.');
+                return;
+            }
+            
+            if (password.length < 8) {
+                alert('A senha deve ter pelo menos 8 caracteres.');
+                return;
+            }
+            
+            // Desabilitar botão durante o envio
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Criando conta...';
+            
+            try {
+                // Verificar se sessionManager está disponível
+                if (typeof sessionManager === 'undefined' || !sessionManager) {
+                    console.error('❌ sessionManager não está definido');
+                    alert('Erro interno: Sistema de cadastro não carregado. Recarregue a página.');
+                    return;
+                }
+                
+                // Usar SessionManager para registro
+                const result = await sessionManager.register({
+                    name: name,
+                    email: email.toLowerCase().trim(),
+                    whatsapp: whatsapp,
+                    password: password
+                });
+                
+                if (result.success) {
+                    // Registro bem-sucedido
+                    alert('Conta criada com sucesso! Você já está logado.');
+                    
+                    // Fechar modal
+                    if (window.loginComponent && typeof window.loginComponent.closeLoginModal === 'function') {
+                        window.loginComponent.closeLoginModal();
+                    }
+                    
+                    // Recarregar página para atualizar estado
+                    window.location.reload();
+                    
+                    console.log('✅ Registro realizado:', result.user);
+                    
+                } else {
+                    // Erro de registro
+                    alert(result.error || 'Erro ao criar conta. Tente novamente.');
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro ao criar conta:', error);
+                alert('Erro de conexão. Verifique sua internet e tente novamente.');
+                
+            } finally {
+                // Reabilitar botão
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
+            }
+        }
+    </script>
+</body>
+</html>

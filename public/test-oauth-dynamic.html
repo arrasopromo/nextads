@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste OAuth Dinâmico - NextAds</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1877f2;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .btn {
+            background: #1877f2;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            background: #166fe5;
+        }
+        .user-data {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .log {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste OAuth Dinâmico</h1>
+        <p>Esta página simula diferentes cenários de callback OAuth com dados dinâmicos.</p>
+
+        <div class="test-section">
+            <h3>👤 Cenário 1: Maria Silva (5 contas de anúncios, 2 páginas)</h3>
+            <div class="user-data">
+                <strong>Nome:</strong> Maria Silva<br>
+                <strong>Contas de Anúncios:</strong> 5<br>
+                <strong>Páginas:</strong> 2
+            </div>
+            <button class="btn" onclick="testUser1()">Simular OAuth - Maria Silva</button>
+        </div>
+
+        <div class="test-section">
+            <h3>👤 Cenário 2: João Santos (12 contas de anúncios, 0 páginas)</h3>
+            <div class="user-data">
+                <strong>Nome:</strong> João Santos<br>
+                <strong>Contas de Anúncios:</strong> 12<br>
+                <strong>Páginas:</strong> 0
+            </div>
+            <button class="btn" onclick="testUser2()">Simular OAuth - João Santos</button>
+        </div>
+
+        <div class="test-section">
+            <h3>👤 Cenário 3: Ana Costa (1 conta de anúncios, 8 páginas)</h3>
+            <div class="user-data">
+                <strong>Nome:</strong> Ana Costa<br>
+                <strong>Contas de Anúncios:</strong> 1<br>
+                <strong>Páginas:</strong> 8
+            </div>
+            <button class="btn" onclick="testUser3()">Simular OAuth - Ana Costa</button>
+        </div>
+
+        <div class="test-section">
+            <h3>❌ Cenário 4: Erro de OAuth</h3>
+            <button class="btn" onclick="testError()" style="background: #dc3545;">Simular Erro OAuth</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Log de Ações</h3>
+            <div id="log" class="log"></div>
+        </div>
+
+        <div class="test-section">
+            <a href="integracoes.html" class="btn">🔗 Ir para Integrações</a>
+            <a href="oauth-callback.html" class="btn">🔗 Ver Callback</a>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function testUser1() {
+            log('🧪 Testando Maria Silva...');
+            const params = new URLSearchParams({
+                success: 'true',
+                message: 'Conexão realizada com sucesso!',
+                user_name: 'Maria Silva',
+                ad_accounts_count: '5',
+                pages_count: '2'
+            });
+            
+            log('📤 Redirecionando para oauth-callback.html com parâmetros dinâmicos');
+            window.location.href = `oauth-callback.html?${params.toString()}`;
+        }
+
+        function testUser2() {
+            log('🧪 Testando João Santos...');
+            const params = new URLSearchParams({
+                success: 'true',
+                message: 'Conexão realizada com sucesso!',
+                user_name: 'João Santos',
+                ad_accounts_count: '12',
+                pages_count: '0'
+            });
+            
+            log('📤 Redirecionando para oauth-callback.html com parâmetros dinâmicos');
+            window.location.href = `oauth-callback.html?${params.toString()}`;
+        }
+
+        function testUser3() {
+            log('🧪 Testando Ana Costa...');
+            const params = new URLSearchParams({
+                success: 'true',
+                message: 'Conexão realizada com sucesso!',
+                user_name: 'Ana Costa',
+                ad_accounts_count: '1',
+                pages_count: '8'
+            });
+            
+            log('📤 Redirecionando para oauth-callback.html com parâmetros dinâmicos');
+            window.location.href = `oauth-callback.html?${params.toString()}`;
+        }
+
+        function testError() {
+            log('🧪 Testando erro OAuth...');
+            const params = new URLSearchParams({
+                success: 'false',
+                error: 'Erro ao conectar com o Facebook. Tente novamente.'
+            });
+            
+            log('📤 Redirecionando para oauth-callback.html com erro');
+            window.location.href = `oauth-callback.html?${params.toString()}`;
+        }
+
+        // Log inicial
+        log('✅ Página de teste OAuth dinâmico carregada');
+        log('🎯 Escolha um cenário para testar o fluxo OAuth');
+    </script>
+</body>
+</html>

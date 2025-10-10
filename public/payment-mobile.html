@@ -1,0 +1,1340 @@
+nv<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://track.nextads.pro *.nextads.pro; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; media-src 'self' data: blob:; connect-src 'self' https: wss: ws: http://localhost:4000 https://nextads.pro https://cdnjs.cloudflare.com https://api.instagram.com https://graph.instagram.com https://api.openai.com https://api.openpix.com.br https://api.woovi-sandbox.com https://api.woovi.com https://track.nextads.pro *.nextads.pro; frame-src 'self'; object-src 'none'; base-uri 'self';">
+    <title>Pagamento PIX - NextAds</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- TRACK COMBO -->
+    <script>
+      (function() {
+        var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+        var hasEthereum = typeof window.ethereum !== 'undefined' || (window.web3 && window.web3.currentProvider);
+        if (!hasEthereum && isLocal) {
+          console.info('Skipping TC-FQZRKRMP tracking (no MetaMask/provider in dev).');
+          return;
+        }
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.async = true;
+        script.defer = true;
+        script.src = "https://track.nextads.pro/tag/TC-FQZRKRMP.js";
+        var firstScript = document.getElementsByTagName("script")[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+      })();
+    </script>
+    <!-- End TRACK COMBO -->
+
+    <style>
+        /* Estilos específicos para página de pagamento mobile */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .payment-container {
+            flex: 1;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .payment-header {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 0;
+        }
+        
+        .payment-content {
+            background: white;
+            border-radius: 0 0 20px 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .back-button {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: #495057;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .back-button:hover {
+            background: #e9ecef;
+            border-color: #dee2e6;
+            transform: translateY(-2px);
+        }
+        
+        .back-button i {
+            font-size: 16px;
+        }
+        
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 40px 20px;
+            min-height: 300px;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #667eea;
+            border-right: 4px solid #764ba2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .campaign-title h2 {
+            margin: 0;
+            color: #333;
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        
+        .campaign-metrics {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .metric-item {
+            text-align: center;
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .metric-value.price {
+            color: #007bff;
+        }
+        
+        .timer-section {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 8px;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .countdown {
+            font-size: 24px;
+            font-weight: bold;
+            color: #dc3545;
+            font-family: 'Courier New', monospace;
+            display: block;
+            margin-top: 5px;
+        }
+        
+        .qr-code-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .qr-code-container img {
+            width: 200px;
+            height: 200px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .pix-code-section {
+            margin: 30px 0;
+        }
+        
+        .pix-code-label {
+            font-size: 16px;
+            color: #333;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .pix-code-input {
+            margin-bottom: 15px;
+        }
+        
+        .pix-code-input input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: monospace;
+            background: #f8f9fa;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        
+        .copy-btn {
+            width: 100%;
+            padding: 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .error-content, .success-content {
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .error-content {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .success-content {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .retry-btn, .view-campaign-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        .retry-btn {
+            background: #007bff;
+            color: white;
+        }
+        
+        .view-campaign-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        /* Footer responsivo */
+        footer {
+            background-color: #f8f9fa;
+            padding: 0.8rem;
+            text-align: center;
+            border-top: 1px solid #dee2e6;
+            margin-top: auto;
+            font-family: Arial, sans-serif;
+        }
+        
+        footer p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+        
+        /* Responsividade adicional */
+        @media (max-width: 480px) {
+            .payment-container {
+                padding: 10px;
+            }
+            
+            .payment-header, .payment-content {
+                padding: 15px;
+            }
+            
+            .qr-code-container img {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .campaign-metrics {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <!-- Botão Voltar -->
+         <button class="back-button" id="back-button">
+             <i class="fas fa-arrow-left"></i>
+             Voltar
+         </button>
+        <!-- Cabeçalho -->
+        <div class="payment-header">
+            <div class="campaign-title">
+                <h2 id="payment-header-title">🚀 Finalizar Lançamento da Campanha</h2>
+            </div>
+        </div>
+        
+        <!-- Conteúdo Principal -->
+        <div class="payment-content">
+            <!-- Loading -->
+            <div id="payment-loading" class="loading-content">
+                <div class="spinner"></div>
+                <h3 id="loading-message">Carregando ambiente seguro...</h3>
+                <p>Aguarde alguns instantes...</p>
+            </div>
+            
+            <!-- Pagamento PIX -->
+            <div id="payment-pix" style="display: none;">
+                <!-- Título -->
+                <div class="campaign-title">
+                    <h3>A campanha será criada automaticamente após confirmação do pagamento</h3>
+                </div>
+                
+                <!-- Resumo da Campanha -->
+                <div class="campaign-metrics">
+                    <div class="metric-item">
+                        <div class="metric-label">Duração</div>
+                        <div class="metric-value" id="payment-duration">7 dias</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Investimento</div>
+                        <div class="metric-value price" id="payment-value">R$ 297,00</div>
+                    </div>
+                </div>
+                
+                <!-- Timer -->
+                <div class="timer-section">
+                    <p>🕐 Aguardando - Expira em</p>
+                    <span id="payment-countdown" class="countdown">15:00</span>
+                </div>
+                
+                <!-- QR Code -->
+                <div class="qr-code-container">
+                    <div id="qr-loading" class="loading-content" style="min-height: 200px;">
+                        <div class="spinner"></div>
+                        <p>Gerando QR Code...</p>
+                    </div>
+                    <div id="qr-content" style="display: none;">
+                        <img id="payment-qr-image" src="" alt="QR Code PIX" />
+                    </div>
+                </div>
+                
+                <!-- Código PIX -->
+                <div class="pix-code-section">
+                    <div class="pix-code-label">Código PIX (copie e cole no seu banco)</div>
+                    <div class="pix-code-input">
+                        <input type="text" id="payment-pix-code" readonly />
+                    </div>
+                    <button type="button" class="copy-btn" id="copy-payment-code">
+                        <i class="fas fa-copy"></i> Copiar Código PIX
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Erro -->
+            <div id="payment-error" style="display: none;">
+                <div class="error-content">
+                    <h3>❌ Pagamento Expirado</h3>
+                    <p id="payment-error-message">Ocorreu um erro ao processar o pagamento.</p>
+                    <button class="retry-btn" id="retry-payment-btn">Gerar Novo Pagamento</button>
+                </div>
+            </div>
+            
+            <!-- Sucesso -->
+            <div id="payment-success" style="display: none;">
+                <div class="success-content">
+                    <h3>🎉 Pagamento Confirmado!</h3>
+                    <p>Sua campanha está em processo de criação e será ativada em breve!</p>
+                    <button class="view-campaign-btn" id="view-payment-campaign">👀 Visualizar Campanha</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer Responsivo -->
+    <footer>
+        <p>
+            <i class="fas fa-copyright"></i> 2025 Next Ads. Todos os direitos reservados.
+        </p>
+    </footer>
+    
+    <script src="js/data-manager.js"></script>
+    <script src="campaign-tracker.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Função para verificar disponibilidade do localStorage
+        function checkLocalStorageAvailability() {
+            try {
+                const test = '__localStorage_test__';
+                localStorage.setItem(test, test);
+                localStorage.removeItem(test);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+        
+        // Função para criar globalTracker (mesma lógica do campaign-config)
+        async function createGlobalTracker() {
+            console.log('🔧 [payment-mobile] Inicializando globalTracker...');
+            
+            // Verificar disponibilidade do localStorage
+            const localStorageAvailable = checkLocalStorageAvailability();
+            console.log('💾 [payment-mobile] localStorage disponível:', localStorageAvailable);
+            
+            if (!localStorageAvailable) {
+                console.error('❌ [payment-mobile] localStorage não disponível!');
+                return null;
+            }
+            
+            // Verificar se já existe um tracker global ativo
+            if (window.globalTracker && window.globalTracker.campaignId) {
+                console.log('♻️ [payment-mobile] Reutilizando tracker existente:', window.globalTracker.campaignId);
+                return window.globalTracker;
+            }
+            
+            // Tentar obter campanha ativa
+            let activeCampaign = null;
+            if (window.CampaignTracker && typeof window.CampaignTracker.getActiveCampaign === 'function') {
+                activeCampaign = await window.CampaignTracker.getActiveCampaign();
+                console.log('📋 [payment-mobile] Campanha ativa encontrada:', activeCampaign);
+            }
+            
+            // Se não há campanha ativa, tentar recuperar da última campanha
+            if (!activeCampaign) {
+                console.log('⚠️ [payment-mobile] Nenhuma campanha ativa, tentando recuperar última campanha...');
+                const campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]');
+                if (campaigns.length > 0) {
+                    activeCampaign = campaigns[campaigns.length - 1];
+                    console.log('📦 [payment-mobile] Última campanha recuperada:', activeCampaign);
+                    
+                    // Definir como campanha ativa
+                    if (activeCampaign && (activeCampaign.campaignId || activeCampaign.id)) {
+                        localStorage.setItem('activeCampaignId', activeCampaign.campaignId || activeCampaign.id);
+                        console.log('✅ [payment-mobile] Campanha definida como ativa:', activeCampaign.campaignId || activeCampaign.id);
+                    }
+                }
+            }
+            
+            if (activeCampaign && (activeCampaign.campaignId || activeCampaign.id)) {
+                const campaignId = activeCampaign.campaignId || activeCampaign.id;
+                console.log('🆔 [payment-mobile] Criando globalTracker para campanha:', campaignId);
+                
+                // Criar globalTracker simples (sem nova instância)
+                const globalTracker = {
+                    campaignId: campaignId,
+                    campaignData: activeCampaign.campaignData || activeCampaign,
+                    updateCampaign: async function(field, value) {
+                        console.log('📝 [GlobalTracker] Atualizando:', field, value);
+                        this.campaignData[field] = value;
+                        
+                        // Atualizar no MongoDB
+                        if (window.dataManager) {
+                            try {
+                                const campaigns = await window.dataManager.getAllCampaigns();
+                                const campaign = campaigns.find(c => (c.campaignId || c.id) === this.campaignId);
+                                if (campaign) {
+                                    campaign[field] = value;
+                                    campaign.campaignData = campaign.campaignData || {};
+                                    campaign.campaignData[field] = value;
+                                    await window.dataManager.saveCampaign(campaign);
+                                    console.log('✅ [GlobalTracker] Campo atualizado no MongoDB:', field);
+                                }
+                            } catch (error) {
+                                console.error('❌ [GlobalTracker] Erro ao atualizar no MongoDB:', error);
+                            }
+                        }
+                    },
+                    markCompleted: async function() {
+                        console.log('✅ [GlobalTracker] Marcando como completa');
+                        
+                        if (window.dataManager) {
+                            try {
+                                const campaigns = await window.dataManager.getAllCampaigns();
+                                const campaign = campaigns.find(c => (c.campaignId || c.id) === this.campaignId);
+                                if (campaign) {
+                                    campaign.isCompleted = true;
+                                    campaign.status = 'completed';
+                                    campaign.completedAt = new Date().toISOString();
+                                    await window.dataManager.saveCampaign(campaign);
+                                    console.log('✅ [GlobalTracker] Campanha marcada como completa');
+                                }
+                            } catch (error) {
+                                console.error('❌ [GlobalTracker] Erro ao marcar como completa:', error);
+                            }
+                        }
+                    }
+                };
+                
+                // Tornar o tracker disponível globalmente
+                window.globalTracker = globalTracker;
+                console.log('✅ [payment-mobile] GlobalTracker criado com sucesso:', campaignId);
+                
+                // CORREÇÃO: Garantir que o CampaignTracker use o mesmo ID do GlobalTracker
+                if (window.CampaignTracker && window.CampaignTracker.campaignId !== campaignId) {
+                    console.log('🔧 [payment-mobile] Corrigindo CampaignTracker para usar o ID correto:', campaignId);
+                    window.CampaignTracker.campaignId = campaignId;
+                    // Salvar o ID correto no localStorage
+                    localStorage.setItem('activeCampaignId', campaignId);
+                    console.log('✅ [payment-mobile] CampaignTracker corrigido para usar o ID do GlobalTracker');
+                }
+                
+                return globalTracker;
+            } else {
+                console.warn('⚠️ [payment-mobile] Nenhuma campanha encontrada - NÃO criando globalTracker');
+                window.globalTracker = null;
+                return null;
+            }
+        }
+        
+        // Inicializar página de pagamento mobile
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Verificar se é dispositivo mobile
+            if (!isMobileDevice()) {
+                // Redirecionar para desktop se não for mobile
+                window.location.href = 'campaign-config.html';
+                return;
+            }
+            
+            // Aguardar inicialização dos scripts
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            // Criar globalTracker antes de carregar dados
+            await createGlobalTracker();
+            
+            // Função assíncrona para carregar dados da campanha
+            async function loadCampaignData() {
+                // Recuperar dados da campanha do localStorage
+                let campaignData = JSON.parse(localStorage.getItem('campaignData') || '{}');
+                
+                // Tentar obter campaignId de múltiplas fontes (mesma lógica do campaign-config)
+                let currentCampaignId = null;
+                
+                // Prioridade 1: globalTracker (campanha sendo trabalhada atualmente)
+                if (window.globalTracker && window.globalTracker.campaignId) {
+                    currentCampaignId = window.globalTracker.campaignId;
+                    console.log('✅ [Mobile Payment] Usando globalTracker.campaignId (CORRETO):', currentCampaignId);
+                }
+                // Prioridade 2: CampaignTracker atual (instância ativa)
+                else if (window.CampaignTracker && window.CampaignTracker.campaignId) {
+                    currentCampaignId = window.CampaignTracker.campaignId;
+                    console.log('✅ [Mobile Payment] Usando CampaignTracker.campaignId:', currentCampaignId);
+                }
+                // Prioridade 3: campaignCreator
+                else if (window.campaignCreator && window.campaignCreator.campaignTracker && window.campaignCreator.campaignTracker.campaignId) {
+                    currentCampaignId = window.campaignCreator.campaignTracker.campaignId;
+                    console.log('⚠️ [Mobile Payment] Usando campaignCreator.campaignId como fallback:', currentCampaignId);
+                }
+                // Prioridade 4: activeCampaignId do localStorage (último fallback)
+                else {
+                    currentCampaignId = localStorage.getItem('activeCampaignId');
+                    console.log('⚠️ [Mobile Payment] Usando activeCampaignId do localStorage como fallback:', currentCampaignId);
+                }
+                
+                if (currentCampaignId) {
+                    // Definir o campaignId da sessão atual como ativo
+                    localStorage.setItem('activeCampaignId', currentCampaignId);
+                    
+                    // Garantir que campaignData tenha o ID correto
+                    campaignData.campaignId = currentCampaignId;
+                }
+                
+                // Tentar recuperar dados específicos da campanha atual do MongoDB se localStorage estiver vazio
+                if (!campaignData || Object.keys(campaignData).length === 0) {
+                    try {
+                        if (window.CampaignTracker && currentCampaignId) {
+                            console.log('🔄 [Mobile Payment] Buscando dados da campanha atual no MongoDB:', currentCampaignId);
+                            const campaigns = await window.CampaignTracker.getAllCampaigns();
+                            const currentCampaign = campaigns.find(c => 
+                                c.campaignId === currentCampaignId || 
+                                c.id === currentCampaignId || 
+                                c._id?.$oid === currentCampaignId
+                            );
+                            
+                            if (currentCampaign) {
+                                // MESCLAR dados do MongoDB com dados existentes do localStorage
+                                const mongoData = currentCampaign.campaignData || currentCampaign;
+                                campaignData = {
+                                    ...mongoData, // Dados do MongoDB
+                                    ...campaignData, // Preservar dados do localStorage (mais recentes)
+                                    campaignId: currentCampaignId // Garantir ID correto
+                                };
+                                
+                                console.log('✅ [Mobile Payment] Dados mesclados (MongoDB + localStorage):', {
+                                    campaignId: currentCampaignId,
+                                    mongoData: mongoData,
+                                    localStorageData: JSON.parse(localStorage.getItem('campaignData') || '{}'),
+                                    finalData: campaignData
+                                });
+                            } else {
+                                console.log('⚠️ [Mobile Payment] Campanha atual não encontrada no MongoDB, usando dados padrão');
+                                campaignData.campaignId = currentCampaignId;
+                            }
+                        }
+                    } catch (error) {
+                        console.log('⚠️ [Mobile Payment] Erro ao recuperar do MongoDB:', error);
+                    }
+                }
+                
+                // Verificar se há dados de campanha válidos (verificação mais robusta)
+                const hasValidData = campaignData && (
+                    campaignData.duration || 
+                    campaignData.budget || 
+                    campaignData.objective || 
+                    campaignData.direction ||
+                    Object.keys(campaignData).length > 2
+                );
+                
+                if (!hasValidData) {
+                    console.log('⚠️ [Mobile Payment] Nenhum dado de campanha encontrado, redirecionando...');
+                    alert('Por favor, configure sua campanha primeiro.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+                
+                console.log('✅ [Mobile Payment] Dados de campanha encontrados:', campaignData);
+                
+                // Atualizar dados da campanha na página
+                updatePaymentPageData(campaignData);
+                
+                // Iniciar processo de pagamento
+                initializePaymentProcess();
+            }
+            
+            // Chamar a função assíncrona
+            loadCampaignData();
+            
+            // Configurar event listeners
+            setupPaymentEventListeners();
+            
+            // Iniciar temporizador
+            startPaymentTimer(900); // 15 minutos
+        });
+        
+        // Função para detectar dispositivo mobile
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                   (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform));
+        }
+        
+        // Atualizar dados da página de pagamento
+        function updatePaymentPageData(campaignData) {
+            console.log('📱 [Mobile Payment] Atualizando dados da página:', campaignData);
+            
+            if (campaignData.duration) {
+                // Garantir que a duração está no formato correto
+                let durationText = campaignData.duration;
+                if (!durationText.includes('dias')) {
+                    durationText = `${campaignData.duration} dias`;
+                }
+                document.getElementById('payment-duration').textContent = durationText;
+                console.log('✅ [Mobile Payment] Duração atualizada:', durationText);
+            } else {
+                console.log('⚠️ [Mobile Payment] Duração não encontrada nos dados da campanha');
+            }
+            
+            // Função para mapear duração para preço correto
+            function getDurationPrice(days) {
+                const priceMap = {
+                    1: 97.00,
+                    3: 197.00,
+                    7: 297.00,
+                    14: 397.00,
+                    30: 537.00
+                };
+                return priceMap[days] || 297.00; // 7 dias como padrão
+            }
+            
+            let budgetText;
+            if (campaignData.budget && campaignData.budget !== 'R$ 0,00') {
+                budgetText = campaignData.budget;
+                if (!budgetText.includes('R$')) {
+                    budgetText = `R$ ${campaignData.budget}`;
+                }
+            } else {
+                // Calcular preço baseado na duração
+                const durationDays = parseInt(campaignData.duration?.replace(' dias', '').replace(' dia', '')) || 7;
+                const price = getDurationPrice(durationDays);
+                budgetText = `R$ ${price.toFixed(2).replace('.', ',')}`;
+                console.log('💰 [Mobile Payment] Preço calculado baseado na duração:', {
+                    duration: durationDays,
+                    price: price,
+                    budgetText: budgetText
+                });
+            }
+            
+            document.getElementById('payment-value').textContent = budgetText;
+            console.log('✅ [Mobile Payment] Orçamento atualizado:', budgetText);
+        }
+        
+        // Inicializar processo de pagamento
+        function initializePaymentProcess() {
+            // Simular carregamento
+            setTimeout(() => {
+                document.getElementById('payment-loading').style.display = 'none';
+                document.getElementById('payment-pix').style.display = 'block';
+                
+                // Criar cobrança PIX real
+                setTimeout(() => {
+                    createPixCharge();
+                }, 1000);
+            }, 2000);
+        }
+        
+        // Função para criar cobrança PIX real
+        async function createPixCharge() {
+            try {
+                let campaignData = JSON.parse(localStorage.getItem('campaignData') || '{}');
+                
+                // Aguardar inicialização do CampaignTracker se necessário
+                let currentCampaignId = null;
+                
+                // Tentar obter campaignId de múltiplas fontes (mesma lógica do campaign-config)
+                // Prioridade 1: globalTracker (campanha sendo trabalhada atualmente)
+                if (window.globalTracker && window.globalTracker.campaignId) {
+                    currentCampaignId = window.globalTracker.campaignId;
+                    console.log('✅ [PIX Mobile] Usando globalTracker.campaignId (CORRETO):', currentCampaignId);
+                }
+                // Prioridade 2: CampaignTracker atual (instância ativa)
+                else if (window.CampaignTracker && window.CampaignTracker.campaignId) {
+                    currentCampaignId = window.CampaignTracker.campaignId;
+                    console.log('✅ [PIX Mobile] Usando CampaignTracker.campaignId:', currentCampaignId);
+                }
+                // Prioridade 3: campaignCreator
+                else if (window.campaignCreator && window.campaignCreator.campaignTracker && window.campaignCreator.campaignTracker.campaignId) {
+                    currentCampaignId = window.campaignCreator.campaignTracker.campaignId;
+                    console.log('⚠️ [PIX Mobile] Usando campaignCreator.campaignId como fallback:', currentCampaignId);
+                }
+                // Prioridade 4: activeCampaignId do localStorage (último fallback)
+                else {
+                    currentCampaignId = localStorage.getItem('activeCampaignId');
+                    console.log('⚠️ [PIX Mobile] Usando activeCampaignId do localStorage como fallback:', currentCampaignId);
+                }
+                
+                if (currentCampaignId) {
+                    // Garantir que campaignData tenha o ID correto
+                    campaignData.campaignId = currentCampaignId;
+                }
+                
+                // Se localStorage estiver vazio, tentar buscar dados específicos da campanha atual do MongoDB
+                if (!campaignData || Object.keys(campaignData).length === 0) {
+                    try {
+                        if (window.CampaignTracker && currentCampaignId) {
+                            console.log('🔄 [PIX Mobile] Buscando dados da campanha atual no MongoDB:', currentCampaignId);
+                            const campaigns = await window.CampaignTracker.getAllCampaigns();
+                            const currentCampaign = campaigns.find(c => 
+                                c.campaignId === currentCampaignId || 
+                                c.id === currentCampaignId || 
+                                c._id?.$oid === currentCampaignId
+                            );
+                            
+                            if (currentCampaign) {
+                                // MESCLAR dados do MongoDB com dados existentes do localStorage
+                                const mongoData = currentCampaign.campaignData || currentCampaign;
+                                campaignData = {
+                                    ...mongoData, // Dados do MongoDB
+                                    ...campaignData, // Preservar dados do localStorage (mais recentes)
+                                    campaignId: currentCampaignId // Garantir ID correto
+                                };
+                                console.log('✅ [PIX Mobile] Dados mesclados (MongoDB + localStorage):', {
+                                    mongoData: mongoData,
+                                    localStorageData: JSON.parse(localStorage.getItem('campaignData') || '{}'),
+                                    finalData: campaignData
+                                });
+                            } else {
+                                console.log('⚠️ [PIX Mobile] Campanha atual não encontrada no MongoDB, usando dados padrão');
+                                campaignData.campaignId = currentCampaignId;
+                            }
+                        }
+                    } catch (error) {
+                        console.log('⚠️ [PIX Mobile] Erro ao recuperar do MongoDB:', error);
+                    }
+                }
+                
+                console.log('🔍 [PIX Mobile] CampaignData final:', campaignData);
+                
+                // Processar duração com logs detalhados
+                let duration = 7; // fallback padrão
+                
+                // IMPORTANTE: Verificar dados salvos no localStorage (não há cards nesta página)
+                console.log('🔍 [PIX Mobile] Verificando dados salvos no localStorage...');
+                
+                // Verificar múltiplas fontes de dados
+                let foundDuration = null;
+                
+                // 1. Verificar campaignData.duration
+                if (campaignData.duration) {
+                    foundDuration = campaignData.duration;
+                    console.log('📊 [PIX Mobile] Duração encontrada em campaignData:', foundDuration);
+                }
+                
+                // 2. Verificar activeCampaignId e dados da campanha ativa
+                if (!foundDuration) {
+                    const activeCampaignId = localStorage.getItem('activeCampaignId');
+                    if (activeCampaignId) {
+                        const campaignKey = `campaign_${activeCampaignId}`;
+                        const activeCampaignData = localStorage.getItem(campaignKey);
+                        if (activeCampaignData) {
+                            try {
+                                const parsed = JSON.parse(activeCampaignData);
+                                foundDuration = parsed.duration || parsed.campaignData?.duration;
+                                console.log('📊 [PIX Mobile] Duração encontrada na campanha ativa:', foundDuration);
+                            } catch (e) {
+                                console.log('❌ [PIX Mobile] Erro ao parsear dados da campanha ativa:', e);
+                            }
+                        }
+                    }
+                }
+                
+                // 3. Verificar all_campaigns para a campanha mais recente
+                if (!foundDuration) {
+                    const allCampaignsData = localStorage.getItem('all_campaigns');
+                    if (allCampaignsData) {
+                        try {
+                            const allCampaigns = JSON.parse(allCampaignsData);
+                            if (allCampaigns.length > 0) {
+                                const latestCampaign = allCampaigns[allCampaigns.length - 1];
+                                foundDuration = latestCampaign.duration || latestCampaign.campaignData?.duration;
+                                console.log('📊 [PIX Mobile] Duração encontrada na campanha mais recente:', foundDuration);
+                            }
+                        } catch (e) {
+                            console.log('❌ [PIX Mobile] Erro ao parsear all_campaigns:', e);
+                        }
+                    }
+                }
+                
+                if (foundDuration) {
+                    console.log('📊 [PIX Mobile] Duração encontrada:', foundDuration, typeof foundDuration);
+                    
+                    if (typeof foundDuration === 'string') {
+                        // Extrair número da string (ex: "30 dias" -> 30)
+                        const durationMatch = foundDuration.match(/\d+/);
+                        if (durationMatch) {
+                            duration = parseInt(durationMatch[0]);
+                            console.log('✅ [PIX Mobile] Duração extraída da string:', duration);
+                        } else {
+                            console.log('⚠️ [PIX Mobile] Não foi possível extrair duração da string, usando padrão');
+                        }
+                    } else if (typeof foundDuration === 'number') {
+                        duration = foundDuration;
+                        console.log('✅ [PIX Mobile] Duração numérica encontrada:', duration);
+                    }
+                } else {
+                    console.log('⚠️ [PIX Mobile] Duração não encontrada em nenhuma fonte, usando padrão de 7 dias');
+                }
+                
+                // Função para mapear duração para preço correto
+                function getDurationPrice(days) {
+                    const priceMap = {
+                        1: 97.00,
+                        3: 197.00,
+                        7: 297.00,
+                        14: 397.00,
+                        30: 537.00
+                    };
+                    return priceMap[days] || 297.00; // 7 dias como padrão
+                }
+                
+                // Calcular preço baseado na duração ou usar budget existente
+                let budget;
+                if (campaignData.budget && campaignData.budget !== 'R$ 0,00') {
+                    // Se já tem budget definido, usar ele
+                    const budgetStr = campaignData.budget.replace('R$ ', '').replace(',', '.');
+                    budget = parseFloat(budgetStr);
+                } else {
+                    // Se não tem budget, calcular baseado na duração
+                    budget = getDurationPrice(duration);
+                }
+                
+                console.log('💰 [PIX Mobile] Preço calculado:', {
+                    duration: duration,
+                    budget: budget,
+                    budgetOriginal: campaignData.budget
+                });
+                
+                console.log('🔍 [PIX Mobile] Dados processados:', {
+                    durationFinal: duration,
+                    durationOriginal: campaignData.duration,
+                    budgetOriginal: campaignData.budget,
+                    budgetProcessed: budget,
+                    campaignDataCompleto: campaignData
+                });
+                
+                // Obter ID da campanha ativa para usar como correlationID
+                // Usar o campaignId da sessão atual para o correlationID
+                let campaignId = currentCampaignId;
+                
+                if (campaignId) {
+                    console.log('✅ [PIX] Usando campaignId da sessão atual:', campaignId);
+                } else {
+                    // Fallback: tentar usar campaignData.campaignId
+                    campaignId = campaignData.campaignId;
+                    if (campaignId) {
+                        console.log('✅ [PIX] Usando campaignData.campaignId como fallback:', campaignId);
+                    } else {
+                        console.warn('⚠️ [PIX] Nenhum campaignId encontrado para correlationID');
+                    }
+                }
+                
+                console.log('🔍 [PIX] CampaignData:', campaignData);
+                console.log('🔍 [PIX] CampaignId para correlationID:', campaignId);
+                
+                console.log('🆔 [PIX Mobile] ID da campanha (para referência):', campaignId);
+                
+                // Gerar correlationID único APENAS para pagamento PIX (SEPARADO do campaignId)
+                const uniqueCorrelationID = `pix_mobile_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                
+                console.log('🔑 [PIX Mobile] CorrelationID único gerado (APENAS para PIX):', uniqueCorrelationID);
+                console.log('⚠️ [PIX Mobile] IMPORTANTE: correlationID é DIFERENTE do campaignId!');
+                
+                // Dados para a API Woovi
+                const pixData = {
+                    correlationID: uniqueCorrelationID,
+                    value: Math.round(budget * 100), // converter para centavos
+                    days: duration,
+                    expiresIn: 900, // 15 minutos em segundos
+                    campaignType: campaignData.campaignType || 'Publicidade Digital',
+                    comment: `Campanha de ${duration} dias - ${campaignData.businessName || 'Mobile'}`,
+                    useSandbox: false,
+                    additionalInfo: [
+                        {
+                            key: 'campaignId',
+                            value: campaignId
+                        },
+                        {
+                            key: 'campaignName', 
+                            value: campaignData.businessName || 'Mobile Campaign'
+                        }
+                    ]
+                };
+                
+                // Fazer requisição para a API Woovi
+                const response = await fetch('/api/create-pix-charge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(pixData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.status} - ${response.statusText}`);
+                }
+                
+                const responseData = await response.json();
+                const charge = responseData.data;
+                
+                showPixPayment(charge, duration, `R$ ${budget.toFixed(2).replace('.', ',')}`, campaignId);                
+                startPaymentMonitoring(charge.correlationID);
+                
+                // Atualizar progresso para etapa 3 (pedido gerado) - MOBILE
+                updateProgressToStep3();
+                
+            } catch (error) {
+                console.error('Erro ao criar cobrança PIX:', error);
+                showPaymentError('Erro ao gerar PIX. Tente novamente.');
+            }
+        }
+        
+        // Função para mostrar pagamento PIX
+        function showPixPayment(charge, duration, priceText, campaignId) {
+            // Atualizar resumo da campanha
+            document.getElementById('payment-duration').textContent = `${duration} dias`;
+            document.getElementById('payment-value').textContent = priceText;
+            
+            // Atualizar QR Code e código PIX
+            const qrCodeImage = charge.charge?.qrCodeImage || charge.charge?.paymentMethods?.pix?.qrCodeImage;
+            const pixCode = charge.brCode || charge.charge?.brCode;
+            
+            if (qrCodeImage) {
+                const qrImage = document.getElementById('payment-qr-image');
+                const loadingElement = document.getElementById('qr-loading');
+                const contentElement = document.getElementById('qr-content');
+                
+                qrImage.onload = function() {
+                    loadingElement.style.display = 'none';
+                    contentElement.style.display = 'block';
+                };
+                
+                qrImage.onerror = function() {
+                    console.error('Erro ao carregar QR Code');
+                    loadingElement.innerHTML = '<p style="color: red;">Erro ao carregar QR Code</p>';
+                };
+                
+                qrImage.src = qrCodeImage;
+                
+                if (qrImage.complete && qrImage.naturalHeight !== 0) {
+                    qrImage.onload();
+                }
+            } else {
+                console.error('QR Code não encontrado na resposta');
+                document.getElementById('qr-loading').innerHTML = '<p style="color: red;">QR Code não disponível</p>';
+            }
+            
+            if (pixCode) {
+                document.getElementById('payment-pix-code').value = pixCode;
+            } else {
+                console.error('Código PIX não encontrado na resposta');
+            }
+        }
+        
+        // Função para monitorar pagamento
+        function startPaymentMonitoring(correlationID) {
+            if (!correlationID) {
+                console.error('CorrelationID não fornecido para monitoramento');
+                return;
+            }
+            
+            // Verificar status do pagamento a cada 5 segundos
+            window.paymentChecker = setInterval(async () => {
+                try {
+                    const response = await fetch(`/api/payment-status/${correlationID}`);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        if (data.status === 'COMPLETED') {
+                            clearInterval(window.paymentChecker);
+                            showPaymentSuccess();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao verificar status do pagamento:', error);
+                }
+            }, 5000);
+        }
+        
+        // Configurar event listeners
+        function setupPaymentEventListeners() {
+            // Botão voltar
+            document.getElementById('back-button').addEventListener('click', function() {
+                // Manter dados do localStorage para preservar configuração da campanha
+                // localStorage.removeItem('campaignData'); // Removido para manter dados
+                // Voltar para a página anterior
+                window.location.href = 'campaign-config.html';
+            });
+            
+            // Botão copiar código PIX
+            document.getElementById('copy-payment-code').addEventListener('click', function() {
+                const pixCode = document.getElementById('payment-pix-code');
+                
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(pixCode.value).then(() => {
+                        // Feedback visual
+                        this.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                        setTimeout(() => {
+                            this.innerHTML = '<i class="fas fa-copy"></i> Copiar Código PIX';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Erro ao copiar:', err);
+                        fallbackCopyTextToClipboard(pixCode.value, this);
+                    });
+                } else {
+                    fallbackCopyTextToClipboard(pixCode.value, this);
+                }
+            });
+            
+            // Botão retry
+            document.getElementById('retry-payment-btn').addEventListener('click', function() {
+                // Limpar timers antes de recarregar
+                if (window.pixTimer) {
+                    clearInterval(window.pixTimer);
+                }
+                if (window.paymentChecker) {
+                    clearInterval(window.paymentChecker);
+                }
+                location.reload();
+            });
+            
+            // Botão visualizar campanha
+            document.getElementById('view-payment-campaign').addEventListener('click', async function() {
+                try {
+                    const currentCampaignId = localStorage.getItem('activeCampaignId');
+                    if (currentCampaignId) {
+                        // Garantir que os dados estão preservados no localStorage
+                        localStorage.setItem('viewCampaignId', currentCampaignId);
+                        localStorage.setItem('redirectFromPayment', 'true');
+                        
+                        console.log('✅ [MOBILE] Redirecionando para dashboard com campaignId:', currentCampaignId);
+                        
+                        // Redirecionar para Minhas Campanhas
+                        window.location.href = 'minhas-campanhas.html';
+                    } else {
+                        console.warn('⚠️ [MOBILE] Nenhum campaignId encontrado, redirecionando para index');
+                        window.location.href = 'index.html';
+                    }
+                } catch (error) {
+                    console.error('❌ [MOBILE] Erro ao redirecionar:', error);
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+        
+        // Função para atualizar progresso para etapa 3 (pedido gerado)
+        function updateProgressToStep3() {
+            try {
+                // Obter campaignId usando a mesma lógica de prioridade do campaign-config
+                let campaignId = null;
+                
+                // Prioridade 1: globalTracker (campanha sendo trabalhada atualmente)
+                if (window.globalTracker && window.globalTracker.campaignId) {
+                    campaignId = window.globalTracker.campaignId;
+                    console.log('✅ [updateProgressToStep3] Usando globalTracker.campaignId (CORRETO):', campaignId);
+                }
+                // Prioridade 2: CampaignTracker atual (instância ativa)
+                else if (window.CampaignTracker && window.CampaignTracker.campaignId) {
+                    campaignId = window.CampaignTracker.campaignId;
+                    console.log('✅ [updateProgressToStep3] Usando CampaignTracker.campaignId:', campaignId);
+                }
+                // Prioridade 3: campaignCreator
+                else if (window.campaignCreator && window.campaignCreator.campaignTracker && window.campaignCreator.campaignTracker.campaignId) {
+                    campaignId = window.campaignCreator.campaignTracker.campaignId;
+                    console.log('⚠️ [updateProgressToStep3] Usando campaignCreator.campaignId como fallback:', campaignId);
+                }
+                // Prioridade 4: activeCampaignId do localStorage (último fallback)
+                else {
+                    campaignId = localStorage.getItem('activeCampaignId');
+                    console.log('⚠️ [updateProgressToStep3] Usando activeCampaignId do localStorage como fallback:', campaignId);
+                }
+                
+                console.log('🆔 [MOBILE] Atualizando etapa 3 para campaignId:', campaignId);
+                console.log('🔍 [MOBILE] Fontes verificadas:', {
+                    globalTracker: window.globalTracker?.campaignId,
+                    windowCampaignTracker: window.CampaignTracker?.campaignId,
+                    campaignCreator: window.campaignCreator?.campaignTracker?.campaignId,
+                    localStorage: localStorage.getItem('activeCampaignId')
+                });
+                
+                // Usar função global centralizada com campaignId específico
+                if (campaignId && typeof CampaignTracker !== 'undefined' && typeof CampaignTracker.updateProgressGlobal === 'function') {
+                    const success = CampaignTracker.updateProgressGlobal(3, campaignId);
+                    if (success) {
+                        console.log('📈 [MOBILE] Etapa 3 (pedido gerado) atualizada via função global para campanha:', campaignId);
+                    } else {
+                        console.warn('⚠️ [MOBILE] Falha ao atualizar progresso para etapa 3');
+                    }
+                } else {
+                    console.warn('⚠️ [MOBILE] Falha ao atualizar progresso para etapa 3');
+                    console.warn('🔍 [MOBILE] Debug:', {
+                        campaignId: campaignId,
+                        CampaignTrackerExists: typeof CampaignTracker !== 'undefined',
+                        updateProgressGlobalExists: typeof CampaignTracker?.updateProgressGlobal === 'function'
+                    });
+                }
+            } catch (error) {
+                console.error('❌ [MOBILE] Erro ao atualizar progresso:', error);
+            }
+        }
+        
+        // Função fallback para copiar texto
+        function fallbackCopyTextToClipboard(text, button) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                button.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-copy"></i> Copiar Código PIX';
+                }, 2000);
+            } catch (err) {
+                console.error('Erro ao copiar texto:', err);
+                button.innerHTML = '<i class="fas fa-times"></i> Erro ao copiar';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-copy"></i> Copiar Código PIX';
+                }, 2000);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // Timer de pagamento
+        function startPaymentTimer(seconds) {
+            let timeLeft = seconds;
+            const countdownElement = document.getElementById('payment-countdown');
+            
+            window.pixTimer = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                
+                countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(window.pixTimer);
+                    if (window.paymentChecker) {
+                        clearInterval(window.paymentChecker);
+                    }
+                    showPaymentError('Tempo esgotado para pagamento');
+                }
+                
+                timeLeft--;
+            }, 1000);
+        }
+        
+        // Mostrar erro de pagamento
+        function showPaymentError(message) {
+            document.getElementById('payment-pix').style.display = 'none';
+            document.getElementById('payment-error').style.display = 'block';
+            document.getElementById('payment-error-message').textContent = message;
+        }
+        
+        // Mostrar sucesso de pagamento
+        function showPaymentSuccess() {
+            document.getElementById('payment-pix').style.display = 'none';
+            document.getElementById('payment-success').style.display = 'block';
+            
+            // Atualizar progresso para etapa 4 (pagamento concluído)
+            updateProgressToStep4();
+        }
+        
+        // Função para atualizar progresso para etapa 4 (pagamento concluído)
+        async function updateProgressToStep4() {
+            try {
+                // PRIORIDADE: usar globalTracker.campaignId (campanha atual sendo trabalhada)
+                let campaignId = null;
+                if (window.globalTracker && window.globalTracker.campaignId) {
+                    campaignId = window.globalTracker.campaignId;
+                    console.log('✅ [MOBILE] Usando globalTracker.campaignId (CORRETO):', campaignId);
+                } else {
+                    console.warn('⚠️ [MOBILE] globalTracker.campaignId não disponível, usando fallback');
+                    campaignId = currentCampaignId;
+                }
+                
+                // Usar função global centralizada com campaignId específico
+                const success = CampaignTracker.updateProgressGlobal(4, campaignId);
+                if (success) {
+                    console.log('📈 [MOBILE] Etapa 4 (pagamento concluído) atualizada via função global para campanha:', campaignId);
+                } else {
+                    console.warn('⚠️ [MOBILE] Falha ao atualizar progresso para etapa 4');
+                }
+                
+                // Marcar campanha como completa preservando todos os dados
+                await markCampaignAsCompleted();
+                
+            } catch (error) {
+                console.error('❌ [MOBILE] Erro ao atualizar progresso para etapa 4:', error);
+            }
+        }
+        
+        // Função para marcar campanha como completa preservando dados
+        async function markCampaignAsCompleted() {
+            try {
+                // Obter campaignId usando a mesma lógica de prioridade do campaign-config
+                let currentCampaignId = null;
+                
+                // Prioridade 1: globalTracker (campanha sendo trabalhada atualmente)
+                if (window.globalTracker && window.globalTracker.campaignId) {
+                    currentCampaignId = window.globalTracker.campaignId;
+                    console.log('✅ [markCampaignAsCompleted] Usando globalTracker.campaignId (CORRETO):', currentCampaignId);
+                }
+                // Prioridade 2: CampaignTracker atual (instância ativa)
+                else if (window.CampaignTracker && window.CampaignTracker.campaignId) {
+                    currentCampaignId = window.CampaignTracker.campaignId;
+                    console.log('✅ [markCampaignAsCompleted] Usando CampaignTracker.campaignId:', currentCampaignId);
+                }
+                // Prioridade 3: campaignCreator
+                else if (window.campaignCreator && window.campaignCreator.campaignTracker && window.campaignCreator.campaignTracker.campaignId) {
+                    currentCampaignId = window.campaignCreator.campaignTracker.campaignId;
+                    console.log('⚠️ [markCampaignAsCompleted] Usando campaignCreator.campaignId como fallback:', currentCampaignId);
+                }
+                // Prioridade 4: activeCampaignId do localStorage (último fallback)
+                else {
+                    currentCampaignId = localStorage.getItem('activeCampaignId');
+                    console.log('⚠️ [markCampaignAsCompleted] Usando activeCampaignId do localStorage como fallback:', currentCampaignId);
+                }
+                
+                if (!currentCampaignId) {
+                    console.warn('⚠️ [MOBILE] Nenhum campaignId ativo encontrado');
+                    return;
+                }
+                
+                // Usar DataManager para preservar progressSteps
+                if (window.dataManager) {
+                    const campaigns = await window.dataManager.getAllCampaigns();
+                    const campaign = campaigns.find(c => (c.campaignId || c.id) === currentCampaignId);
+                    
+                    if (campaign) {
+                        // Marcar como completa preservando todos os dados
+                        campaign.isCompleted = true;
+                        campaign.status = 'completed';
+                        campaign.completedAt = new Date().toISOString();
+                        campaign.paymentConfirmed = true;
+                        
+                        // Garantir que progressSteps está completo
+                        campaign.progressSteps = campaign.progressSteps || {};
+                        campaign.progressSteps.step4 = {
+                            completed: true,
+                            completedAt: new Date().toISOString(),
+                            description: 'Pagamento confirmado'
+                        };
+                        
+                        await window.dataManager.saveCampaign(campaign);
+                        console.log('✅ [MOBILE] Campanha marcada como completa preservando todos os dados:', campaign);
+                    } else {
+                        console.warn('⚠️ [MOBILE] Campanha não encontrada no MongoDB');
+                    }
+                } else {
+                    console.warn('⚠️ [MOBILE] DataManager não disponível');
+                }
+                
+            } catch (error) {
+                console.error('❌ [MOBILE] Erro ao marcar campanha como completa:', error);
+            }
+        }
+    </script>
+</body>
+</html>

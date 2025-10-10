@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="facebook-domain-verification" content="19edbsmxgaqjmko3heo7par226ybjm" />
+    <title>Minha Conta - NextAds</title>
+    <link rel="stylesheet" href="./styles.css" type="text/css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* Estilos específicos para a página Minha Conta */
+        .account-container {
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: 100vh;
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .account-header {
+            background: transparent;
+            color: #333;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+        }
+
+        .account-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .account-header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .account-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .account-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .account-card h2 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-group {
+            margin-bottom: 1rem;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .info-value {
+            color: #2d3748;
+            font-size: 1.1rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        input {
+            width: 100%;
+            color: #2d3748;
+            font-size: 1.1rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .editable-input {
+            background: white;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .editable-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .blocked-input {
+            background: #f8f9fa;
+            color: #6c757d;
+            cursor: not-allowed;
+            border: 1px solid #e2e8f0;
+        }
+
+        .blocked-input:focus {
+            outline: none;
+            border-color: #e2e8f0;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .form-actions button {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #667eea;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Desktop - fonte menor para campos */
+        @media (min-width: 769px) {
+            .info-value,
+            input {
+                font-size: 1rem; /* Diminuído de 1.1rem para 1rem */
+            }
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .account-container {
+                margin-left: 0;
+                padding: 80px 0.8rem 1rem 0.8rem; /* Diminuído padding lateral */
+            }
+
+            .account-content {
+                grid-template-columns: 1fr;
+                gap: 0.8rem; /* Diminuído gap entre cards */
+            }
+
+            .account-card {
+                padding: 1rem; /* Diminuído de 1.5rem para 1rem */
+            }
+
+            .account-card h2 {
+                margin-bottom: 1rem; /* Diminuído de 1.5rem para 1rem */
+                font-size: 1.3rem; /* Diminuído tamanho da fonte */
+            }
+
+            .info-group {
+                margin-bottom: 0.7rem; /* Diminuído de 1rem para 0.7rem */
+            }
+
+            .info-value,
+            input {
+                padding: 0.6rem; /* Diminuído de 0.75rem para 0.6rem */
+                font-size: 1rem; /* Diminuído de 1.1rem para 1rem */
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Estilos para seção de login requerido */
+        .login-required {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            max-width: 90%;
+            margin: 0 auto;
+        }
+
+        .login-required i {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .login-required h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .login-required p {
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
+
+        /* Estilos específicos para botão de login na seção principal */
+        .login-required .login-btn-desktop {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white !important;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: static;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            margin: 0 auto;
+            width: 180px;
+            line-height: 1.2;
+        }
+
+        .login-required .login-btn-desktop:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-required .login-btn-desktop i,
+        .login-required .login-btn-desktop .fas,
+        .login-required .login-btn-desktop .fa-sign-in-alt {
+            font-size: 16px;
+            color: white !important;
+            background: none !important;
+            background-color: transparent !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: white !important;
+            background-clip: unset !important;
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+            vertical-align: baseline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Botão do menu mobile -->
+    <button class="mobile-menu-btn" id="mobile-menu-btn">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Overlay para fechar o menu -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html"><img src="logo.png" alt="Next Ads" class="sidebar-logo"></a>
+            <button class="close-menu-btn" id="close-menu-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="index.html" class="nav-link"><i class="fas fa-plus"></i> Criar Campanha</a></li>
+                <li><a href="minhas-campanhas.html" class="nav-link"><i class="fas fa-list"></i> Minhas Campanhas</a></li>
+                <li><a href="minha-conta.html" class="nav-link active"><i class="fas fa-user-cog"></i> Minha Conta</a></li>
+                <li><a href="sobre.html" class="nav-link"><i class="fas fa-info-circle"></i> Sobre</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Os botões de usuário serão criados dinamicamente pelo componente -->
+
+    <!-- Conteúdo Principal -->
+    <div class="account-container">
+        <!-- Loading -->
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner"></i>
+            <p>Carregando dados da conta...</p>
+        </div>
+
+        <!-- Login Required State -->
+        <div id="login-required" class="login-required" style="display: none;">
+            <i class="fas fa-user-lock"></i>
+            <h2>Acesso Restrito</h2>
+            <p>Para acessar sua conta, você precisa estar logado.</p>
+            <button class="login-btn-desktop" id="main-login-btn">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Entrar</span>
+            </button>
+        </div>
+
+        <!-- Conteúdo da Conta -->
+        <div id="account-content" style="display: none;">
+            <!-- Header -->
+            <div class="account-header">
+                <h1><i class="fas fa-user-circle"></i> Minha Conta</h1>
+                <p>Gerencie suas informações pessoais e configurações</p>
+            </div>
+
+            <!-- Conteúdo -->
+            <div class="account-content">
+                <!-- Informações Pessoais -->
+                <div class="account-card">
+                    <h2><i class="fas fa-user"></i> Informações Pessoais</h2>
+                    
+                    <form id="profile-form">
+                        <div class="info-group">
+                            <label class="info-label">Nome Completo</label>
+                            <input type="text" id="user-name" class="editable-input" placeholder="Digite seu nome completo">
+                        </div>
+
+                        <div class="info-group">
+                            <label class="info-label">E-mail</label>
+                            <input type="email" id="user-email" class="blocked-input" readonly placeholder="Email não pode ser alterado">
+                        </div>
+
+                        <div class="info-group">
+                            <label class="info-label">WhatsApp</label>
+                            <input type="text" id="user-whatsapp" class="blocked-input" readonly placeholder="WhatsApp não pode ser alterado">
+                        </div>
+
+                        <div class="info-group">
+                            <label class="info-label">Data de Cadastro</label>
+                            <input type="text" id="user-created" class="blocked-input" readonly placeholder="Data de cadastro">
+                        </div>
+
+                        <div class="info-group">
+                            <label class="info-label">Nova Senha</label>
+                            <input type="password" id="new-password" class="editable-input" placeholder="Digite uma nova senha (opcional)">
+                        </div>
+
+                        <div class="info-group">
+                            <label class="info-label">Confirmar Nova Senha</label>
+                            <input type="password" id="confirm-password" class="editable-input" placeholder="Confirme a nova senha">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i>
+                                Salvar Alterações
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="resetForm()">
+                                <i class="fas fa-undo"></i>
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Suporte -->
+                <div class="account-card">
+                    <h2><i class="fas fa-headset"></i> Suporte</h2>
+                    
+                    <p style="margin-bottom: 1.5rem; color: #4a5568;">
+                        Precisa de ajuda? Entre em contato conosco.
+                    </p>
+
+                    <div class="info-group">
+                        <button class="btn-primary" onclick="openSupport()">
+                            <i class="fas fa-comments"></i>
+                            Falar com Suporte
+                        </button>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/session-manager.js"></script>
+    <script>
+        // Verificar se o usuário está logado
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔄 Carregando página Minha Conta...');
+            
+            // Aguardar o sessionManager estar disponível
+            setTimeout(() => {
+                console.log('🔍 Verificando sessionManager...');
+                
+                if (typeof sessionManager === 'undefined') {
+                    console.error('❌ SessionManager não foi carregado');
+                    alert('Erro ao carregar o sistema de autenticação. Recarregue a página.');
+                    return;
+                }
+                
+                console.log('✅ SessionManager carregado');
+                
+                if (sessionManager.isLoggedIn()) {
+                    console.log('✅ Usuário está logado, carregando dados...');
+                    loadAccountData();
+                } else {
+                    console.log('❌ Usuário não está logado');
+                    showLoginRequired();
+                }
+            }, 100);
+        });
+
+        function showLoginRequired() {
+            console.log('🔒 Mostrando seção de login requerido');
+            
+            // Ocultar loading e conteúdo da conta
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('account-content').style.display = 'none';
+            
+            // Mostrar seção de login requerido
+            document.getElementById('login-required').style.display = 'block';
+            
+            console.log('✅ Seção de login requerido exibida');
+        }
+
+        function loadAccountData() {
+            try {
+                const userData = sessionManager.getUserData();
+                
+                if (userData) {
+                    // Preencher dados do usuário nos inputs
+                    document.getElementById('user-name').value = userData.name || '';
+                    document.getElementById('user-email').value = userData.email || '';
+                    document.getElementById('user-whatsapp').value = userData.whatsapp || '';
+                    
+                    // Formatar data de criação
+                    if (userData.createdAt) {
+                        const date = new Date(userData.createdAt);
+                        document.getElementById('user-created').value = date.toLocaleDateString('pt-BR');
+                    }
+
+                    // Carregar estatísticas (simulado por enquanto)
+                    loadUserStats();
+
+                    // Configurar formulário
+                    setupProfileForm();
+
+                    // Mostrar conteúdo e ocultar loading
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('account-content').style.display = 'block';
+
+                    console.log('✅ Dados da conta carregados:', userData);
+                } else {
+                    console.error('❌ Dados do usuário não encontrados no localStorage');
+                    throw new Error('Dados do usuário não encontrados no localStorage');
+                }
+            } catch (error) {
+                console.error('❌ Erro ao carregar dados da conta:', error);
+                
+                // Verificar se é um problema de autenticação
+                if (error.message.includes('não encontrados')) {
+                    alert('Sessão expirada ou dados corrompidos. Faça login novamente.');
+                } else {
+                    alert('Erro ao carregar dados da conta. Tente novamente.');
+                }
+                
+                // Limpar dados corrompidos e redirecionar
+                if (sessionManager && typeof sessionManager.logout === 'function') {
+                    sessionManager.logout(false);
+                }
+                window.location.href = './index.html';
+            }
+        }
+
+        function loadUserStats() {
+            // Por enquanto, valores simulados
+            // Em uma implementação real, isso viria de uma API
+            const totalCampaignsElement = document.getElementById('total-campaigns');
+            const activeCampaignsElement = document.getElementById('active-campaigns');
+            
+            if (totalCampaignsElement) {
+                totalCampaignsElement.textContent = '0';
+            }
+            
+            if (activeCampaignsElement) {
+                activeCampaignsElement.textContent = '0';
+            }
+        }
+
+        function setupProfileForm() {
+            const form = document.getElementById('profile-form');
+            if (form) {
+                form.addEventListener('submit', handleProfileSubmit);
+            }
+        }
+
+        async function handleProfileSubmit(e) {
+            e.preventDefault();
+            
+            const nameInput = document.getElementById('user-name');
+            const newPasswordInput = document.getElementById('new-password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+            
+            const newName = nameInput.value.trim();
+            const newPassword = newPasswordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            
+            // Validações
+            if (!newName) {
+                alert('O nome não pode estar vazio.');
+                nameInput.focus();
+                return;
+            }
+            
+            if (newPassword && newPassword !== confirmPassword) {
+                alert('As senhas não coincidem.');
+                confirmPasswordInput.focus();
+                return;
+            }
+            
+            if (newPassword && newPassword.length < 8) {
+                alert('A senha deve ter pelo menos 8 caracteres.');
+                newPasswordInput.focus();
+                return;
+            }
+            
+            try {
+                const userData = sessionManager.getUserData();
+                const updateData = {
+                    name: newName
+                };
+                
+                if (newPassword) {
+                    updateData.password = newPassword;
+                }
+                
+                console.log('📤 Enviando dados para atualização:', { 
+                    ...updateData, 
+                    password: updateData.password ? '[SENHA]' : undefined 
+                });
+                console.log('🔑 Token do usuário:', userData.accessToken ? userData.accessToken.substring(0, 20) + '...' : 'NENHUM TOKEN');
+                
+                // Fazer requisição para atualizar dados
+                const response = await fetch('/api/user/update', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userData.accessToken || ''}`
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    // Atualizar dados na sessão
+                    const updatedUserData = { ...userData, name: newName };
+                    sessionManager.storeUser(updatedUserData);
+                    
+                    // Limpar campos de senha
+                    newPasswordInput.value = '';
+                    confirmPasswordInput.value = '';
+                    
+                    alert('Dados atualizados com sucesso!');
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Erro ao atualizar dados');
+                }
+            } catch (error) {
+                console.error('❌ Erro ao atualizar dados:', error);
+                alert('Erro ao atualizar dados: ' + error.message);
+            }
+        }
+
+        function resetForm() {
+            const userData = sessionManager.getUserData();
+            if (userData) {
+                document.getElementById('user-name').value = userData.name || '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+            }
+        }
+
+        function exportData() {
+            alert('Funcionalidade de exportação de dados em desenvolvimento.');
+        }
+
+        function openSupport() {
+            const userData = sessionManager.getUserData();
+            const whatsapp = userData?.whatsapp || '';
+            const message = encodeURIComponent(`Olá! Preciso de ajuda com minha conta NextADS. Meu e-mail: ${userData?.email || ''}`);
+            window.open(`https://wa.me/5511999999999?text=${message}`, '_blank');
+        }
+
+
+    </script>
+
+    <!-- JavaScript para menu mobile -->
+    <script>
+        console.log('🎯 Script menu mobile carregado');
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            // Garantir que o menu inicie fechado
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // Função para abrir menu
+            function openMenu() {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            // Função para fechar menu
+            function closeMenu() {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            // Event listeners
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', openMenu);
+            }
+            
+            if (closeMenuBtn) {
+                closeMenuBtn.addEventListener('click', closeMenu);
+            }
+            
+            if (overlay) {
+                overlay.addEventListener('click', closeMenu);
+            }
+            
+            // Fechar menu ao clicar em um link
+            navLinks.forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+            
+            // Fechar menu com ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeMenu();
+                }
+            });
+        });
+
+        // Função para abrir modal de login
+        function openLoginModal() {
+            console.log('🔓 Abrindo modal de login');
+            
+            // Verificar se a função existe no login-component.js
+            if (typeof window.openLoginModal === 'function') {
+                window.openLoginModal();
+            } else {
+                console.error('❌ Função openLoginModal não encontrada');
+                alert('Erro ao abrir modal de login. Recarregue a página.');
+            }
+        }
+    </script>
+
+    <!-- Script de sincronização de autenticação -->
+    <script src="js/user-button-component.js"></script>
+    <script src="js/login-component.js"></script>
+    <script src="js/auth-sync.js"></script>
+
+    <footer style="background-color: #f8f9fa; padding: 0.8rem; text-align: center; margin-top: 2rem; border-top: 1px solid #dee2e6; position: absolute; left: 15%; right: 0; padding-right: 2rem; font-family: Arial, sans-serif;">
+        <p style="margin: 0; color: #6c757d; font-size: 0.7rem;">
+            <i class="fas fa-copyright"></i> 2025 Next Ads. Todos os direitos reservados.
+        </p>
+    </footer>
+</body>
+</html>

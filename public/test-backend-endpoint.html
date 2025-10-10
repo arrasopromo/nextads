@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Backend Endpoint - NextAds</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1877f2;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .btn {
+            background: #1877f2;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            background: #166fe5;
+        }
+        .btn.danger {
+            background: #dc3545;
+        }
+        .btn.danger:hover {
+            background: #c82333;
+        }
+        .log {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Teste Backend Endpoint</h1>
+        <p>Esta página testa se os endpoints do backend estão funcionando corretamente.</p>
+
+        <div class="test-section">
+            <h3>🔍 Status do Servidor</h3>
+            <div id="server-status" class="status info">Verificando...</div>
+            <button class="btn" onclick="checkServerStatus()">🔄 Verificar Status</button>
+        </div>
+
+        <div class="test-section">
+            <h3>👤 Teste /api/user/integrations</h3>
+            <p>Testa se o endpoint de integrações está funcionando (requer autenticação).</p>
+            <button class="btn" onclick="testIntegrationsEndpoint()">🧪 Testar Endpoint</button>
+            <div id="integrations-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔐 Teste /auth/facebook/callback</h3>
+            <p>Simula uma chamada para o endpoint de callback do Facebook OAuth.</p>
+            <button class="btn" onclick="testFacebookCallback()">🧪 Testar Callback</button>
+            <div id="callback-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Log de Requisições</h3>
+            <div id="log" class="log"></div>
+            <button class="btn danger" onclick="clearLog()">🗑️ Limpar Log</button>
+        </div>
+
+        <div class="test-section">
+            <a href="integracoes.html" class="btn">🔗 Ir para Integrações</a>
+            <a href="test-oauth-dynamic.html" class="btn">🔗 Teste OAuth Dinâmico</a>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const icon = type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️';
+            logElement.innerHTML += `[${timestamp}] ${icon} ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+            log('Log limpo');
+        }
+
+        async function checkServerStatus() {
+            const statusDiv = document.getElementById('server-status');
+            statusDiv.textContent = 'Verificando...';
+            statusDiv.className = 'status info';
+            
+            try {
+                log('🔍 Verificando status do servidor...');
+                const response = await fetch('/');
+                
+                if (response.ok) {
+                    statusDiv.textContent = '✅ Servidor funcionando corretamente';
+                    statusDiv.className = 'status success';
+                    log('✅ Servidor respondeu com status 200', 'success');
+                } else {
+                    statusDiv.textContent = `⚠️ Servidor respondeu com status ${response.status}`;
+                    statusDiv.className = 'status error';
+                    log(`⚠️ Servidor respondeu com status ${response.status}`, 'error');
+                }
+            } catch (error) {
+                statusDiv.textContent = '❌ Erro ao conectar com o servidor';
+                statusDiv.className = 'status error';
+                log(`❌ Erro ao conectar: ${error.message}`, 'error');
+            }
+        }
+
+        async function testIntegrationsEndpoint() {
+            const resultDiv = document.getElementById('integrations-result');
+            resultDiv.innerHTML = '<div class="status info">Testando...</div>';
+            
+            try {
+                log('🧪 Testando endpoint /api/user/integrations...');
+                
+                // Verificar se há token de autenticação
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    resultDiv.innerHTML = '<div class="status error">❌ Token de autenticação não encontrado no localStorage</div>';
+                    log('❌ Token de autenticação não encontrado', 'error');
+                    return;
+                }
+                
+                const response = await fetch('/api/user/integrations', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="status success">✅ Endpoint funcionando</div>
+                        <pre style="background: #f8f9fa; padding: 10px; border-radius: 4px; font-size: 12px;">${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    log('✅ Endpoint /api/user/integrations funcionando', 'success');
+                    log(`Dados recebidos: ${JSON.stringify(data)}`);
+                } else {
+                    resultDiv.innerHTML = `<div class="status error">❌ Erro ${response.status}: ${data.message || 'Erro desconhecido'}</div>`;
+                    log(`❌ Erro ${response.status}: ${data.message || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="status error">❌ Erro de conexão: ${error.message}</div>`;
+                log(`❌ Erro de conexão: ${error.message}`, 'error');
+            }
+        }
+
+        async function testFacebookCallback() {
+            const resultDiv = document.getElementById('callback-result');
+            resultDiv.innerHTML = '<div class="status info">Testando...</div>';
+            
+            try {
+                log('🧪 Testando endpoint /auth/facebook/callback...');
+                
+                // Simular parâmetros de callback do Facebook
+                const params = new URLSearchParams({
+                    code: 'test_authorization_code_123',
+                    state: 'test_state_456'
+                });
+                
+                const response = await fetch(`/auth/facebook/callback?${params.toString()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    // Se for um redirecionamento, mostrar a URL de destino
+                    if (response.redirected) {
+                        resultDiv.innerHTML = `
+                            <div class="status success">✅ Endpoint funcionando (redirecionamento)</div>
+                            <p><strong>URL de redirecionamento:</strong> ${response.url}</p>
+                        `;
+                        log('✅ Endpoint /auth/facebook/callback funcionando (redirecionamento)', 'success');
+                        log(`URL de redirecionamento: ${response.url}`);
+                    } else {
+                        const text = await response.text();
+                        resultDiv.innerHTML = `
+                            <div class="status success">✅ Endpoint funcionando</div>
+                            <pre style="background: #f8f9fa; padding: 10px; border-radius: 4px; font-size: 12px;">${text}</pre>
+                        `;
+                        log('✅ Endpoint /auth/facebook/callback funcionando', 'success');
+                    }
+                } else {
+                    const text = await response.text();
+                    resultDiv.innerHTML = `<div class="status error">❌ Erro ${response.status}</div><pre>${text}</pre>`;
+                    log(`❌ Erro ${response.status}`, 'error');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="status error">❌ Erro de conexão: ${error.message}</div>`;
+                log(`❌ Erro de conexão: ${error.message}`, 'error');
+            }
+        }
+
+        // Verificar status do servidor ao carregar a página
+        window.addEventListener('load', () => {
+            log('✅ Página de teste carregada');
+            checkServerStatus();
+        });
+    </script>
+</body>
+</html>

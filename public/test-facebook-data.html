@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Dados Facebook Isabelle Ingrid</title>
+</head>
+<body>
+    <h1>Simulando dados do Facebook para Isabelle Ingrid</h1>
+    <p>Esta página simula os dados que seriam salvos após o OAuth do Facebook.</p>
+    
+    <script>
+        // Simular dados da usuária Isabelle Ingrid conforme o exemplo fornecido
+        const facebookData = {
+            user_id: "10293847561029384",
+            name: "Isabelle Ingrid",
+            email: "isabelle.ingrid@example.com",
+            access_token: "EAAGZB3longtoken...",
+            token_type: "long_lived",
+            expires_in: 5183944,
+            ad_accounts: [
+                { id: "act_123456789", name: "Conta 1", account_status: 1, currency: "BRL" },
+                { id: "act_987654321", name: "Conta 2", account_status: 1, currency: "BRL" },
+                { id: "act_111222333", name: "Conta 3", account_status: 1, currency: "BRL" },
+                { id: "act_444555666", name: "Conta 4", account_status: 1, currency: "BRL" },
+                { id: "act_777888999", name: "Conta 5", account_status: 1, currency: "BRL" }
+            ],
+            pages: []
+        };
+
+        // Salvar no localStorage no formato que o integracoes.js espera
+        localStorage.setItem('facebook_connected', 'true');
+        localStorage.setItem('facebook_oauth_completed', Date.now().toString());
+        
+        // Formato correto para facebook_integration
+        const facebookIntegration = {
+            connected: true,
+            user: {
+                id: facebookData.user_id,
+                name: facebookData.name,
+                email: facebookData.email,
+                picture: `https://graph.facebook.com/${facebookData.user_id}/picture?type=large`
+            },
+            adAccounts: facebookData.ad_accounts,
+            pages: facebookData.pages,
+            connectedAt: new Date().toISOString()
+        };
+        
+        localStorage.setItem('facebook_integration', JSON.stringify(facebookIntegration));
+        
+        // Também salvar no formato user_integrations para compatibilidade
+        const userIntegrations = {
+            facebook: facebookIntegration
+        };
+        
+        localStorage.setItem('user_integrations', JSON.stringify(userIntegrations));
+        
+        console.log('✅ Dados do Facebook simulados para Isabelle Ingrid:');
+        console.log('👤 Usuário:', facebookData.name);
+        console.log('📧 Email:', facebookData.email);
+        console.log('🎯 Contas de anúncios:', facebookData.ad_accounts.length);
+        console.log('📄 Páginas:', facebookData.pages.length);
+        
+        // Redirecionar para a página de integrações após 2 segundos
+        setTimeout(() => {
+            window.location.href = 'integracoes.html?test_data=true';
+        }, 2000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhamento da Campanha - NextAds</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/detalhamento-campanha.css">
+    <style>
+        /* Estilos específicos para a página de detalhamento */
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        .campaign-detail-page {
+            width: 100%;
+            min-height: 100vh;
+            padding: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Os botões de usuário serão criados dinamicamente pelo componente -->
+        
+        <!-- Botão do menu mobile -->
+        <button class="mobile-menu-btn" id="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <!-- Overlay para fechar o menu -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html"><img src="logo.png" alt="Next Ads" class="sidebar-logo"></a>
+                <button class="close-menu-btn" id="close-menu-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html" class="nav-link"><i class="fas fa-plus"></i> Criar Campanha</a></li>
+                    <li><a href="minhas-campanhas.html" class="nav-link"><i class="fas fa-list"></i> Minhas Campanhas</a></li>
+                    <li><a href="sobre.html" class="nav-link"><i class="fas fa-info-circle"></i> Sobre</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="campaign-detail-page">
+                <div class="page-header">
+                    <button class="back-btn" id="back-btn">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                    <div class="page-title" id="sec-topo">
+                        <h1 id="campaign-name">Nome da Campanha</h1>
+                        <p>Análise completa e métricas em tempo real</p>
+                    </div>
+                    <!-- Botão de usuário integrado -->
+                    <div class="user-menu-container" id="user-menu-container">
+                        <button class="login-btn-desktop" id="loginBtnDesktop">
+                            <i class="fas fa-user"></i>
+                            <span>Entrar</span>
+                        </button>
+                        <button class="user-btn-desktop" id="userBtnDesktop" style="display: none;">
+                            <i class="fas fa-user-circle"></i>
+                            <span id="userNameBtnDesktop">Usuário</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown" id="userDropdownDesktop" style="display: none;">
+                            <a href="#" id="minha-conta-link" data-action="account">
+                                <i class="fas fa-user-cog"></i>
+                                Minha conta
+                            </a>
+                            <a href="#" id="logout-link" data-action="logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Deslogar
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Botão mobile -->
+                    <div class="user-menu-container-mobile" id="user-menu-container-mobile">
+                        <button class="login-btn-mobile" id="loginBtnMobile">
+                            <i class="fas fa-user"></i>
+                            <span>Entrar</span>
+                        </button>
+                        <button class="user-btn-mobile" id="userBtnMobile" style="display: none;">
+                            <i class="fas fa-user-circle"></i>
+                            <span id="userNameBtnMobile">Usuário</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown-mobile" id="userDropdownMobile" style="display: none;">
+                            <a href="#" id="minha-conta-link-mobile" data-action="account">
+                                <i class="fas fa-user-cog"></i>
+                                Minha conta
+                            </a>
+                            <a href="#" id="logout-link-mobile" data-action="logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Deslogar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Callout de pagamento -->
+                <div id="payment-callout" class="payment-callout" style="display:none;">
+                    <div class="payment-callout-inner">
+                        <h4 class="payment-callout-title">Campanha pendente</h4>
+                        <p class="payment-callout-subtitle">Inicie sua campanha agora clicando no botão abaixo</p>
+                        <button id="payment-callout-btn" class="payment-callout-btn">
+                            Iniciar campanha
+                        </button>
+                    </div>
+                </div>
+
+                <div class="page-content">
+            <div class="info-grid">
+                <div class="info-card combined-info">
+                    <div class="info-section" id="sec-geral">
+                        <h3><i class="fas fa-info-circle"></i> Informações Gerais</h3>
+                        <div class="info-item">
+                            <span class="info-label">Status</span>
+                            <span class="info-value" id="campaign-status">Aguardando Pagamento</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Criada Em</span>
+                            <span class="info-value" id="campaign-created-date">15/12/2024</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Objetivo</span>
+                            <span class="info-value" id="campaign-objective">Conversões</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Duração</span>
+                            <span class="info-value" id="campaign-duration">30 dias</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Direcionamento</span>
+                            <span class="info-value" id="campaign-direction">Não Definido</span>
+                        </div>
+                    </div>
+                    
+                    <div class="vertical-divider"></div>
+                    
+                    <div class="info-section" id="sec-publico">
+                        <h3><i class="fas fa-users"></i> Público-Alvo</h3>
+                        <div class="info-item">
+                            <span class="info-label">Idade</span>
+                            <span class="info-value" id="campaign-age">25-45 Anos</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Localização</span>
+                            <span class="info-value" id="campaign-location">São Paulo, SP</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Gênero</span>
+                            <span class="info-value" id="campaign-gender">Todos</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Mercados/Nichos</span>
+                            <span class="info-value" id="campaign-audience">Não Definido</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Alcance Estimado</span>
+                            <span class="info-value" id="campaign-reach">15.000 Pessoas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metrics-section" id="sec-metricas">
+                <h3 style="color: #2d3748; margin-bottom: 1rem; font-size: 1.5rem; font-weight: 700;">
+                    <i class="fas fa-chart-line"></i> Métricas da Campanha
+                </h3>
+                <!-- Aviso para campanhas aguardando pagamento -->
+                <div class="metrics-warning" id="metrics-warning" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Dados estimados a partir de casos de uso
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-impressions">0</div>
+                        <div class="metric-label">Impressões</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-reach">0</div>
+                        <div class="metric-label">Alcance</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-frequency">1,0</div>
+                        <div class="metric-label">Frequência</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-ctr">2,0%</div>
+                        <div class="metric-label">CTR (Clique link de saída)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-clicks">0</div>
+                        <div class="metric-label">Cliques no link de saída</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-cpc">R$ 0,00</div>
+                        <div class="metric-label">CPC (Custo por Clique)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-cpm">R$ 0,00</div>
+                        <div class="metric-label">CPM</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-hook">15,0%</div>
+                        <div class="metric-label">Hook Rate</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Modal de finalização de pagamento -->
+            <div id="payment-modal-overlay" class="payment-modal-overlay" style="display:none;">
+                <div class="payment-modal" id="payment-modal">
+                    <!-- Container de confetes -->
+                    <div class="confetti-container" id="confetti-container" style="display: none;">
+                        <div class="confetti circle"></div>
+                        <div class="confetti square"></div>
+                        <div class="confetti triangle"></div>
+                        <div class="confetti circle"></div>
+                        <div class="confetti square"></div>
+                        <div class="confetti triangle"></div>
+                        <div class="confetti circle"></div>
+                        <div class="confetti square"></div>
+                        <div class="confetti triangle"></div>
+                        <div class="confetti circle"></div>
+                        <div class="confetti square"></div>
+                        <div class="confetti triangle"></div>
+                        <div class="confetti circle"></div>
+                        <div class="confetti square"></div>
+                        <div class="confetti triangle"></div>
+                        <div class="confetti circle"></div>
+                        <div class="confetti square"></div>
+                        <div class="confetti triangle"></div>
+                        <div class="confetti circle"></div>
+                        <div class="confetti square"></div>
+                        <div class="confetti triangle"></div>
+                        <div class="confetti circle"></div>
+                        <div class="confetti square"></div>
+                        <div class="confetti triangle"></div>
+                        <div class="confetti circle"></div>
+                        <div class="confetti square"></div>
+                        <div class="confetti triangle"></div>
+                        <div class="confetti circle"></div>
+                        <div class="confetti square"></div>
+                        <div class="confetti triangle"></div>
+                        <div class="confetti circle"></div>
+                        <div class="confetti square"></div>
+                        <div class="confetti triangle"></div>
+                        <div class="confetti circle"></div>
+                        <div class="confetti square"></div>
+                        <div class="confetti triangle"></div>
+                    </div>
+                    
+                    <div class="payment-modal-header" id="payment-modal-header">
+                        <h3 class="payment-modal-title">Ative sua campanha agora</h3>
+                        <button class="payment-modal-close" aria-label="Fechar">&times;</button>
+                    </div>
+                    <div class="payment-modal-body">
+                        <p class="payment-modal-subtitle">Não perca tempo e conquiste os melhores resultados</p>
+                        
+                        <div class="campaign-status-animation" id="campaign-status">
+                            <span class="status-text">Aguardando pagamento...</span>
+                        </div>
+                        
+                        <button id="payment-modal-btn" class="payment-modal-btn">Criar campanha</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de autenticação -->
+    <script src="js/session-manager.js?v=1758232907"></script>
+    <script src="js/user-button-component.js"></script>
+    <script src="js/login-component.js"></script>
+    <script src="js/auth-sync.js"></script>
+    
+    <script>
+        // Função para animar valores numéricos
+        function animateValue(element, start, end, duration, suffix = '') {
+            const startTime = performance.now();
+            const isNumber = !isNaN(parseFloat(end));
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                if (isNumber) {
+                    const current = start + (parseFloat(end) - start) * progress;
+                    element.textContent = Math.floor(current).toLocaleString('pt-BR') + suffix;
+                } else {
+                    // Para valores não numéricos, apenas define o valor final
+                    element.textContent = end;
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        // Função para animar valores decimais e percentuais
+        function animateDecimalValue(element, start, end, duration, decimals = 1, suffix = '') {
+            const startTime = performance.now();
+            const startValue = parseFloat(start) || 0;
+            const endValue = parseFloat(end) || 0;
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const current = startValue + (endValue - startValue) * progress;
+                element.textContent = current.toFixed(decimals).replace('.', ',') + suffix;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        // Função para animar o CPC com variação contínua entre 0,75 e 9,95
+        function animateCPCValue(element, min, max, duration) {
+            const startTime = performance.now();
+            const targetValue = min + Math.random() * (max - min); // valor final aleatório
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                if (progress < 1) {
+                    // Durante a animação: criar variação contínua usando seno para movimento suave
+                    const baseValue = min + (max - min) * 0.5; // valor médio
+                    const amplitude = (max - min) * 0.4; // amplitude da variação
+                    const frequency = 0.002; // frequência da oscilação
+                    
+                    // Adicionar variação aleatória pequena para naturalidade
+                    const randomVariation = (Math.random() - 0.5) * 0.3;
+                    
+                    const current = baseValue + Math.sin(elapsed * frequency) * amplitude + randomVariation;
+                    const clampedValue = Math.min(max, Math.max(min, current));
+                    
+                    element.textContent = `R$ ${clampedValue.toFixed(2).replace('.', ',')}`;
+                    
+                    requestAnimationFrame(update);
+                } else {
+                    // Finalizar com valor estável
+                    element.textContent = `R$ ${targetValue.toFixed(2).replace('.', ',')}`;
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        // Função para popular os dados da campanha
+        // Função para calcular métricas baseadas na duração (mesma lógica do campaign-config)
+        function calculateMetricsBasedOnDuration(campaign) {
+            const days = parseInt(campaign.duration?.replace(/\D/g, '')) || 7;
+            
+            // Métricas baseadas na duração da campanha
+            const metricas = {
+                1: { alcanceMin: 1500, alcanceMax: 3000, vendas: '5 – 10', cliques: '150 – 300', cadastros: '10 – 20', orcamento: 'R$ 30' },
+                3: { alcanceMin: 3750, alcanceMax: 7500, vendas: '10 – 15', cliques: '375 – 750', cadastros: '25 – 50', orcamento: 'R$ 75' },
+                7: { alcanceMin: 7000, alcanceMax: 14000, vendas: '15 – 25', cliques: '700 – 1.4K', cadastros: '45 – 90', orcamento: 'R$ 140' },
+                14: { alcanceMin: 10500, alcanceMax: 21000, vendas: '25 – 40', cliques: '1.1K – 2.1K', cadastros: '70 – 140', orcamento: 'R$ 210' },
+                30: { alcanceMin: 15000, alcanceMax: 30000, vendas: '25 – 60', cliques: '1.5K – 3K', cadastros: '100 – 200', orcamento: 'R$ 300' }
+            };
+            
+            // Encontrar a métrica correspondente
+            let metricaEscolhida;
+            if (days <= 1) metricaEscolhida = metricas[1];
+            else if (days <= 3) metricaEscolhida = metricas[3];
+            else if (days <= 7) metricaEscolhida = metricas[7];
+            else if (days <= 14) metricaEscolhida = metricas[14];
+            else metricaEscolhida = metricas[30];
+            
+            // Calcular valores baseados nas métricas - 70-85% próximo do valor máximo
+            const range = metricaEscolhida.alcanceMax - metricaEscolhida.alcanceMin;
+            const minPercentage = 0.70; // 70% do caminho até o máximo
+            const maxPercentage = 0.85; // 85% do caminho até o máximo
+            const randomPercentage = minPercentage + (Math.random() * (maxPercentage - minPercentage));
+            const alcanceEstimado = Math.floor(metricaEscolhida.alcanceMin + (range * randomPercentage));
+            // Frequência baseada na duração: 1-3 dias = 1.0-1.1, acima de 3 dias = 1.2-1.4
+            const frequenciaMedia = (days <= 3) ? 1.05 : 1.3; // Valor médio da faixa
+            const impressoesEstimadas = Math.floor(alcanceEstimado * frequenciaMedia);
+            
+            // CTR baseado no objetivo da campanha
+            let ctrRate = 0.025; // CTR padrão de 2.5%
+            const objective = campaign.objective?.toLowerCase() || '';
+            if (objective.includes('engajamento') || objective.includes('engagement')) {
+                ctrRate = 0.08 + Math.random() * 0.02; // CTR de 8-10% para engajamento
+            }
+            
+            const cliquesEstimados = Math.floor(alcanceEstimado * ctrRate);
+            
+            // Formatação do alcance para exibição
+            const alcanceFormatado = `${(metricaEscolhida.alcanceMin / 1000).toFixed(1)}K – ${(metricaEscolhida.alcanceMax / 1000).toFixed(0)}K pessoas`;
+            
+            return {
+                alcanceEstimado,
+                impressoesEstimadas,
+                cliquesEstimados,
+                alcanceFormatado,
+                metricaEscolhida
+            };
+        }
+
+        function populateCampaignData(campaign) {
+            if (!campaign) return;
+            
+            // Calcular métricas baseadas na duração
+            const metricas = calculateMetricsBasedOnDuration(campaign);
+            
+            // Variável global para sincronizar alcance entre modal e métricas
+            window.alcanceSincronizado = metricas.alcanceEstimado;
+            
+            // Verificar se deve mostrar o aviso para campanhas aguardando pagamento
+            const warningElement = document.getElementById('metrics-warning');
+            if (warningElement) {
+                const isAwaitingPayment = (campaign.currentProgress == 3 || campaign.progress == 3 || 
+                                         campaign.currentProgress === '3' || campaign.progress === '3');
+                
+                if (isAwaitingPayment) {
+                    warningElement.style.display = 'flex';
+                } else {
+                    warningElement.style.display = 'none';
+                }
+            }
+            
+            // Função para mapear direcionamento
+            function getDirectionText(direction) {
+                if (!direction) return 'Não Definido';
+                
+                switch(direction.toLowerCase()) {
+                    case 'rede-social':
+                    case 'rede social':
+                    case 'social':
+                        return 'Rede Social';
+                    case 'site':
+                    case 'website':
+                        return 'Site';
+                    default:
+                        return direction;
+                }
+            }
+            
+            // Função para mapear objetivo
+            function getObjectiveText(objective) {
+                if (!objective) return 'Conversões';
+                
+                switch(objective.toLowerCase()) {
+                    case 'conversões':
+                    case 'conversoes':
+                    case 'conversion':
+                        return 'Conversões';
+                    case 'engajamento':
+                    case 'engagement':
+                        return 'Engajamento';
+                    case 'tráfego':
+                    case 'trafego':
+                    case 'traffic':
+                        return 'Tráfego';
+                    case 'vendas':
+                    case 'sales':
+                        return 'Vendas';
+                    case 'leads':
+                    case 'lead':
+                        return 'Leads';
+                    default:
+                        return objective.charAt(0).toUpperCase() + objective.slice(1).toLowerCase();
+                }
+            }
+            
+            // Função para mapear gênero
+            function getGenderText(gender) {
+                if (!gender) return 'Todos';
+                
+                switch(gender.toLowerCase()) {
+                    case 'todos':
+                    case 'all':
+                        return 'Todos';
+                    case 'masculino':
+                    case 'male':
+                    case 'homem':
+                    case 'homens':
+                        return 'Masculino';
+                    case 'feminino':
+                    case 'female':
+                    case 'mulher':
+                    case 'mulheres':
+                        return 'Feminino';
+                    default:
+                        return gender.charAt(0).toUpperCase() + gender.slice(1).toLowerCase();
+                }
+            }
+            
+            // Informações básicas
+            document.getElementById('campaign-name').textContent = campaign.name || 'Nome da Campanha';
+            
+            // Usar getCampaignStatus para determinar o status correto
+            const statusInfo = getCampaignStatus(campaign);
+            const statusElement = document.getElementById('campaign-status');
+            statusElement.textContent = statusInfo.text;
+            statusElement.className = 'info-value'; // Manter apenas o estilo padrão dos campos
+            
+            document.getElementById('campaign-created-date').textContent = campaign.createdDate || '15/12/2024';
+            document.getElementById('campaign-objective').textContent = getObjectiveText(campaign.objective);
+            document.getElementById('campaign-duration').textContent = campaign.duration || '7 Dias';
+            document.getElementById('campaign-direction').textContent = getDirectionText(campaign.direction);
+            
+            // Público-alvo
+            document.getElementById('campaign-age').textContent = campaign.age || '25-45 Anos';
+            document.getElementById('campaign-location').textContent = campaign.location || 'São Paulo, SP';
+            document.getElementById('campaign-gender').textContent = getGenderText(campaign.gender);
+            document.getElementById('campaign-audience').textContent = campaign.audience || 'Não definido';
+            document.getElementById('campaign-reach').textContent = metricas.alcanceFormatado;
+            
+            // Métricas com animação baseadas na duração (velocidade mais lenta)
+            setTimeout(() => {
+                animateValue(document.getElementById('metric-impressions'), 0, metricas.impressoesEstimadas, 5000);
+                animateValue(document.getElementById('metric-reach'), 0, metricas.alcanceEstimado, 5000);
+                animateValue(document.getElementById('metric-clicks'), 0, metricas.cliquesEstimados, 4500);
+            }, 500);
+            
+            // Métricas com animação decimal (frequência, CTR, hook rate)
+            setTimeout(() => {
+                // Frequência baseada na duração: 1-3 dias = 1.0-1.1, acima de 3 dias = 1.2-1.4
+                const days = parseInt(campaign.duration?.replace(/\D/g, '')) || 7;
+                const freqMin = (days <= 3) ? 1.0 : 1.2;
+                const freqMax = (days <= 3) ? 1.1 : 1.4;
+                animateDecimalValue(document.getElementById('metric-frequency'), freqMin, freqMax, 4000, 1);
+                
+                // CTR baseado no objetivo da campanha
+                const objective = campaign.objective?.toLowerCase() || '';
+                if (objective.includes('engajamento') || objective.includes('engagement')) {
+                    animateDecimalValue(document.getElementById('metric-ctr'), 6.5, 9.2, 4200, 1, '%');
+                } else {
+                    animateDecimalValue(document.getElementById('metric-ctr'), 1.2, 2.5, 4200, 1, '%');
+                }
+                
+                animateDecimalValue(document.getElementById('metric-hook'), 17.0, 22.0, 4800, 1, '%');
+            }, 800);
+            
+            // CPC com animação variando entre R$ 0,75 e R$ 9,95
+            setTimeout(() => {
+                animateCPCValue(document.getElementById('metric-cpc'), 0.75, 0.95, 5000);
+            }, 1000);
+            
+            // CPM baseado no objetivo da campanha
+            const objective = campaign.objective?.toLowerCase() || '';
+            let cpmValue = 'R$ 12,50'; // padrão
+            if (objective.includes('venda') || objective.includes('sales')) {
+                // CPM entre 25-30 para vendas
+                const cpmAmount = 25 + Math.random() * 5; // 25-30
+                cpmValue = `R$ ${cpmAmount.toFixed(2).replace('.', ',')}`;
+            } else if (objective.includes('engajamento') || objective.includes('engagement')) {
+                // CPM entre 18-22 para engajamento
+                const cpmAmount = 18 + Math.random() * 4; // 18-22
+                cpmValue = `R$ ${cpmAmount.toFixed(2).replace('.', ',')}`;
+            } else if (objective.includes('cadastro') || objective.includes('lead')) {
+                // CPM entre 22-28 para cadastros
+                const cpmAmount = 22 + Math.random() * 6; // 22-28
+                cpmValue = `R$ ${cpmAmount.toFixed(2).replace('.', ',')}`;
+            }
+            document.getElementById('metric-cpm').textContent = cpmValue;
+            
+            // Configurar modal de pagamento se necessário
+            setupPaymentModal(campaign);
+        }
+        
+        // Função para configurar o modal de pagamento
+        function setupPaymentModal(campaign) {
+            try {
+                console.log('🔍 [DEBUG] setupPaymentModal chamada com:', campaign);
+                const campaignId = campaign.id || campaign.campaignId || (campaign.campaignData && campaign.campaignData.id) || '';
+                console.log('🔍 [DEBUG] campaignId:', campaignId);
+                
+                // Vincular botão "Visualizar Campanha" no cabeçalho
+                const viewBtn = document.getElementById('view-overlay-campaign');
+                if (viewBtn) {
+                    const freshViewBtn = viewBtn.cloneNode(true);
+                    viewBtn.parentNode.replaceChild(freshViewBtn, viewBtn);
+                    freshViewBtn.setAttribute('data-campaign-id', campaignId);
+                    freshViewBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const cid = this.getAttribute('data-campaign-id') || campaignId || localStorage.getItem('activeCampaignId') || '';
+                        if (cid) {
+                            try { localStorage.setItem('activeCampaignId', cid); } catch (err) {}
+                            window.location.href = 'campaign-config.html?campaignId=' + cid;
+                        } else {
+                            console.warn('Nenhum campaignId disponível para navegação.');
+                        }
+                    });
+                }
+
+                // Configurar callout e modal de pagamento
+                const statusClass = getCampaignStatus(campaign).class;
+                console.log('🔍 [DEBUG] statusClass:', statusClass);
+                console.log('🔍 [DEBUG] campaign.paymentCorrelationID:', campaign.paymentCorrelationID);
+                console.log('🔍 [DEBUG] campaign.paymentConfirmedAt:', campaign.paymentConfirmedAt);
+                const callout = document.getElementById('payment-callout');
+                const btn = document.getElementById('payment-callout-btn');
+                
+                if (callout && btn) {
+                    // Preparar botão do callout
+                    const freshBtn = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(freshBtn, btn);
+                    freshBtn.setAttribute('data-campaign-id', campaignId);
+                    freshBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const cid = this.getAttribute('data-campaign-id') || campaignId || localStorage.getItem('activeCampaignId') || '';
+                        if (cid) {
+                            try { localStorage.setItem('activeCampaignId', cid); } catch (err) {}
+                            window.location.href = 'campaign-config.html?campaignId=' + cid;
+                        } else {
+                            console.warn('Nenhum campaignId disponível para navegação.');
+                        }
+                    });
+                    
+                    if (statusClass === 'status-waiting-payment' || (campaign && campaign.paymentCorrelationID && !campaign.paymentConfirmedAt)) {
+                        console.log('🔍 [DEBUG] Condição do modal atendida! Configurando modal...');
+                        // Não exibir callout; usar modal após 7s
+                        callout.style.display = 'none';
+
+                        const overlay = document.getElementById('payment-modal-overlay');
+                        const modalBtn = document.getElementById('payment-modal-btn');
+                        const closeBtn = document.querySelector('.payment-modal-close');
+
+                        console.log('🔍 [DEBUG] Elementos encontrados:', {
+                            overlay: !!overlay,
+                            modalBtn: !!modalBtn,
+                            closeBtn: !!closeBtn
+                        });
+                        
+                        console.log('🔍 [DEBUG] Overlay element:', overlay);
+                        console.log('🔍 [DEBUG] Close button element:', closeBtn);
+
+                        // Versão simplificada para debug
+                        console.log('🚀 [DEBUG] Iniciando configuração simplificada do modal');
+                        
+                        // Controle para impedir reaparição do modal
+                        let modalShown = false;
+                        let userInteracted = false;
+                        
+                        function closeModal() {
+                            console.log('🔴 [DEBUG] Função closeModal chamada');
+                            const overlay = document.querySelector('.payment-modal-overlay');
+                            if (overlay) {
+                                overlay.classList.remove('active');
+                                // Forçar o display none para garantir que o modal seja escondido
+                                overlay.style.display = 'none';
+                                userInteracted = true; // Marcar que o usuário interagiu
+                                console.log('✅ [DEBUG] Modal fechado com sucesso');
+                                console.log('✅ [DEBUG] Classes do overlay após fechar:', overlay.className);
+                                console.log('✅ [DEBUG] Display do overlay após fechar:', overlay.style.display);
+                                console.log('✅ [DEBUG] userInteracted definido como:', userInteracted);
+                            } else {
+                                console.log('❌ [DEBUG] Overlay não encontrado na função closeModal');
+                            }
+                        }
+                        
+                        // Teste direto - adicionar função global para testar
+                        window.testCloseModal = function() {
+                            console.log('🧪 [TEST] Função de teste chamada');
+                            closeModal();
+                        };
+                        
+                        if (overlay && modalBtn) {
+                            console.log('✅ [DEBUG] Configurando modal simplificado');
+                            
+                            const ensureVisible = () => {
+                                console.log('🔍 [DEBUG] Executando ensureVisible - verificando se deve mostrar modal');
+                                console.log('🔍 [DEBUG] modalShown:', modalShown, 'userInteracted:', userInteracted);
+                                
+                                if (modalShown || userInteracted) {
+                                    console.log('⏭️ [DEBUG] Modal já foi mostrado ou usuário já interagiu - pulando');
+                                    return;
+                                }
+                                
+                                console.log('🔍 [DEBUG] Mostrando modal');
+                                modalShown = true;
+                                overlay.style.display = 'flex';
+                                overlay.classList.add('active');
+                                console.log('🔍 [DEBUG] Classe active adicionada ao overlay');
+                                console.log('🔍 [DEBUG] Display definido como:', overlay.style.display);
+                                console.log('🔍 [DEBUG] modalShown definido como:', modalShown);
+                            };
+
+                            // Modo de força via query string para testes
+                            try {
+                                const force = new URLSearchParams(location.search).get('forcePaymentModal');
+                                console.log('🔍 [DEBUG] forcePaymentModal:', force);
+                                if (force === '1') {
+                                    console.log('🔍 [DEBUG] Modo força ativado - modal em 7s');
+                                    setTimeout(() => {
+                                        overlay.style.display = 'flex';
+                                        ensureVisible();
+                                        // Iniciar animação de status após modal aparecer
+                                        setTimeout(animateCampaignStatus, 500);
+                                    }, 7000);
+                                }
+                            } catch {}
+
+                            // Função para animar status da campanha
+                            function animateCampaignStatus() {
+                                console.log('🎬 [DEBUG] animateCampaignStatus iniciada');
+                                const statusElement = document.querySelector('#campaign-status .status-text');
+                                if (!statusElement) {
+                                    console.log('❌ [DEBUG] statusElement não encontrado');
+                                    return;
+                                }
+                                console.log('✅ [DEBUG] statusElement encontrado:', statusElement);
+                                
+                                // Obter duração da campanha
+                                const durationRaw = campaign?.duration || '7 dias';
+                                const days = parseInt(durationRaw.toString().replace(/[^\d]/g, '')) || 7;
+                                
+                                // Usar o valor de alcance sincronizado com as métricas principais
+                                const pessoasAlcancadas = window.alcanceSincronizado || 10000;
+                                const pessoasAlcancadasFormatado = `${pessoasAlcancadas.toLocaleString('pt-BR')} pessoas alcançadas`;
+                                console.log('📊 [DEBUG] pessoasAlcancadas:', pessoasAlcancadas);
+                                console.log('📊 [DEBUG] pessoasAlcancadasFormatado:', pessoasAlcancadasFormatado);
+                                
+                                // Determinar números finais baseados no objetivo e duração da campanha
+                                let finalNumber = 10;
+                                let metricType = 'cadastros realizados';
+                                
+                                if (campaign && campaign.objective) {
+                                    const objective = campaign.objective.toLowerCase();
+                                    
+                                    if (objective.includes('venda') || objective.includes('sales')) {
+                                        metricType = 'vendas realizadas';
+                                        // Vendas baseadas na duração com variação de ±20%
+                                        let baseValue;
+                                        if (days <= 1) baseValue = 8;
+                                        else if (days <= 3) baseValue = 13;
+                                        else if (days <= 7) baseValue = 22;
+                                        else if (days <= 14) baseValue = 35;
+                                        else baseValue = 50;
+                                        
+                                        // Aplicar variação de ±20%
+                                        const variation = 0.20;
+                                        const minValue = Math.floor(baseValue * (1 - variation));
+                                        const maxValue = Math.floor(baseValue * (1 + variation));
+                                        finalNumber = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
+                                    } else if (objective.includes('engajamento') || objective.includes('engagement')) {
+                                        metricType = 'cliques no link';
+                                        // Cliques no link baseado na duração (8-12% do alcance com variação)
+                                        let baseValue;
+                                        if (days <= 1) baseValue = Math.floor(3000 * 0.10);
+                                        else if (days <= 3) baseValue = Math.floor(7500 * 0.10);
+                                        else if (days <= 7) baseValue = Math.floor(14000 * 0.10);
+                                        else if (days <= 14) baseValue = Math.floor(21000 * 0.10);
+                                        else baseValue = Math.floor(30000 * 0.10);
+                                        
+                                        // Aplicar variação de ±25%
+                                        const variation = 0.25;
+                                        const minValue = Math.floor(baseValue * (1 - variation));
+                                        const maxValue = Math.floor(baseValue * (1 + variation));
+                                        finalNumber = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
+                                    } else if (objective.includes('lead') || objective.includes('cadastro')) {
+                                        metricType = 'cadastros realizados';
+                                        // Leads baseados na duração com variação de ±15%
+                                        let baseValue;
+                                        if (days <= 1) baseValue = 16;
+                                        else if (days <= 3) baseValue = 42;
+                                        else if (days <= 7) baseValue = 75;
+                                        else if (days <= 14) baseValue = 120;
+                                        else baseValue = 170;
+                                        
+                                        // Aplicar variação de ±15%
+                                        const variation = 0.15;
+                                        const minValue = Math.floor(baseValue * (1 - variation));
+                                        const maxValue = Math.floor(baseValue * (1 + variation));
+                                        finalNumber = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
+                                    } else if (objective.includes('tráfego') || objective.includes('trafego') || objective.includes('traffic')) {
+                                        metricType = 'cliques no site';
+                                        // Tráfego baseado na duração com variação de ±18%
+                                        let baseValue;
+                                        if (days <= 1) baseValue = 250;
+                                        else if (days <= 3) baseValue = 650;
+                                        else if (days <= 7) baseValue = 1200;
+                                        else if (days <= 14) baseValue = 1800;
+                                        else baseValue = 2600;
+                                        
+                                        // Aplicar variação de ±18%
+                                        const variation = 0.18;
+                                        const minValue = Math.floor(baseValue * (1 - variation));
+                                        const maxValue = Math.floor(baseValue * (1 + variation));
+                                        finalNumber = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
+                                    }
+                                }
+                                
+                                const statuses = [
+                                    'Pagamento realizado',
+                                    'Campanha criada',
+                                    'Campanha iniciada'
+                                ];
+                                
+                                console.log('📋 [DEBUG] Status definidos:', statuses);
+                                
+                                let currentIndex = 0;
+                                let currentNumber = 0;
+                                let isAnimatingNumbers = false;
+                                
+                                function updateStatus() {
+                                    console.log('🔄 [DEBUG] updateStatus chamada, currentIndex:', currentIndex, 'statuses.length:', statuses.length);
+                                    console.log('🔄 [DEBUG] statusElement existe?', !!statusElement);
+                                    console.log('🔄 [DEBUG] statusElement.textContent atual:', statusElement ? statusElement.textContent : 'N/A');
+                                    
+                                    // Se já terminou todos os status, iniciar animação dos números
+                                    if (currentIndex >= statuses.length) {
+                                        console.log('🎯 [DEBUG] Todos os status exibidos, iniciando animação dos números');
+                                        if (!isAnimatingNumbers) {
+                                            isAnimatingNumbers = true;
+                                            animateReachInModal();
+                                        }
+                                        return;
+                                    }
+                                    
+                                    console.log('📝 [DEBUG] Exibindo status:', statuses[currentIndex]);
+                                    
+                                    // Fade out
+                                    statusElement.classList.add('fade-out');
+                                    
+                                    setTimeout(() => {
+                                        // Atualizar texto do status atual
+                                        statusElement.textContent = statuses[currentIndex];
+                                        console.log('✅ [DEBUG] Status atualizado para:', statuses[currentIndex]);
+                                        
+                                        // Fade in
+                                        statusElement.classList.remove('fade-out');
+                                        
+                                        currentIndex++;
+                                        
+                                        // Próximo status após 1.5 segundos (para totalizar ~7 segundos nos status)
+                                        setTimeout(updateStatus, 1500);
+                                    }, 500);
+                                }
+                                
+                                function animateReachInModal() {
+                                    // Usar a mesma lógica do animateValue para alcance
+                                    const startTime = performance.now();
+                                    const reachDuration = 3500; // 3.5 segundos para alcance (mais lento)
+                                    
+                                    function updateReach(currentTime) {
+                                        const elapsed = currentTime - startTime;
+                                        const progress = Math.min(elapsed / reachDuration, 1);
+                                        
+                                        const current = 0 + (pessoasAlcancadas - 0) * progress;
+                                        statusElement.textContent = `${Math.floor(current).toLocaleString('pt-BR')} pessoas alcançadas`;
+                                        
+                                        if (progress < 1) {
+                                            requestAnimationFrame(updateReach);
+                                        } else {
+                                            // Após terminar alcance, animar objetivo
+                                            setTimeout(animateObjective, 500);
+                                        }
+                                    }
+                                    
+                                    function animateObjective() {
+                                        // Usar a mesma lógica do animateValue para objetivo
+                                        const objStartTime = performance.now();
+                                        const objDuration = 2500; // 2.5 segundos para objetivo (mais lento)
+                                        
+                                        function updateObjective(currentTime) {
+                                            const elapsed = currentTime - objStartTime;
+                                            const progress = Math.min(elapsed / objDuration, 1);
+                                            
+                                            const current = 0 + (finalNumber - 0) * progress;
+                                            statusElement.textContent = `${Math.floor(current).toLocaleString('pt-BR')} ${metricType}`;
+                                            
+                                            if (progress < 1) {
+                                                requestAnimationFrame(updateObjective);
+                                            }
+                                        }
+                                        
+                                        requestAnimationFrame(updateObjective);
+                                    }
+                                    
+                                    // Iniciar com alcance
+                                    requestAnimationFrame(updateReach);
+                                }
+                                
+                                function animateNumbers() {
+                                    // Criar sequência de números que aumenta progressivamente
+                                    const numberSequence = [];
+                                    const startNumber = Math.max(1, Math.floor(finalNumber * 0.3)); // Começar com 30% do número final
+                                    const increment = Math.max(1, Math.floor((finalNumber - startNumber) / 2)); // Dividir em 2 incrementos
+                                    
+                                    for (let i = 0; i < 3; i++) {
+                                        let num = startNumber + (increment * i);
+                                        if (i === 2) num = finalNumber; // Garantir que o último seja o número final
+                                        numberSequence.push(num);
+                                    }
+                                    
+                                    let numberIndex = 0;
+                                    
+                                    function updateNumber() {
+                                        if (numberIndex >= numberSequence.length) {
+                                            // Animação terminada
+                                            return;
+                                        }
+                                        
+                                        const currentNum = numberSequence[numberIndex];
+                                        statusElement.textContent = `${currentNum} ${metricType}`;
+                                        
+                                        numberIndex++;
+                                        
+                                        // Próximo número após 800ms
+                                        if (numberIndex < numberSequence.length) {
+                                            setTimeout(updateNumber, 800);
+                                        }
+                                    }
+                                    
+                                    updateNumber();
+                                }
+                                
+                                // Iniciar animação após 0.5 segundos
+                                setTimeout(updateStatus, 500);
+                            }
+
+                            // Exibição normal após 7s
+                            console.log('🔍 [DEBUG] Configurando timer de 7s para mostrar modal');
+                            setTimeout(() => {
+                                ensureVisible();
+                                // Iniciar animação de status após modal aparecer
+                                setTimeout(animateCampaignStatus, 500);
+                            }, 7000);
+                            
+                            // Ação do botão do modal
+                            modalBtn.addEventListener('click', function(e) {
+                                console.log('🔘 [DEBUG] Botão do modal clicado');
+                                e.preventDefault();
+                                e.stopPropagation();
+                                userInteracted = true;
+                                try { localStorage.setItem('activeCampaignId', campaignId); } catch (err) {}
+                                window.location.href = 'campaign-config.html?campaignId=' + campaignId;
+                            });
+
+                            // Usar delegação de eventos no document
+                            document.addEventListener('click', function(e) {
+                                console.log('🎯 [DEBUG] Clique detectado no document:', e.target.className);
+                                
+                                // Fechar com X
+                                if (e.target.matches('.payment-modal-close') || e.target.closest('.payment-modal-close')) {
+                                    console.log('❌ [DEBUG] Clique no X detectado via delegação');
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    userInteracted = true;
+                                    closeModal();
+                                    // Exibir callout após fechar
+                                    const calloutAfter = document.getElementById('payment-callout');
+                                    if (calloutAfter) {
+                                        calloutAfter.style.display = 'block';
+                                        console.log('🔍 [DEBUG] Callout exibido após fechar modal');
+                                    }
+                                    return;
+                                }
+                                
+                                // Fechar clicando fora
+                                if (e.target.matches('.payment-modal-overlay')) {
+                                    console.log('🎯 [DEBUG] Clique no overlay detectado via delegação');
+                                    userInteracted = true;
+                                    closeModal();
+                                    // Exibir callout após fechar
+                                    const calloutAfter = document.getElementById('payment-callout');
+                                    if (calloutAfter) {
+                                        calloutAfter.style.display = 'block';
+                                        console.log('🔍 [DEBUG] Callout exibido após fechar modal');
+                                    }
+                                    return;
+                                }
+                            });
+                        }
+                    } else {
+                        console.log('🔍 [DEBUG] Condição do modal NÃO atendida - exibindo callout normal');
+                        callout.style.display = 'none';
+                        const overlay = document.getElementById('payment-modal-overlay');
+                        if (overlay) overlay.classList.remove('active');
+                    }
+                }
+            } catch (err) {
+                console.warn('Falha ao configurar modal de pagamento:', err);
+            }
+        }
+        
+        // Função para obter status da campanha
+        function getCampaignStatus(campaign) {
+            if (!campaign) return { class: 'status-draft', text: 'Rascunho' };
+            
+            // Verificação robusta para progresso 3 (aguardando pagamento)
+            const currentProgressNum = parseInt(campaign.currentProgress);
+            const progressNum = parseInt(campaign.progress);
+            
+            if (campaign.currentProgress == 3 || campaign.progress == 3 ||
+                campaign.currentProgress === "3" || campaign.progress === "3" ||
+                currentProgressNum === 3 || progressNum === 3) {
+                return { class: 'status-waiting-payment', text: 'Aguardando Pagamento' };
+            }
+            
+            if (campaign.paymentCorrelationID && !campaign.paymentConfirmedAt) {
+                return { class: 'status-waiting-payment', text: 'Aguardando Pagamento' };
+            }
+            
+            if (campaign.status === 'active' || campaign.status === 'Ativa') {
+                return { class: 'status-active', text: 'Ativa' };
+            }
+            
+            return { class: 'status-draft', text: 'Rascunho' };
+        }
+        
+        // Função para voltar para a página de campanhas
+        function goBack() {
+            window.location.href = 'minhas-campanhas.html';
+        }
+        
+        // Função para buscar dados da campanha do MongoDB
+        async function fetchCampaignFromMongoDB(campaignId) {
+            try {
+                const response = await fetch(`/api/campaigns/${campaignId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    const campaign = await response.json();
+                    return campaign;
+                } else {
+                    console.warn('Campanha não encontrada no MongoDB');
+                    return null;
+                }
+            } catch (error) {
+                console.error('Erro ao buscar campanha do MongoDB:', error);
+                return null;
+            }
+        }
+
+
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Botão voltar
+            const backBtn = document.getElementById('back-btn');
+            if (backBtn) {
+                backBtn.addEventListener('click', goBack);
+            }
+            
+            // Carregar dados da campanha da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const campaignId = urlParams.get('campaignId') || urlParams.get('id');
+            
+            if (campaignId) {
+                // Primeiro, tentar buscar do MongoDB
+                let campaign = await fetchCampaignFromMongoDB(campaignId);
+                
+                if (!campaign) {
+                    // Se não encontrar no MongoDB, buscar no localStorage
+                    try {
+                        const savedCampaignData = localStorage.getItem('campaignData_' + campaignId);
+                        if (savedCampaignData) {
+                            campaign = JSON.parse(savedCampaignData);
+                        } else {
+                            const campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]');
+                            campaign = campaigns.find(c => c.id === campaignId);
+                        }
+                    } catch (err) {
+                        console.warn('Erro ao carregar dados do localStorage:', err);
+                    }
+                }
+                
+                if (campaign) {
+                    // Mapear dados do MongoDB para o formato esperado
+                    const campaignData = {
+                        id: campaign._id || campaign.id,
+                        name: campaign.name || campaign.campaignName || 'Nome da Campanha',
+                        status: campaign.status || 'Aguardando pagamento',
+                        createdDate: campaign.createdAt ? new Date(campaign.createdAt).toLocaleDateString('pt-BR') : '15/12/2024',
+                        objective: campaign.objective || campaign.campaignObjective || 'Conversões',
+                        duration: campaign.duration || '30 Dias',
+                        direction: campaign.targeting || campaign.direction || 'rede-social',
+                        age: campaign.age || '25-45 Anos',
+                        location: campaign.location || campaign.targetLocation || 'São Paulo, SP',
+                        gender: campaign.gender || 'Todos',
+                        audience: campaign.audience || campaign.targetAudience || 'Não Definido',
+                        reach: campaign.estimatedReach || '15.000 Pessoas',
+                        impressions: campaign.metrics?.impressions || campaign.impressions || Math.floor(Math.random() * 50000),
+                        metricReach: campaign.metrics?.reach || campaign.reach || Math.floor(Math.random() * 30000),
+                        frequency: campaign.metrics?.frequency || '1,2',
+                        ctr: campaign.metrics?.ctr || '2,5%',
+                        clicks: campaign.metrics?.clicks || campaign.clicks || Math.floor(Math.random() * 1500),
+                        cpc: campaign.metrics?.cpc || 'R$ 0,85',
+                        cpm: campaign.metrics?.cpm || 'R$ 12,50',
+                        hook: campaign.metrics?.hookRate || '18,5%',
+                        progress: campaign.progress || campaign.currentProgress || 3,
+                        currentProgress: campaign.currentProgress || campaign.progress || 3,
+                        paymentCorrelationID: campaign.paymentCorrelationID,
+                        paymentConfirmedAt: campaign.paymentConfirmedAt
+                    };
+                    populateCampaignData(campaignData);
+                } else {
+                    // Dados de exemplo se não encontrar
+                    const campaignData = {
+                        id: campaignId,
+                        name: 'Campanha Não Encontrada',
+                        status: 'Aguardando Pagamento',
+                        createdDate: '15/12/2024',
+                        objective: 'Conversões',
+                        duration: '30 Dias',
+                        direction: 'rede-social',
+                        age: '25-45 Anos',
+                        location: 'São Paulo, SP',
+                        gender: 'Todos',
+                        audience: 'Não Definido',
+                        reach: '15.000 Pessoas',
+                        impressions: Math.floor(Math.random() * 50000),
+                        metricReach: Math.floor(Math.random() * 30000),
+                        frequency: '1,0',
+                        ctr: '2,0%',
+                        clicks: Math.floor(Math.random() * 1500),
+                        cpc: 'R$ 0,00',
+                        cpm: 'R$ 0,00',
+                        hook: '15,0%',
+                        progress: 3,
+                        currentProgress: 3
+                    };
+                    populateCampaignData(campaignData);
+                }
+            } else {
+                // Página sem ID específico
+                const campaignData = {
+                    name: 'Detalhamento da Campanha',
+                    status: 'Aguardando Pagamento',
+                    createdDate: '15/12/2024',
+                    objective: 'Conversões',
+                    duration: '30 Dias',
+                    direction: 'rede-social',
+                    age: '25-45 Anos',
+                    location: 'São Paulo, SP',
+                    gender: 'Todos',
+                    audience: 'Não Definido',
+                    reach: '15.000 Pessoas',
+                    impressions: Math.floor(Math.random() * 50000),
+                    metricReach: Math.floor(Math.random() * 30000),
+                    frequency: '1,0',
+                    ctr: '2,0%',
+                    clicks: Math.floor(Math.random() * 1500),
+                    cpc: 'R$ 0,00',
+                    cpm: 'R$ 0,00',
+                    hook: '15,0%',
+                    progress: 3,
+                    currentProgress: 3
+                };
+                populateCampaignData(campaignData);
+            }
+        });
+
+        // Função para animar o alcance progressivamente
+        function animateProgressiveReach(element, finalReach) {
+            // Criar sequência de números que aumenta progressivamente para o alcance
+            // Sincronizado com impressões (5000ms total)
+            const reachSequence = [];
+            const startReach = Math.max(100, Math.floor(finalReach * 0.3)); // Começar com 30% do alcance final
+            const increment = Math.max(100, Math.floor((finalReach - startReach) / 4)); // Dividir em 4 incrementos para 5 etapas
+            
+            for (let i = 0; i < 5; i++) {
+                let reach = startReach + (increment * i);
+                if (i === 4) reach = finalReach; // Garantir que o último seja o alcance final
+                reachSequence.push(reach);
+            }
+            
+            let reachIndex = 0;
+            
+            function updateReach() {
+                if (reachIndex >= reachSequence.length) return;
+                
+                const currentReach = reachSequence[reachIndex];
+                element.textContent = currentReach.toLocaleString('pt-BR');
+                
+                reachIndex++;
+                
+                // Próximo número após 1000ms (5 etapas x 1000ms = 5000ms total)
+                if (reachIndex < reachSequence.length) {
+                    setTimeout(updateReach, 1000);
+                }
+            }
+            
+            updateReach();
+        }
+
+        // Função para ativar animação de confete
+        function activateConfetti() {
+            const confettiContainer = document.querySelector('.confetti-container');
+            if (confettiContainer) {
+                confettiContainer.style.display = 'block';
+                
+                // Esconder confete após 3 segundos
+                setTimeout(() => {
+                    confettiContainer.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+    </script>
+    
+    <!-- Scripts do menu mobile -->
+    <script src="script.js"></script>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer style="background-color: #f8f9fa; padding: 0.8rem; text-align: center; margin-top: 2rem; border-top: 1px solid #dee2e6; position: absolute; left: 15%; right: 0; padding-right: 2rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <p style="margin: 0; color: #6c757d; font-size: 0.7rem;">
+            <i class="fas fa-copyright"></i> 2025 Next Ads. Todos os direitos reservados.
+        </p>
+    </footer>
+    
+</body>
+</html>

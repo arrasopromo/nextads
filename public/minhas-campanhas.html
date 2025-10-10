@@ -1,0 +1,2373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://track.nextads.pro *.nextads.pro; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; media-src 'self' data: blob:; connect-src 'self' https: wss: ws: http://localhost:4000 https://nextads.pro https://cdnjs.cloudflare.com https://api.instagram.com https://graph.instagram.com https://api.openai.com https://api.openpix.com.br https://api.woovi-sandbox.com https://api.woovi.com https://track.nextads.pro *.nextads.pro; frame-src 'self'; object-src 'none'; base-uri 'self';">
+    <meta name="facebook-domain-verification" content="19edbsmxgaqjmko3heo7par226ybjm" />
+    <title>Minhas Campanhas - NextAds</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/minhas-campanhas.css">
+    
+
+
+    <!-- TRACK COMBO -->
+    <script>
+      (function() {
+        try {
+          // In dev/local preview, skip loading TC-FQZRKRMP if no Ethereum provider (MetaMask)
+          var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+          var hasEthereum = typeof window.ethereum !== 'undefined' || (window.web3 && window.web3.currentProvider);
+          if (!hasEthereum && isLocal) {
+            console.info('Skipping TC-FQZRKRMP tracking (no MetaMask/provider in dev).');
+            return;
+          }
+          var script = document.createElement("script");
+          script.type = "text/javascript";
+          script.async = true;
+          script.src = "https://track.nextads.pro/tag/TC-FQZRKRMP.js";
+          script.defer = true;
+          
+          // Adiciona tratamento de erro para o script
+          script.onerror = function() {
+            console.warn('Script de rastreamento não pôde ser carregado, mas a página continuará funcionando normalmente.');
+          };
+          
+          var firstScript = document.getElementsByTagName("script")[0];
+          firstScript.parentNode.insertBefore(script, firstScript);
+        } catch (error) {
+          console.warn('Erro ao carregar script de rastreamento:', error);
+        }
+      })();
+    </script>
+    <!-- End TRACK COMBO -->
+
+
+</head>
+<body>
+    <div class="container">
+        <!-- Os botões de usuário serão criados dinamicamente pelo componente -->
+        
+        <!-- Botão do menu mobile -->
+        <button class="mobile-menu-btn" id="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <!-- Overlay para fechar o menu -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html"><img src="logo.png" alt="Next Ads" class="sidebar-logo"></a>
+                <button class="close-menu-btn" id="close-menu-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html" class="nav-link"><i class="fas fa-plus"></i> Criar Campanha</a></li>
+                    <li><a href="minhas-campanhas.html" class="nav-link active"><i class="fas fa-list"></i> Minhas Campanhas</a></li>
+                    <li><a href="sobre.html" class="nav-link"><i class="fas fa-info-circle"></i> Sobre</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="campaigns-container">
+                <div class="campaigns-header">
+                    <h1>Minhas Campanhas</h1>
+                    <p>Gerencie e acompanhe todas as suas campanhas publicitárias</p>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loading-state" class="loading" style="display: block;">
+                    <i class="fas fa-spinner"></i>
+                    <p>Carregando suas campanhas...</p>
+                </div>
+
+                <!-- Login Required State -->
+                <div id="login-required" class="login-required" style="display: none;">
+                    <i class="fas fa-user-lock"></i>
+                    <h2>Acesso Restrito</h2>
+                    <p>Para visualizar suas campanhas, você precisa estar logado em sua conta.</p>
+                    <button class="login-btn-desktop" id="campaigns-login-btn">
+                        <i class="fas fa-user"></i>
+                        <span>Entrar</span>
+                    </button>
+
+                </div>
+
+                <!-- No Campaigns State -->
+                <div id="no-campaigns" class="no-campaigns" style="display: none;">
+                    <i class="fas fa-bullhorn"></i>
+                    <h2>Nenhuma Campanha Encontrada</h2>
+                    <p>Você ainda não criou nenhuma campanha. Que tal começar agora?</p>
+                    <a href="index.html" class="create-campaign-btn">
+                        <i class="fas fa-plus"></i> Criar Campanha
+                    </a>
+                </div>
+
+                <!-- Campaigns Grid -->
+                <div id="campaigns-grid" class="campaigns-grid" style="display: none;">
+                    <!-- Campanhas serão inseridas aqui dinamicamente -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Login -->
+    <div class="login-modal-overlay" id="login-modal-overlay">
+        <div class="login-modal" id="login-modal">
+            <div class="login-modal-header">
+                <h2>Faça login para acessar suas campanhas</h2>
+                <button class="close-login-modal" id="close-login-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Abas de Login e Cadastro -->
+            <div class="login-tabs">
+                <button class="tab-btn active" id="login-tab-btn" data-tab="login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </button>
+                <button class="tab-btn" id="signup-tab-btn" data-tab="signup">
+                    <i class="fas fa-user-plus"></i>
+                    Cadastro
+                </button>
+            </div>
+            
+            <div class="login-modal-body">
+                <!-- Formulário de Login -->
+                <div class="login-section" id="login-section">
+                    <form class="login-form" id="login-form">
+                        <div class="form-group">
+                            <label for="login-identifier">Email ou telefone</label>
+                            <input type="text" id="login-identifier" name="identifier" placeholder="Digite seu email ou telefone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Senha</label>
+                            <input type="password" id="login-password" name="password" placeholder="Digite sua senha" required>
+                        </div>
+                        <div class="form-group remember-me-group">
+                            <label class="remember-me-label">
+                                <input type="checkbox" id="remember-me" name="remember-me">
+                                <span class="checkmark"></span>
+                                Lembrar-me
+                            </label>
+                        </div>
+                        <button type="submit" class="login-submit-btn">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Entrar
+                        </button>
+                    </form>
+                    <div class="login-links">
+                        <a href="#" class="forgot-password-link">Esqueci minha senha</a>
+                    </div>
+                </div>
+
+                <!-- Formulário de Criação de Conta -->
+                <div class="signup-section hidden" id="signup-section">
+                    <form class="signup-form" id="signup-form">
+                        <div class="form-group">
+                            <label for="signup-name">Nome Completo *</label>
+                            <input type="text" id="signup-name" name="name" placeholder="Ex: João Silva Santos" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-email">Endereço de E-mail *</label>
+                            <input type="email" id="signup-email" name="email" placeholder="Ex: joao@exemplo.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-whatsapp">Número do WhatsApp *</label>
+                            <input type="tel" id="signup-whatsapp" name="whatsapp" placeholder="+55 (11) 99999-9999" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-password">Criar Senha *</label>
+                            <input type="password" id="signup-password" name="password" placeholder="Mínimo 8 caracteres" required minlength="8">
+                        </div>
+                        <button type="submit" class="signup-submit-btn">
+                            <i class="fas fa-user-plus"></i>
+                            Criar Minha Conta
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carregar SessionManager -->
+    <script src="js/session-manager.js?v=1758232907"></script>
+    
+    <!-- Carregar DataManager -->
+    <script src="js/data-manager.js?v=1758232907"></script>
+
+    <script>
+        class MinhasCampanhas {
+            constructor() {
+                this.sessionManager = window.sessionManager;
+                this.dataManager = new DataManager();
+                this.campaigns = [];
+                this.init();
+            }
+
+            async init() {
+                console.log('🚀 [DEBUG] Inicializando Minhas Campanhas');
+                console.log('🔧 [DEBUG] window.sessionManager:', !!window.sessionManager);
+                console.log('🔧 [DEBUG] this.sessionManager:', !!this.sessionManager);
+                
+                // Aguardar o SessionManager estar disponível
+                if (!this.sessionManager) {
+                    console.log('⏳ Aguardando SessionManager...');
+                    await this.waitForSessionManager();
+                }
+                
+                // Configurar eventos do modal de login
+                this.setupLoginModal();
+                
+                // Configurar menu mobile
+                this.setupMobileMenu();
+                
+                // Garantir que todos os elementos estejam prontos
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                // Verificar status de login e carregar campanhas
+                await this.checkLoginAndLoadCampaigns();
+            }
+
+            async waitForSessionManager() {
+                return new Promise((resolve) => {
+                    const checkSessionManager = () => {
+                        if (window.sessionManager) {
+                            this.sessionManager = window.sessionManager;
+                            console.log('✅ SessionManager encontrado');
+                            resolve();
+                        } else {
+                            setTimeout(checkSessionManager, 100);
+                        }
+                    };
+                    checkSessionManager();
+                });
+            }
+
+            setupLoginModal() {
+                const loginTabBtn = document.getElementById('login-tab-btn');
+                const signupTabBtn = document.getElementById('signup-tab-btn');
+                const loginSection = document.getElementById('login-section');
+                const signupSection = document.getElementById('signup-section');
+                const loginForm = document.getElementById('login-form');
+                const signupForm = document.getElementById('signup-form');
+
+                // Alternar entre abas
+                loginTabBtn.addEventListener('click', () => {
+                    loginTabBtn.classList.add('active');
+                    signupTabBtn.classList.remove('active');
+                    loginSection.classList.remove('hidden');
+                    signupSection.classList.add('hidden');
+                });
+
+                signupTabBtn.addEventListener('click', () => {
+                    signupTabBtn.classList.add('active');
+                    loginTabBtn.classList.remove('active');
+                    signupSection.classList.remove('hidden');
+                    loginSection.classList.add('hidden');
+                });
+
+                // Formulário de login
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.handleLogin(e);
+                });
+
+                // Formulário de cadastro
+                signupForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.handleSignup(e);
+                });
+
+                // Event listeners do modal gerenciados pelo LoginComponent
+                
+                // Event listener ESC gerenciado pelo LoginComponent
+
+
+            }
+
+            setupMobileMenu() {
+                const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                const closeMenuBtn = document.getElementById('close-menu-btn');
+                const overlay = document.getElementById('mobile-menu-overlay');
+                const sidebar = document.getElementById('sidebar');
+                const navLinks = document.querySelectorAll('.nav-link');
+
+                function openMenu() {
+                    sidebar.classList.add('active');
+                    overlay.classList.add('active');
+                }
+
+                function closeMenu() {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                }
+
+                // Event listeners normais
+                if (mobileMenuBtn) {
+                    mobileMenuBtn.addEventListener('click', openMenu);
+                }
+                if (closeMenuBtn) {
+                    closeMenuBtn.addEventListener('click', closeMenu);
+                }
+                if (overlay) {
+                    overlay.addEventListener('click', closeMenu);
+                }
+                
+                navLinks.forEach(link => {
+                    link.addEventListener('click', closeMenu);
+                });
+
+                // Event delegation para garantir que funcione mesmo com modal aberto
+                document.addEventListener('click', function(e) {
+                    if (e.target && (e.target.id === 'mobile-menu-btn' || e.target.closest('#mobile-menu-btn'))) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openMenu();
+                    }
+                });
+
+                // Event listener adicional para touch events
+                document.addEventListener('touchend', function(e) {
+                    if (e.target && (e.target.id === 'mobile-menu-btn' || e.target.closest('#mobile-menu-btn'))) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openMenu();
+                    }
+                });
+
+                // Fechar menu ao clicar fora dele (exceto nos links de navegação)
+                document.addEventListener('click', function(e) {
+                    // Verificar se o menu está aberto
+                    if (sidebar.classList.contains('active')) {
+                        // Verificar se o clique foi fora do sidebar e do botão de menu
+                        if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                            // Verificar se não clicou em um dos links de navegação permitidos
+                            const isNavLink = e.target.closest('.nav-link');
+                            const navLinkHref = isNavLink ? isNavLink.getAttribute('href') : null;
+                            
+                            // Permitir apenas cliques nos links específicos (criar campanha, minhas campanhas, sobre)
+                            const allowedLinks = ['index.html', 'minhas-campanhas.html', 'sobre.html'];
+                            const isAllowedNavigation = navLinkHref && allowedLinks.some(link => navLinkHref.includes(link));
+                            
+                            // Se não for um link de navegação permitido, fechar o menu
+                            if (!isAllowedNavigation) {
+                                closeMenu();
+                            }
+                        }
+                    }
+                });
+
+                // Fechar menu ao tocar fora dele no mobile (exceto nos links de navegação)
+                document.addEventListener('touchend', function(e) {
+                    // Verificar se o menu está aberto
+                    if (sidebar.classList.contains('active')) {
+                        // Verificar se o toque foi fora do sidebar e do botão de menu
+                        if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                            // Verificar se não tocou em um dos links de navegação permitidos
+                            const isNavLink = e.target.closest('.nav-link');
+                            const navLinkHref = isNavLink ? isNavLink.getAttribute('href') : null;
+                            
+                            // Permitir apenas toques nos links específicos (criar campanha, minhas campanhas, sobre)
+                            const allowedLinks = ['index.html', 'minhas-campanhas.html', 'sobre.html'];
+                            const isAllowedNavigation = navLinkHref && allowedLinks.some(link => navLinkHref.includes(link));
+                            
+                            // Se não for um link de navegação permitido, fechar o menu
+                            if (!isAllowedNavigation) {
+                                closeMenu();
+                            }
+                        }
+                    }
+                });
+            }
+
+            async checkLoginAndLoadCampaigns() {
+                try {
+                    console.log('🔍 Verificando status de login...');
+                    console.log('SessionManager:', this.sessionManager);
+                    
+                    const isLoggedIn = this.sessionManager.isLoggedIn();
+                    console.log('Status de login:', isLoggedIn);
+                    
+                    if (!isLoggedIn) {
+                        console.log('❌ Usuário não está logado');
+                        this.showLoginRequired();
+                        return;
+                    }
+                    
+                    console.log('✅ Usuário está logado, carregando campanhas...');
+                    
+                    // Debug: Verificar estado dos elementos antes de carregar campanhas
+                    console.log('🔍 Estado dos elementos antes de carregar:');
+                    console.log('loading-state display:', document.getElementById('loading-state').style.display);
+                    console.log('login-required display:', document.getElementById('login-required').style.display);
+                    console.log('no-campaigns display:', document.getElementById('no-campaigns').style.display);
+                    console.log('campaigns-grid display:', document.getElementById('campaigns-grid').style.display);
+                    
+                    await this.loadUserCampaigns();
+                    
+                    // Garantir que a página esteja totalmente desbloqueada após carregar campanhas
+                    setTimeout(() => {
+                        this.ensurePageInteractivity();
+                        this.forceMobileInteractivity();
+                    }, 500);
+                    
+                    // Verificação adicional para mobile
+                    setTimeout(() => {
+                        this.forceMobileInteractivity();
+                        console.log('🔧 Verificação final de interatividade mobile');
+                    }, 2000);
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao verificar login:', error);
+                    this.showLoginRequired();
+                }
+            }
+
+            createTestCampaigns() {
+                return [
+                    {
+                        _id: 'test1',
+                        name: 'Campanha de Vendas Black Friday',
+                        objective: 'conversions',
+                        budget: 500,
+                        duration: 7,
+                        status: 'active',
+                        createdAt: new Date().toISOString(),
+                        startTime: new Date().toISOString(),
+                        endTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                        targetAudience: {
+                            ageRange: '25-45',
+                            gender: 'all',
+                            interests: ['compras', 'tecnologia']
+                        },
+                        adContent: {
+                            headline: 'Ofertas Imperdíveis Black Friday',
+                            description: 'Descontos de até 70% em produtos selecionados',
+                            media: [{type: 'image', url: 'https://via.placeholder.com/400x300'}]
+                        }
+                    },
+                    {
+                        _id: 'test2',
+                        name: 'Campanha de Awareness Marca',
+                        objective: 'brand_awareness',
+                        budget: 300,
+                        duration: 14,
+                        status: 'paused',
+                        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                        startTime: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                        endTime: new Date(Date.now() + 11 * 24 * 60 * 60 * 1000).toISOString(),
+                        targetAudience: {
+                            ageRange: '18-35',
+                            gender: 'all',
+                            interests: ['lifestyle', 'moda']
+                        },
+                        adContent: {
+                            headline: 'Conheça Nossa Nova Coleção',
+                            description: 'Estilo e qualidade que você merece',
+                            media: [{type: 'video', url: 'https://via.placeholder.com/400x300'}]
+                        }
+                    },
+                    {
+                        _id: 'test3',
+                        name: 'Campanha de Tráfego Website',
+                        objective: 'traffic',
+                        budget: 200,
+                        duration: 5,
+                        status: 'completed',
+                        createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+                        startTime: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+                        endTime: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                        targetAudience: {
+                            ageRange: '25-55',
+                            gender: 'all',
+                            interests: ['negócios', 'empreendedorismo']
+                        },
+                        adContent: {
+                            headline: 'Visite Nosso Novo Site',
+                            description: 'Descubra todas as novidades e promoções',
+                            media: [{type: 'image', url: 'https://via.placeholder.com/400x300'}]
+                        }
+                    }
+                ];
+            }
+
+            async loadUserCampaigns() {
+                try {
+                    console.log('🚀 [DEBUG] Iniciando loadUserCampaigns');
+                    console.log('🔧 [DEBUG] sessionManager disponível:', !!this.sessionManager);
+                    
+                    const userData = this.sessionManager.getUserData();
+                    console.log('🔍 [DEBUG] Dados do usuário:', userData);
+                    console.log('🔍 [DEBUG] Tipo dos dados:', typeof userData);
+                    
+                    const userId = userData?._id || userData?.id || userData?.userId || userData?.user_id;
+                    
+                    if (!userData || !userId) {
+                        console.log('❌ Dados do usuário inválidos ou sem ID');
+                        this.showLoginRequired();
+                        return;
+                    }
+                    
+                    console.log('✅ ID do usuário encontrado:', userId);
+                    console.log('📊 Carregando campanhas do usuário:', userId);
+                    
+                    const url = `/api/users/${userId}/campaigns`;
+                    console.log('🌐 URL da requisição:', url);
+                    // Recuperar token de acesso de forma robusta
+                    let accessToken = null;
+                    try {
+                        accessToken = userData?.accessToken || null;
+                        if (!accessToken) {
+                            const localUserData = JSON.parse(localStorage.getItem('userData') || '{}');
+                            accessToken = localUserData?.accessToken || null;
+                        }
+                        if (!accessToken) {
+                            const nextadsUserData = JSON.parse(localStorage.getItem('nextads_user_data') || '{}');
+                            accessToken = nextadsUserData?.accessToken || null;
+                        }
+                        if (!accessToken) {
+                            accessToken = localStorage.getItem('nextads_session_token') || null;
+                        }
+                    } catch (e) {
+                        console.warn('⚠️ [DEBUG] Falha ao recuperar token do localStorage:', e);
+                    }
+
+                    const headers = {};
+                    if (accessToken) {
+                        headers['Authorization'] = `Bearer ${accessToken}`;
+                        console.log('🔑 [DEBUG] Enviando Authorization Bearer com a requisição de campanhas');
+                    } else {
+                        console.warn('⚠️ [DEBUG] Nenhum token encontrado; tentando requisição sem Authorization');
+                    }
+
+                    const response = await fetch(url, { headers });
+                    console.log('📡 Status da resposta:', response.status, response.statusText);
+                    
+                    if (!response.ok) {
+                        console.log('❌ Resposta não OK:', response.status, response.statusText);
+                        throw new Error(`Erro ao carregar campanhas: ${response.status}`);
+                    }
+
+                    const campaigns = await response.json();
+                    console.log('📋 Campanhas recebidas:', campaigns);
+                    this.campaigns = campaigns;
+
+                    console.log('✅ Campanhas carregadas:', campaigns.length);
+
+                    if (campaigns.length === 0) {
+                        console.log('📭 Nenhuma campanha encontrada, exibindo tela de "sem campanhas"');
+                        this.showNoCampaigns();
+                    } else {
+                        console.log('📊 Exibindo campanhas na grid');
+                        this.showCampaigns(campaigns);
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Erro ao carregar campanhas:', error);
+                    this.showNoCampaigns();
+                }
+            }
+
+            showLoginRequired() {
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('login-required').style.display = 'block';
+                document.getElementById('no-campaigns').style.display = 'none';
+                document.getElementById('campaigns-grid').style.display = 'none';
+            }
+
+            showNoCampaigns() {
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('login-required').style.display = 'none';
+                document.getElementById('no-campaigns').style.display = 'block';
+                document.getElementById('campaigns-grid').style.display = 'none';
+            }
+
+            showCampaigns(campaigns) {
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('login-required').style.display = 'none';
+                document.getElementById('no-campaigns').style.display = 'none';
+                document.getElementById('campaigns-grid').style.display = 'grid';
+
+                this.renderCampaigns(campaigns);
+            }
+
+            renderCampaigns(campaigns) {
+                const grid = document.getElementById('campaigns-grid');
+                grid.innerHTML = '';
+
+                campaigns.forEach(campaign => {
+                    const campaignCard = this.createCampaignCard(campaign);
+                    grid.appendChild(campaignCard);
+                });
+
+                // Atualizar status automaticamente após renderizar
+                // this.updateCampaignStatuses(); // Comentado - o status já é definido corretamente na criação do card
+            }
+
+            updateCampaignStatuses() {
+                // Atualizar status de todas as campanhas na página usando a função getCampaignStatus
+                const campaignCards = document.querySelectorAll('.campaign-card');
+                
+                campaignCards.forEach((card, index) => {
+                    const statusElement = card.querySelector('.campaign-status');
+                    
+                    if (statusElement && this.campaigns && this.campaigns[index]) {
+                        const campaign = this.campaigns[index];
+                        
+                        // Usar a função getCampaignStatus para obter o status correto
+                        const status = this.getCampaignStatus(campaign);
+                        
+                        console.log(`🔄 [updateCampaignStatuses] Atualizando status da campanha ${campaign.id}:`, status);
+                        
+                        // Aplicar o status correto
+                        statusElement.className = `campaign-status ${status.class}`;
+                        statusElement.innerHTML = `<i class="fas ${status.icon}"></i> ${status.text}`;
+                    }
+                });
+            }
+
+            createCampaignCard(campaign) {
+                const card = document.createElement('div');
+                card.className = 'campaign-card';
+                card.onclick = () => this.openFuturisticPage(campaign);
+
+                const status = this.getCampaignStatus(campaign);
+                
+                // Log específico para a campanha problemática
+                if (campaign.id === 'camp_1759248654597_q0oudsukl') {
+                    console.log('🎯 [DEBUG] Campanha específica encontrada!');
+                    console.log('📊 Status retornado:', status);
+                    console.log('🔧 Dados completos da campanha:', campaign);
+                }
+                const progress = campaign.progress || 0;
+                
+                // Validar e formatar data de criação
+                const creationDateRaw = campaign.createdAt || campaign.startTime || new Date().toISOString();
+                const creationDate = new Date(creationDateRaw);
+                const createdDate = creationDate.toLocaleDateString('pt-BR');
+                
+                // Calcular duração e data de finalização
+                const durationRaw = campaign.campaignData?.duration || '30 dias';
+                const durationDays = parseInt(durationRaw.toString().replace(' dias', '').replace(' dia', '')) || 30;
+                const durationText = durationRaw.toString().includes('dias') ? durationRaw : `${durationRaw} dias`;
+                
+                const endDate = new Date(creationDate);
+                endDate.setDate(endDate.getDate() + durationDays);
+                const endDateFormatted = endDate.toLocaleDateString('pt-BR');
+
+                card.innerHTML = `
+                    <div class="campaign-content">
+                        <div class="campaign-status ${status.class}">
+                            <i class="fas ${status.icon}"></i>
+                            ${status.text}
+                        </div>
+                        <div class="campaign-name">${campaign.name || 'Campanha sem nome'}</div>
+                        <div class="campaign-objective">
+                            <i class="fas fa-bullseye"></i>
+                            ${this.getObjectiveText(campaign.campaignData?.objective || campaign.objective || campaign.data?.objective)}
+                        </div>
+                        <div class="campaign-details">
+                            <div class="stat-item">
+                                <span class="stat-value">${createdDate}</span>
+                                <span class="stat-label">Data de Criação</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">${durationText}</span>
+                                <span class="stat-label">Duração</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">${endDateFormatted}</span>
+                                <span class="stat-label">Data de Finalização</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                return card;
+            }
+
+            getCampaignStatus(campaign) {
+                // Debug: verificar dados da campanha
+                console.log('🔍 [DEBUG] getCampaignStatus - Dados da campanha:', {
+                    id: campaign.id || campaign.campaignId,
+                    currentProgress: campaign.currentProgress,
+                    currentProgressType: typeof campaign.currentProgress,
+                    progress: campaign.progress,
+                    progressType: typeof campaign.progress,
+                    status: campaign.status,
+                    statusType: typeof campaign.status
+                });
+
+                // PRIORIDADE MÁXIMA: Verificar se a campanha está aguardando pagamento (progresso 3)
+                // Testando múltiplas formas de verificação
+                const currentProgressNum = parseInt(campaign.currentProgress);
+                const progressNum = parseInt(campaign.progress);
+                const currentProgressStr = String(campaign.currentProgress);
+                const progressStr = String(campaign.progress);
+                
+                console.log('🔍 [DEBUG] Verificações de progresso:', {
+                    currentProgressNum,
+                    progressNum,
+                    currentProgressStr,
+                    progressStr,
+                    'currentProgress == 3': campaign.currentProgress == 3,
+                    'progress == 3': campaign.progress == 3,
+                    'currentProgress === "3"': campaign.currentProgress === "3",
+                    'progress === "3"': campaign.progress === "3"
+                });
+                
+                // Verificação robusta para progresso 3 (aguardando pagamento)
+                if (campaign.currentProgress == 3 || campaign.progress == 3 || 
+                    campaign.currentProgress === "3" || campaign.progress === "3" ||
+                    currentProgressNum === 3 || progressNum === 3) {
+                    console.log('✅ [DEBUG] CAMPANHA COM PROGRESSO 3 DETECTADA - RETORNANDO "AGUARDANDO PAGAMENTO"');
+                    return { 
+                        class: 'status-waiting-payment', 
+                        text: 'Aguardando Pagamento',
+                        icon: 'fa-clock'
+                    };
+                }
+
+                // Verificar se a campanha deve ser finalizada automaticamente
+                const durationRaw = campaign.campaignData?.duration || '30 dias';
+                const durationDays = parseInt(durationRaw.toString().replace(' dias', '').replace(' dia', '')) || 30;
+                
+                // Validar data de criação
+                const creationDateRaw = campaign.createdAt || campaign.startTime || new Date().toISOString();
+                const creationDate = new Date(creationDateRaw);
+                const endDate = new Date(creationDate);
+                endDate.setDate(endDate.getDate() + durationDays);
+                const currentDate = new Date();
+                const shouldBeFinished = currentDate > endDate;
+
+                if (campaign.isCompleted || shouldBeFinished) {
+                    return { 
+                        class: 'status-completed', 
+                        text: 'Finalizada',
+                        icon: 'fa-check-circle'
+                    };
+                } else if (campaign.status === 'active') {
+                    return { 
+                        class: 'status-active', 
+                        text: 'Ativa',
+                        icon: 'fa-play-circle'
+                    };
+                } else {
+                    return { 
+                        class: 'status-paused', 
+                        text: 'Em Progresso',
+                        icon: 'fa-pause-circle'
+                    };
+                }
+            }
+
+            getObjectiveText(objective) {
+                // Mapeamento dos objetivos em português (como salvos no MongoDB)
+                const objectives = {
+                    'Vendas': 'Vendas',
+                    'Cadastros': 'Cadastros', 
+                    'Engajamento': 'Engajamento',
+                    'vendas': 'Vendas',
+                    'cadastros': 'Cadastros',
+                    'engajamento': 'Engajamento',
+                    // Mapeamento antigo em inglês (para compatibilidade)
+                    'brand-awareness': 'Reconhecimento da Marca',
+                    'lead-generation': 'Geração de Leads',
+                    'sales': 'Vendas',
+                    'traffic': 'Tráfego para Site',
+                    'engagement': 'Engajamento',
+                    'app-installs': 'Instalações de App',
+                    'video_views': 'Visualizações de vídeo',
+                    'messages': 'Mensagens',
+                    'conversions': 'Conversões',
+                    'catalog_sales': 'Vendas do catálogo',
+                    'store_traffic': 'Tráfego na loja'
+                };
+                return objectives[objective] || 'Objetivo não definido';
+            }
+
+            openCampaignDetails(campaign) {
+                console.log('🔍 Abrindo detalhes da campanha:', campaign);
+                
+                // Criar modal de detalhes
+                this.showCampaignDetailsModal(campaign);
+            }
+
+            showCampaignDetailsModal(campaign) {
+                // Criar modal dinamicamente
+                const modal = document.createElement('div');
+                modal.className = 'campaign-details-modal';
+                modal.innerHTML = `
+                    <div class="modal-overlay">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2><i class="fas fa-bullhorn"></i> ${campaign.name || 'Detalhes da Campanha'}</h2>
+                                <button class="modal-close">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                ${this.generateCampaignDetailsHTML(campaign)}
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn-secondary modal-close-btn">
+                                    Fechar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Adicionar event listeners após criar o modal
+                const overlay = modal.querySelector('.modal-overlay');
+                const closeBtn = modal.querySelector('.modal-close');
+                const closeBtnFooter = modal.querySelector('.modal-close-btn');
+                const modalContent = modal.querySelector('.modal-content');
+
+                // Fechar ao clicar no overlay (fora do modal)
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        modal.remove();
+                    }
+                });
+
+                // Fechar ao clicar no X
+                closeBtn.addEventListener('click', () => {
+                    modal.remove();
+                });
+
+                // Fechar ao clicar no botão Fechar
+                closeBtnFooter.addEventListener('click', () => {
+                    modal.remove();
+                });
+
+                // Prevenir fechamento ao clicar no conteúdo do modal
+                modalContent.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+
+                // Fechar com tecla ESC
+                document.addEventListener('keydown', function escHandler(e) {
+                    if (e.key === 'Escape') {
+                        modal.remove();
+                        document.removeEventListener('keydown', escHandler);
+                    }
+                });
+
+
+                document.body.appendChild(modal);
+                
+                // Adicionar event listeners para os links de arquivos após o modal ser criado
+                setTimeout(() => {
+                    addFileEventListeners();
+                }, 100);
+            }
+
+            getDirectionUrlField(campaign, data) {
+                const directionRaw = (data && data.direction) || campaign.direction || (campaign.campaignData && campaign.campaignData.direction);
+                if (!directionRaw) return '';
+                const direction = String(directionRaw).toLowerCase();
+                
+                let label = '';
+                let value = '';
+                let fullValue = '';
+                let isSiteUrl = false;
+                
+                switch(direction) {
+                    case 'site':
+                        label = 'URL do Site:';
+                        fullValue = (data && (data.siteUrl || data.url || data.websiteUrl)) 
+                            || campaign.siteUrl 
+                            || (campaign.campaignData && (campaign.campaignData.siteUrl || campaign.campaignData.url || campaign.campaignData.websiteUrl)) 
+                            || 'Não definida';
+                        isSiteUrl = true;
+                        // Truncar URL se for muito longa (mais de 40 caracteres)
+                        if (fullValue && fullValue !== 'Não definida' && fullValue.length > 40) {
+                            value = fullValue.substring(0, 37) + '...';
+                        } else {
+                            value = fullValue;
+                        }
+                        break;
+                    case 'rede-social':
+                        // Para campanhas de rede social, verificar qual plataforma
+                        const socialNetwork = (data && data.socialNetwork) || campaign.socialNetwork || (campaign.campaignData && campaign.campaignData.socialNetwork);
+                        if (socialNetwork && String(socialNetwork).toLowerCase() === 'instagram') {
+                            label = 'Perfil Instagram:';
+                            value = (data && (data.profile || data.instagramProfile)) 
+                                || campaign.instagramProfile 
+                                || (campaign.campaignData && (campaign.campaignData.profile || campaign.campaignData.instagramProfile)) 
+                                || 'Não definido';
+                        } else if (socialNetwork && String(socialNetwork).toLowerCase() === 'whatsapp') {
+                            label = 'WhatsApp:';
+                            value = (data && (data.profile || data.whatsappNumber)) 
+                                || campaign.whatsappNumber 
+                                || (campaign.campaignData && (campaign.campaignData.profile || campaign.campaignData.whatsappNumber)) 
+                                || 'Não definido';
+                        } else {
+                            label = 'Rede Social:';
+                            value = (data && data.profile) 
+                                || campaign.profile 
+                                || (campaign.campaignData && campaign.campaignData.profile) 
+                                || 'Não definido';
+                        }
+                        break;
+                    case 'instagram':
+                        label = 'Perfil Instagram:';
+                        value = (data && (data.instagramProfile || data.profile)) 
+                            || campaign.instagramProfile 
+                            || (campaign.campaignData && (campaign.campaignData.instagramProfile || campaign.campaignData.profile)) 
+                            || 'Não definido';
+                        break;
+                    case 'whatsapp':
+                        label = 'WhatsApp:';
+                        value = (data && (data.whatsappNumber || data.profile)) 
+                            || campaign.whatsappNumber 
+                            || (campaign.campaignData && (campaign.campaignData.whatsappNumber || campaign.campaignData.profile)) 
+                            || 'Não definido';
+                        break;
+                    default:
+                        return '';
+                }
+                
+                // Se for URL de site e estiver truncada, adicionar botão de cópia
+                if (isSiteUrl && fullValue && fullValue !== 'Não definida' && fullValue.length > 40) {
+                    return `
+                        <div class="detail-item">
+                            <span class="detail-label">${label}</span>
+                            <div class="url-container">
+                                <span class="detail-value url-truncated">${value}</span>
+                                <button class="copy-url-btn" data-full-url="${fullValue.replace(/"/g, '&quot;')}" title="Copiar URL completa">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="detail-item">
+                            <span class="detail-label">${label}</span>
+                            <span class="detail-value">${value}</span>
+                        </div>
+                    `;
+                }
+            }
+
+            getDirectionText(direction) {
+                if (!direction) return 'Não definido';
+                
+                switch(direction.toLowerCase()) {
+                    case 'rede-social':
+                        return 'Rede Social';
+                    case 'site':
+                        return 'Site';
+                    case 'instagram':
+                        return 'Instagram';
+                    case 'whatsapp':
+                        return 'WhatsApp';
+                    default:
+                        return direction;
+                }
+            }
+
+            generateCampaignDetailsHTML(campaign) {
+                const data = campaign.campaignData || {};
+                const utm = campaign.utm || {};
+                const targetAudience = campaign.targetAudience || {};
+                const adContent = campaign.adContent || {};
+                
+                // Formatação de datas
+                const createdDate = campaign.createdAt ? new Date(campaign.createdAt).toLocaleString('pt-BR') : 'Não definida';
+                const startDate = campaign.startTime ? new Date(campaign.startTime).toLocaleString('pt-BR') : 'Não definida';
+                const endDate = campaign.endTime ? new Date(campaign.endTime).toLocaleString('pt-BR') : 'Não definida';
+                
+                // Formatação de orçamento
+                const budget = campaign.budget ? `R$ ${campaign.budget.toLocaleString('pt-BR')}` : 'Não definido';
+                
+                return `
+                    <div class="detail-section">
+                        <h3><i class="fas fa-info-circle"></i> Informações Gerais</h3>
+                        <div class="detail-item">
+                            <span class="detail-label">Status:</span>
+                            <span class="detail-value">${this.getCampaignStatus(campaign).text}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Data de Criação:</span>
+                            <span class="detail-value">${createdDate}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Data de Início:</span>
+                            <span class="detail-value">${startDate}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Data de Término:</span>
+                            <span class="detail-value">${endDate}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Orçamento:</span>
+                            <span class="detail-value">${budget}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Duração:</span>
+                            <span class="detail-value">${campaign.duration || data.duration || 'Não definida'} dias</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Objetivo:</span>
+                            <span class="detail-value">${this.getObjectiveText(campaign.objective || data.objective)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Direcionamento:</span>
+                            <span class="detail-value">${this.getDirectionText(campaign.direction || data.direction || (campaign.campaignData && campaign.campaignData.direction))}</span>
+                        </div>
+                        ${this.getDirectionUrlField(campaign, data)}
+                    </div>
+
+                    <div class="detail-section">
+                        <h3><i class="fas fa-users"></i> Público Alvo</h3>
+                        <div class="detail-item">
+                            <span class="detail-label">Faixa Etária:</span>
+                            <span class="detail-value">${targetAudience.ageRange || data.age || data.selectedAge || campaign.age || campaign.campaignData?.age || campaign.campaignData?.selectedAge || 'Não definida'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Gênero:</span>
+                            <span class="detail-value">${this.capitalizeGender(targetAudience.gender || data.gender || data.selectedGender || campaign.gender || campaign.campaignData?.gender || campaign.campaignData?.selectedGender || 'Todos')}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Interesses:</span>
+                            <span class="detail-value">${this.getInterestsText(targetAudience, data, campaign)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Localização:</span>
+                            <span class="detail-value">${this.getLocationText(targetAudience, data, campaign)}</span>
+                        </div>
+                        ${this.getAudienceField(campaign, data)}
+                    </div>
+
+                    ${adContent.headline || adContent.description ? `
+                        <div class="detail-section" id="sec-conteudo">
+                            <h3><i class="fas fa-ad"></i> Conteúdo do Anúncio</h3>
+                            ${adContent.headline ? `
+                                <div class="detail-item">
+                                    <span class="detail-label">Título:</span>
+                                    <span class="detail-value">${adContent.headline}</span>
+                                </div>
+                            ` : ''}
+                            ${adContent.description ? `
+                                <div class="detail-item">
+                                    <span class="detail-label">Descrição:</span>
+                                    <span class="detail-value">${adContent.description}</span>
+                                </div>
+                            ` : ''}
+                            ${adContent.media && adContent.media.length > 0 ? `
+                                <div class="detail-item">
+                                    <span class="detail-label">Mídia:</span>
+                                    <span class="detail-value">${adContent.media.map(m => m.type).join(', ')}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+
+                    ${utm.source ? `
+                        <div class="detail-section" id="sec-utm">
+                            <h3><i class="fas fa-link"></i> Parâmetros UTM</h3>
+                            <div class="detail-item">
+                                <span class="detail-label">Source:</span>
+                                <span class="detail-value">${utm.source}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Medium:</span>
+                                <span class="detail-value">${utm.medium}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Campaign:</span>
+                                <span class="detail-value">${utm.campaign}</span>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${campaign.files && campaign.files.length > 0 ? `
+                        <div class="detail-section" id="sec-arquivos">
+                            <h3><i class="fas fa-file"></i> Arquivos da Campanha</h3>
+                            <div id="files-container-${campaign.id || Date.now()}">
+                                ${campaign.files.map((file, index) => `
+                                    <div class="detail-item" id="file-item-${index}">
+                                        <span class="detail-label">${file.nome || 'Arquivo'}:</span>
+                                        <span class="detail-value">
+                                            <a href="#" class="file-link" data-file-url="${file.url}" data-file-name="${file.nome || 'Arquivo'}" data-file-index="${index}" style="color: #3498db;">
+                                                <i class="fas fa-external-link-alt"></i> Visualizar
+                                            </a>
+                                            <span id="file-status-${index}" style="margin-left: 10px; font-size: 0.8rem;"></span>
+                                        </span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                `;
+            }
+
+            capitalizeGender(gender) {
+                if (!gender) return 'Não definido';
+                return gender.charAt(0).toUpperCase() + gender.slice(1).toLowerCase();
+            }
+
+            getAudienceField(campaign, data) {
+                // Buscar dados de audience/markets em várias estruturas possíveis
+                let audienceText = 'Não definido';
+                
+                // Prioridade 1: campaign.audience
+                if (campaign.audience && campaign.audience.trim()) {
+                    audienceText = campaign.audience;
+                }
+                // Prioridade 2: campaign.markets
+                else if (campaign.markets) {
+                    if (Array.isArray(campaign.markets) && campaign.markets.length > 0) {
+                        audienceText = campaign.markets.join(', ');
+                    } else if (typeof campaign.markets === 'string' && campaign.markets.trim()) {
+                        audienceText = campaign.markets;
+                    }
+                }
+                // Prioridade 3: campaign.selectedMarkets
+                else if (campaign.selectedMarkets) {
+                    if (Array.isArray(campaign.selectedMarkets) && campaign.selectedMarkets.length > 0) {
+                        audienceText = campaign.selectedMarkets.join(', ');
+                    } else if (typeof campaign.selectedMarkets === 'string' && campaign.selectedMarkets.trim()) {
+                        audienceText = campaign.selectedMarkets;
+                    }
+                }
+                // Prioridade 4: data.markets
+                else if (data && data.markets) {
+                    if (Array.isArray(data.markets) && data.markets.length > 0) {
+                        audienceText = data.markets.join(', ');
+                    } else if (typeof data.markets === 'string' && data.markets.trim()) {
+                        audienceText = data.markets;
+                    }
+                }
+                // Prioridade 5: data.selectedMarkets
+                else if (data && data.selectedMarkets) {
+                    if (Array.isArray(data.selectedMarkets) && data.selectedMarkets.length > 0) {
+                        audienceText = data.selectedMarkets.join(', ');
+                    } else if (typeof data.selectedMarkets === 'string' && data.selectedMarkets.trim()) {
+                        audienceText = data.selectedMarkets;
+                    }
+                }
+                // Prioridade 6: campaign.campaignData.markets
+                else if (campaign.campaignData && campaign.campaignData.markets) {
+                    if (Array.isArray(campaign.campaignData.markets) && campaign.campaignData.markets.length > 0) {
+                        audienceText = campaign.campaignData.markets.join(', ');
+                    } else if (typeof campaign.campaignData.markets === 'string' && campaign.campaignData.markets.trim()) {
+                        audienceText = campaign.campaignData.markets;
+                    }
+                }
+                // Prioridade 7: campaign.targetAudience.markets
+                else if (campaign.targetAudience && campaign.targetAudience.markets) {
+                    if (Array.isArray(campaign.targetAudience.markets) && campaign.targetAudience.markets.length > 0) {
+                        audienceText = campaign.targetAudience.markets.join(', ');
+                    } else if (typeof campaign.targetAudience.markets === 'string' && campaign.targetAudience.markets.trim()) {
+                        audienceText = campaign.targetAudience.markets;
+                    }
+                }
+                // Prioridade 8: data.audience
+                else if (data && data.audience && data.audience.trim()) {
+                    audienceText = data.audience;
+                }
+                // Prioridade 9: campaign.publico (campo legado)
+                else if (campaign.publico && campaign.publico.trim()) {
+                    audienceText = campaign.publico;
+                }
+                // Prioridade 10: data.publico (campo legado)
+                else if (data && data.publico && data.publico.trim()) {
+                    audienceText = data.publico;
+                }
+                
+                return `
+                    <div class="detail-item">
+                        <span class="detail-label">Mercados/Nichos:</span>
+                        <span class="detail-value">${audienceText}</span>
+                    </div>
+                `;
+            }
+
+            getInterestsText(targetAudience, data, campaign) {
+                // Buscar interesses em várias estruturas possíveis (inclui selectedInterests e variantes)
+                const candidates = [
+                    targetAudience.interests,
+                    targetAudience.selectedInterests,
+                    data.interests,
+                    data.selectedInterests,
+                    campaign.interests,
+                    campaign.selectedInterests,
+                    campaign.campaignData && campaign.campaignData.interests,
+                    campaign.campaignData && campaign.campaignData.selectedInterests,
+                    campaign.targetAudience && campaign.targetAudience.interests,
+                    campaign.targetAudience && campaign.targetAudience.selectedInterests
+                ].filter(Boolean);
+
+                for (const list of candidates) {
+                    if (Array.isArray(list) && list.length > 0) {
+                        return list.join(', ');
+                    }
+                }
+                return 'Não definidos';
+            }
+
+            getLocationText(targetAudience, data, campaign) {
+                // Buscar localização em várias estruturas possíveis, incluindo cidade/estado
+                const state = (targetAudience && targetAudience.state) 
+                    || (data && (data.state || data.selectedState)) 
+                    || campaign.state 
+                    || (campaign.campaignData && (campaign.campaignData.state || campaign.campaignData.selectedState)) 
+                    || (campaign.targetAudience && campaign.targetAudience.state);
+                const city = (targetAudience && targetAudience.city) 
+                    || (data && (data.city || data.selectedCity)) 
+                    || campaign.city 
+                    || (campaign.campaignData && (campaign.campaignData.city || campaign.campaignData.selectedCity)) 
+                    || (campaign.targetAudience && campaign.targetAudience.city);
+
+                const location = (targetAudience && targetAudience.location)
+                    || (data && (data.location || data.selectedLocation))
+                    || campaign.location
+                    || (campaign.campaignData && (campaign.campaignData.location || campaign.campaignData.selectedLocation))
+                    || (campaign.targetAudience && campaign.targetAudience.location);
+
+                if (city && state) {
+                    return `${city}, ${state}`;
+                }
+                if (location) {
+                    return location;
+                }
+                if (city || state) {
+                    return city || state;
+                }
+                return 'Não definida';
+            }
+
+            async handleLogin(e) {
+                const formData = new FormData(e.target);
+                const loginData = {
+                    email: formData.get('identifier'),
+                    password: formData.get('password')
+                };
+
+                try {
+                    const result = await this.sessionManager.login(loginData);
+                    if (result.success) {
+                        // Fechar o modal de login explicitamente
+                        this.closeLoginModal();
+                        
+                        // Força bruta imediata para garantir interatividade
+                        setTimeout(() => {
+                            this.forceMobileInteractivity();
+                        }, 100);
+                        
+                        // Recarregar campanhas após login
+                        await this.checkLoginAndLoadCampaigns();
+                        
+                        // Força bruta adicional após carregar campanhas
+                        setTimeout(() => {
+                            this.forceMobileInteractivity();
+                            console.log('✅ Login concluído - interatividade garantida');
+                        }, 1500);
+                    } else {
+                        alert(result.error || 'Erro ao fazer login. Verifique suas credenciais.');
+                    }
+                } catch (error) {
+                    console.error('❌ Erro no login:', error);
+                    alert('Erro ao fazer login. Verifique suas credenciais.');
+                }
+            }
+
+            async handleSignup(e) {
+                const formData = new FormData(e.target);
+                const signupData = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    whatsapp: formData.get('whatsapp'),
+                    password: formData.get('password')
+                };
+
+                // Validar senha usando a função validatePassword
+                const passwordErrors = validatePassword(signupData.password);
+                if (passwordErrors.length > 0) {
+                    alert(passwordErrors.join('\n'));
+                    return;
+                }
+
+                try {
+                    const result = await this.sessionManager.register(signupData);
+                    if (result.success) {
+                        alert('Conta criada com sucesso!');
+                        
+                        // Fechar o modal de login explicitamente
+                        this.closeLoginModal();
+                        
+                        // Força bruta imediata para garantir interatividade
+                        setTimeout(() => {
+                            this.forceMobileInteractivity();
+                        }, 100);
+                        
+                        // Recarregar campanhas após cadastro
+                        await this.checkLoginAndLoadCampaigns();
+                        
+                        // Força bruta adicional após carregar campanhas
+                        setTimeout(() => {
+                            this.forceMobileInteractivity();
+                            console.log('✅ Cadastro concluído - interatividade garantida');
+                        }, 1500);
+                    } else {
+                        alert(result.error || 'Erro ao criar conta. Tente novamente.');
+                    }
+                } catch (error) {
+                    console.error('❌ Erro no cadastro:', error);
+                    alert('Erro ao criar conta. Tente novamente.');
+                }
+            }
+
+            closeLoginModal() {
+                console.log('🔒 Fechando modal de login');
+                
+                const loginModalOverlay = document.getElementById('login-modal-overlay');
+                const loginModal = document.getElementById('login-modal');
+                
+                if (loginModalOverlay) {
+                    // Remover classe active primeiro para trigger da animação
+                    loginModalOverlay.classList.remove('active');
+                    
+                    // Aguardar a animação terminar antes de esconder completamente
+                    setTimeout(() => {
+                        loginModalOverlay.style.display = 'none';
+                        // Limpar qualquer estilo inline que possa estar causando conflito
+                        loginModalOverlay.style.opacity = '';
+                        loginModalOverlay.style.visibility = '';
+                        loginModalOverlay.style.pointerEvents = '';
+                        loginModalOverlay.style.zIndex = '';
+                        loginModalOverlay.style.touchAction = '';
+                        
+                        console.log('✅ Modal de login fechado com sucesso');
+                    }, 300); // Tempo da transição CSS
+                    
+                } else if (loginModal) {
+                    loginModal.style.display = 'none';
+                    loginModal.style.pointerEvents = '';
+                    loginModal.style.zIndex = '';
+                    loginModal.style.touchAction = '';
+                    console.log('✅ Modal de login fechado (fallback)');
+                } else {
+                    console.warn('⚠️ Modal de login não encontrado');
+                }
+                
+                // Limpeza AGRESSIVA para mobile - aplicar imediatamente
+                this.forceMobileInteractivity();
+                
+                // Garantir que todos os elementos interativos estejam funcionando (especialmente no mobile)
+                setTimeout(() => {
+                    this.forceMobileInteractivity();
+                    console.log('✅ Limpeza completa realizada - página desbloqueada para mobile');
+                 }, 350);
+                 
+                // Limpeza adicional após mais tempo para garantir
+                setTimeout(() => {
+                    this.forceMobileInteractivity();
+                    console.log('✅ Limpeza final realizada');
+                }, 1000);
+            }
+            
+            forceMobileInteractivity() {
+                console.log('🔧 Forçando interatividade para mobile...');
+                
+                // Limpeza completa do body para evitar travamentos no mobile
+                document.body.style.overflow = '';
+                document.body.style.position = '';
+                document.body.style.pointerEvents = '';
+                document.body.style.touchAction = '';
+                document.body.style.userSelect = '';
+                document.body.style.webkitUserSelect = '';
+                document.body.style.webkitTouchCallout = '';
+                document.body.style.webkitTapHighlightColor = '';
+                
+                // Limpeza do documentElement também
+                document.documentElement.style.overflow = '';
+                document.documentElement.style.pointerEvents = '';
+                document.documentElement.style.touchAction = '';
+                document.documentElement.style.userSelect = '';
+                document.documentElement.style.webkitUserSelect = '';
+                
+                // Remover qualquer classe que possa estar bloqueando
+                document.body.classList.remove('modal-open', 'no-scroll', 'modal-active');
+                document.documentElement.classList.remove('modal-open', 'no-scroll', 'modal-active');
+                
+                // Verificar e limpar todos os overlays
+                const allOverlays = document.querySelectorAll('[id*="overlay"], [class*="overlay"], [id*="modal"], [class*="modal"]');
+                allOverlays.forEach(overlay => {
+                    const isPaymentModalElement = (
+                        overlay.id === 'payment-modal-overlay' ||
+                        overlay.classList.contains('payment-modal') ||
+                        !!overlay.closest('#payment-modal-overlay')
+                    );
+                    // Não ocultar o modal de pagamento nem seus filhos
+                    if (!isPaymentModalElement && overlay.id !== 'login-modal' && overlay.id !== 'login-modal-overlay') {
+                        if (!overlay.classList.contains('active') && overlay.style.display !== 'none') {
+                            overlay.style.display = 'none';
+                            overlay.style.pointerEvents = 'none';
+                            overlay.style.touchAction = '';
+                            overlay.style.zIndex = '';
+                        }
+                    }
+                });
+                
+                // Verificar se há elementos com pointer-events: none que não deveriam ter
+                const blockedElements = document.querySelectorAll('[style*="pointer-events: none"]');
+                blockedElements.forEach(el => {
+                    if (!el.classList.contains('disabled') && !el.hasAttribute('disabled') && 
+                        !el.id.includes('modal') && !el.classList.toString().includes('modal')) {
+                        el.style.pointerEvents = '';
+                    }
+                });
+                
+                // Verificar elementos com touch-action problemático
+                const touchBlockedElements = document.querySelectorAll('[style*="touch-action: none"]');
+                touchBlockedElements.forEach(el => {
+                    if (!el.classList.contains('active') && el.style.display === 'none') {
+                        el.style.touchAction = '';
+                    }
+                });
+                
+                // Forçar reflow para garantir que as mudanças sejam aplicadas
+                document.body.offsetHeight;
+                document.documentElement.offsetHeight;
+                
+                console.log('✅ Interatividade forçada para mobile');
+            }
+
+            ensurePageInteractivity() {
+                console.log('🔍 Verificando interatividade da página...');
+                
+                // Usar a função de força bruta para mobile
+                this.forceMobileInteractivity();
+                
+                // Verificações adicionais específicas
+                
+                // Remover qualquer overlay ou elemento bloqueador que possa ter ficado
+                const overlays = document.querySelectorAll('[id*="overlay"], [class*="overlay"], [id*="modal"], [class*="modal"]');
+                overlays.forEach(overlay => {
+                    const isPaymentModalElement = (
+                        overlay.id === 'payment-modal-overlay' ||
+                        overlay.classList.contains('payment-modal') ||
+                        !!overlay.closest('#payment-modal-overlay')
+                    );
+                    if (isPaymentModalElement) {
+                        // Não ocultar o modal de pagamento nem seus filhos
+                        return;
+                    }
+                    if (overlay.style.display !== 'none' && !overlay.classList.contains('active')) {
+                        overlay.style.display = 'none';
+                        overlay.style.pointerEvents = 'none';
+                        overlay.style.touchAction = '';
+                        overlay.style.zIndex = '';
+                    }
+                });
+                
+                // Verificar se há elementos com z-index muito alto que podem estar bloqueando
+                const highZIndexElements = document.querySelectorAll('[style*="z-index"]');
+                highZIndexElements.forEach(el => {
+                    const zIndex = parseInt(el.style.zIndex);
+                    if (zIndex > 10000 && !el.classList.contains('active') && el.style.display === 'none') {
+                        el.style.zIndex = '';
+                    }
+                });
+                
+                // Verificar especificamente o login-modal-overlay
+                const loginOverlay = document.getElementById('login-modal-overlay');
+                if (loginOverlay && !loginOverlay.classList.contains('active')) {
+                    loginOverlay.style.display = 'none';
+                    loginOverlay.style.pointerEvents = 'none';
+                    loginOverlay.style.touchAction = '';
+                    loginOverlay.style.zIndex = '';
+                    loginOverlay.style.opacity = '';
+                    loginOverlay.style.visibility = '';
+                }
+                
+                // Garantir que elementos principais estejam interativos
+                const mainElements = ['main-content', 'campaigns-grid', 'header', 'sidebar'];
+                mainElements.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.style.pointerEvents = '';
+                        element.style.touchAction = '';
+                    }
+                });
+                
+                // Forçar reflow final múltiplas vezes para garantir
+                document.body.offsetHeight;
+                document.documentElement.offsetHeight;
+                
+                // Verificação final após um pequeno delay
+                setTimeout(() => {
+                    // Última verificação para garantir que tudo está funcionando
+                    if (document.body.style.overflow === 'hidden') {
+                        document.body.style.overflow = '';
+                        console.log('⚠️ Overflow hidden detectado e corrigido');
+                    }
+                    
+                    // Verificar se ainda há elementos bloqueando
+                    const stillBlocked = document.querySelectorAll('[style*="pointer-events: none"]');
+                    stillBlocked.forEach(el => {
+                        if (!el.classList.contains('disabled') && !el.hasAttribute('disabled') && 
+                            !el.id.includes('modal') && !el.classList.toString().includes('modal') &&
+                            el.style.display !== 'none') {
+                            el.style.pointerEvents = '';
+                            console.log('⚠️ Elemento bloqueado detectado e corrigido:', el);
+                        }
+                    });
+                    
+                    console.log('✅ Verificação final de interatividade concluída');
+                }, 100);
+                
+                console.log('✅ Interatividade da página verificada e garantida');
+            }
+
+            openFuturisticPage(campaign) {
+                // Navegar para a nova página de detalhamento
+                try {
+                    const campaignId = campaign.id || campaign.campaignId || (campaign.campaignData && campaign.campaignData.id) || '';
+                    if (campaignId) {
+                        try { localStorage.setItem('activeCampaignId', campaignId); } catch (err) {}
+                        // Salvar dados da campanha no localStorage para a nova página
+                        try { 
+                            localStorage.setItem('campaignData_' + campaignId, JSON.stringify(campaign)); 
+                        } catch (err) {
+                            console.warn('Falha ao salvar dados da campanha:', err);
+                        }
+                        window.location.href = 'detalhamento-campanha.html?campaignId=' + campaignId;
+                    } else {
+                        console.warn('Nenhum campaignId disponível para navegação.');
+                        // Fallback para página sem ID
+                        window.location.href = 'detalhamento-campanha.html';
+                    }
+                } catch (err) {
+                    console.warn('Falha ao navegar para detalhamento:', err);
+                    // Fallback para página sem ID
+                    window.location.href = 'detalhamento-campanha.html';
+                }
+            }
+
+            populateFuturisticPage(campaign) {
+                // Validar e formatar data de criação
+                const creationDateRaw = campaign.createdAt || campaign.startTime || new Date().toISOString();
+                const creationDate = new Date(creationDateRaw);
+                const createdDate = creationDate.toLocaleDateString('pt-BR');
+                
+                // Calcular duração e data de finalização
+                const durationRaw = campaign.campaignData?.duration || '30 dias';
+                const durationDays = parseInt(durationRaw.toString().replace(' dias', '').replace(' dia', '')) || 30;
+                const durationText = durationRaw.toString().includes('dias') ? durationRaw : `${durationRaw} dias`;
+                
+                const endDate = new Date(creationDate);
+                endDate.setDate(endDate.getDate() + durationDays);
+                const endDateFormatted = endDate.toLocaleDateString('pt-BR');
+
+                // Obter status da campanha
+                const status = this.getCampaignStatus(campaign);
+
+                // Preencher informações gerais
+                document.getElementById('futuristic-campaign-name').textContent = campaign.name || 'Campanha sem nome';
+                document.getElementById('futuristic-status').textContent = status.text;
+                document.getElementById('futuristic-created-date').textContent = createdDate;
+                document.getElementById('futuristic-objective').textContent = this.getObjectiveText(campaign.campaignData?.objective || campaign.objective || campaign.data?.objective);
+                document.getElementById('futuristic-duration').textContent = durationText;
+
+                // Preencher informações do público-alvo
+                const campaignData = campaign.campaignData || {};
+                const targetAudience = campaign.targetAudience || {};
+                
+                // Idade - usar dados reais da campanha
+                const age = targetAudience.ageRange || campaignData.age || campaignData.selectedAge || campaign.age || campaignData.ageRange || 'Não definida';
+                document.getElementById('futuristic-age').textContent = age;
+                
+                // Localização - usar dados reais da campanha
+                const location = campaignData.location || campaignData.selectedState || campaign.location || targetAudience.location || 'Não definida';
+                document.getElementById('futuristic-location').textContent = location;
+                
+                // Gênero - usar dados reais da campanha
+                const gender = targetAudience.gender || campaignData.gender || campaignData.selectedGender || campaign.gender || 'Todos';
+                document.getElementById('futuristic-gender').textContent = gender;
+                
+                // Direcionamento - usar dados reais da campanha
+                const directionRaw = (campaign.direction || campaignData.direction || targetAudience.direction || '').toString();
+                const directionText = this.getDirectionText ? this.getDirectionText(directionRaw) : (directionRaw || 'Não definido');
+                const directionEl = document.getElementById('futuristic-direction');
+                if (directionEl) directionEl.textContent = directionText || 'Não definido';
+                
+                // Mercados/Nichos (Audience)
+                const normalizeMarkets = (val) => {
+                    if (!val) return '';
+                    if (Array.isArray(val)) return val.filter(Boolean).join(', ');
+                    return String(val);
+                };
+                const audienceCandidates = [
+                    campaign.audience,
+                    normalizeMarkets(campaign.markets),
+                    normalizeMarkets(campaign.selectedMarkets),
+                    normalizeMarkets(campaignData.markets),
+                    normalizeMarkets(campaignData.selectedMarkets),
+                    normalizeMarkets(targetAudience.markets),
+                    campaignData.audience,
+                    campaign.publico
+                ];
+                const audienceText = audienceCandidates.find(v => typeof v === 'string' && v.trim()) || 'Não definido';
+                const audienceEl = document.getElementById('futuristic-audience');
+                if (audienceEl) audienceEl.textContent = audienceText;
+                
+                // Calcular alcance baseado na duração e objetivo da campanha
+                const reach = this.calculateReach(campaign);
+                document.getElementById('futuristic-reach').textContent = reach;
+
+                // Iniciar animação das métricas conforme objetivo e duração
+                this.startMetricsAnimation(campaign);
+
+                // Vincular botão "Visualizar Campanha" no cabeçalho
+                try {
+                    const campaignId = campaign.id || campaign.campaignId || (campaign.campaignData && campaign.campaignData.id) || '';
+                    const viewBtn = document.getElementById('view-overlay-campaign');
+                    if (viewBtn) {
+                        const freshViewBtn = viewBtn.cloneNode(true);
+                        viewBtn.parentNode.replaceChild(freshViewBtn, viewBtn);
+                        freshViewBtn.setAttribute('data-campaign-id', campaignId);
+                        freshViewBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const cid = this.getAttribute('data-campaign-id') || campaignId || localStorage.getItem('activeCampaignId') || '';
+                            if (cid) {
+                                try { localStorage.setItem('activeCampaignId', cid); } catch (err) {}
+                                window.location.href = 'campaign-config.html?campaignId=' + cid;
+                            } else {
+                                console.warn('Nenhum campaignId disponível para navegação.');
+                            }
+                        });
+                    }
+                } catch (err) {
+                    console.warn('Falha ao configurar botão Visualizar Campanha:', err);
+                }
+
+                // Exibir callout de pagamento abaixo das métricas se estiver aguardando pagamento
+                try {
+                    const statusClass = (this.getCampaignStatus(campaign) || {}).class;
+                    const callout = document.getElementById('payment-callout');
+                    const btn = document.getElementById('payment-callout-btn');
+                    const campaignId = campaign.id || campaign.campaignId || (campaign.campaignData && campaign.campaignData.id) || '';
+                    if (callout && btn) {
+                        // Preparar botão do callout para navegação com o id da campanha atual
+                        try {
+                            // Evitar listeners duplicados
+                            const freshBtn = btn.cloneNode(true);
+                            btn.parentNode.replaceChild(freshBtn, btn);
+                            freshBtn.setAttribute('data-campaign-id', campaignId);
+                            freshBtn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const cid = this.getAttribute('data-campaign-id') || campaignId || localStorage.getItem('activeCampaignId') || '';
+                                if (cid) {
+                                    try { localStorage.setItem('activeCampaignId', cid); } catch (err) {}
+                                    window.location.href = 'campaign-config.html?campaignId=' + cid;
+                                } else {
+                                    console.warn('Nenhum campaignId disponível para navegação.');
+                                }
+                            });
+                        } catch {}
+                        if (statusClass === 'status-waiting-payment' || (campaign && campaign.paymentCorrelationID && !campaign.paymentConfirmedAt)) {
+                            console.log('🧾 [PAYMENT MODAL] Condição atendida: aguardando pagamento ou correlação sem confirmação.', {
+                                statusClass,
+                                paymentCorrelationID: campaign.paymentCorrelationID,
+                                paymentConfirmedAt: campaign.paymentConfirmedAt
+                            });
+                            // Não exibir mais o callout; usar modal após 17s
+                            callout.style.display = 'none';
+
+                            const overlay = document.getElementById('payment-modal-overlay');
+                            const modalBtn = document.getElementById('payment-modal-btn');
+                            const closeBtn = document.querySelector('.payment-modal-close');
+                            let userInteracted = false;
+
+                            if (overlay && modalBtn) {
+                                const ensureVisible = () => {
+                                    overlay.style.display = 'flex';
+                                    overlay.classList.add('active');
+                                    overlay.style.pointerEvents = 'auto';
+                                    overlay.style.visibility = 'visible';
+                                    overlay.style.opacity = '1';
+                                    // Garantir z-index acima dos elementos móveis e da página futurística
+                                    overlay.style.zIndex = '1001';
+                                    // Garantir que o conteúdo do modal esteja visível
+                                    const modalContent = overlay.querySelector('.payment-modal');
+                                    if (modalContent) {
+                                        modalContent.style.display = 'block';
+                                        modalContent.classList.add('active');
+                                    }
+                                    document.documentElement.style.overflow = 'hidden';
+                                    document.body.style.overflow = 'hidden';
+                                    // Checagem rápida para garantir estado visível
+                                    setTimeout(() => {
+                                        const cs = getComputedStyle(overlay);
+                                        if (cs.display === 'none' || !overlay.classList.contains('active')) {
+                                            overlay.style.display = 'flex';
+                                            overlay.classList.add('active');
+                                        }
+                                        // Checagem do conteúdo
+                                        if (modalContent) {
+                                            const cms = getComputedStyle(modalContent);
+                                            if (cms.display === 'none') {
+                                                modalContent.style.display = 'block';
+                                            }
+                                        }
+                                    }, 300);
+                                    // Modal permanece até usuário fechar clicando fora
+                                };
+
+                                // Modo de força via query string para testes
+                                try {
+                                    const force = new URLSearchParams(location.search).get('forcePaymentModal');
+                                    if (force === '1') {
+                                        setTimeout(ensureVisible, 1000);
+                                    }
+                                } catch {}
+
+                                // Exibição normal após 7s
+                                setTimeout(ensureVisible, 7000);
+
+                                // Ação do botão do modal
+                                modalBtn.addEventListener('click', function(e) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    userInteracted = true;
+                                    try { localStorage.setItem('activeCampaignId', campaignId); } catch (err) {}
+                                    window.location.href = 'campaign-config.html?campaignId=' + campaignId;
+                                });
+
+                                // Fechar pelo botão de fechar
+                                if (closeBtn) {
+                                    closeBtn.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        // Não fechar via botão; apenas clicar fora fecha
+                                    });
+                                }
+
+                                // Fechar clicando fora do conteúdo
+                                overlay.addEventListener('click', function(e) {
+                                    if (e.target === overlay) {
+                                        userInteracted = true;
+                                        overlay.style.display = 'none';
+                                        overlay.classList.remove('active');
+                                        document.documentElement.style.overflow = '';
+                                        document.body.style.overflow = '';
+                                        // Exibir callout abaixo das métricas após fechar
+                                        const calloutAfter = document.getElementById('payment-callout');
+                                        if (calloutAfter) {
+                                            calloutAfter.style.display = 'block';
+                                        }
+                                    }
+                                });
+                            }
+                        } else {
+                            callout.style.display = 'none';
+                            btn.onclick = null;
+                            const overlay = document.getElementById('payment-modal-overlay');
+                            if (overlay) overlay.style.display = 'none';
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Falha ao configurar callout de pagamento:', err);
+                }
+             }
+
+            // Função para calcular alcance baseado na duração e objetivo da campanha
+            calculateReach(campaign) {
+                try {
+                    // Extrair duração da campanha
+                    const campaignData = campaign.campaignData || {};
+                    const durationRaw = campaignData.duration || campaign.duration || '7 dias';
+                    const days = parseInt(durationRaw.toString().replace(/[^\d]/g, '')) || 7;
+                    
+                    // Métricas baseadas na duração (mesma lógica do campaign-config.html)
+                    const metricas = {
+                        1: { alcanceMin: 1500, alcanceMax: 3000 },
+                        3: { alcanceMin: 3750, alcanceMax: 7500 },
+                        7: { alcanceMin: 7000, alcanceMax: 14000 },
+                        14: { alcanceMin: 10500, alcanceMax: 21000 },
+                        30: { alcanceMin: 15000, alcanceMax: 30000 }
+                    };
+                    
+                    // Encontrar a métrica correspondente
+                    let metricaEscolhida;
+                    if (days <= 1) metricaEscolhida = metricas[1];
+                    else if (days <= 3) metricaEscolhida = metricas[3];
+                    else if (days <= 7) metricaEscolhida = metricas[7];
+                    else if (days <= 14) metricaEscolhida = metricas[14];
+                    else metricaEscolhida = metricas[30];
+                    
+                    // Formatação do alcance
+                    const alcanceFormatado = `${(metricaEscolhida.alcanceMin / 1000).toFixed(1)}K – ${(metricaEscolhida.alcanceMax / 1000).toFixed(0)}K pessoas`;
+                    
+                    return alcanceFormatado;
+                } catch (error) {
+                    console.error('Erro ao calcular alcance:', error);
+                    return '7.0K – 14K pessoas'; // Valor padrão para 7 dias
+                }
+            }
+
+            // Animação de métricas da campanha (alcance, impressões, frequência, CTR, cliques, CPC, CPM, Hook Rate)
+            startMetricsAnimation(campaign) {
+                try {
+                    const campaignData = campaign.campaignData || {};
+                    const durationRaw = campaignData.duration || campaign.duration || '7 dias';
+                    const days = parseInt(durationRaw.toString().replace(/[^\d]/g, '')) || 7;
+
+                    // Faixas de alcance por duração
+                    const metricas = {
+                        1: { alcanceMin: 1500, alcanceMax: 3000 },
+                        3: { alcanceMin: 3750, alcanceMax: 7500 },
+                        7: { alcanceMin: 7000, alcanceMax: 14000 },
+                        14: { alcanceMin: 10500, alcanceMax: 21000 },
+                        30: { alcanceMin: 15000, alcanceMax: 30000 }
+                    };
+
+                    let m;
+                    if (days <= 1) m = metricas[1];
+                    else if (days <= 3) m = metricas[3];
+                    else if (days <= 7) m = metricas[7];
+                    else if (days <= 14) m = metricas[14];
+                    else m = metricas[30];
+
+                    // Alvos das métricas - 70-85% próximo do valor máximo
+                    const range = m.alcanceMax - m.alcanceMin;
+                    const minPercentage = 0.70; // 70% do caminho até o máximo
+                    const maxPercentage = 0.85; // 85% do caminho até o máximo
+                    const randomPercentage = minPercentage + (Math.random() * (maxPercentage - minPercentage));
+                    const reachTarget = Math.floor(m.alcanceMin + (range * randomPercentage));
+                    const freqStart = 1.0;
+                    // Frequência condicionada: 1-3 dias → 1.0–1.1; acima de 3 dias → 1.2–1.4
+                    const freqTarget = (() => {
+                        const base = (days <= 3)
+                          ? (1.0 + Math.random() * 0.1) // 1.0–1.1
+                          : (1.2 + Math.random() * 0.2); // 1.2–1.4
+                        return Number(base.toFixed(2));
+                    })();
+                    const ctrStart = 2.0; // 2%
+                    const ctrTarget = Number((2.0 + Math.random() * 0.5).toFixed(2)); // 2.0–2.5%
+                    // CPC: iniciar em ~0,75 e finalizar entre 0,75 e 9,95 com leve oscilação
+                    const cpcStart = 0.75;
+                    const cpcTarget = Number((0.75 + Math.random() * 0.2).toFixed(2)); // 0.75–0.95 (final)
+
+                    // CPM por objetivo
+                    const objectiveText = this.getObjectiveText(campaignData.objective || campaign.objective || campaign.data?.objective);
+                    let cpmMin = 20, cpmMax = 30; // padrão
+                    if (objectiveText === 'Engajamento') { cpmMin = 18; cpmMax = 22; }
+                    else if (objectiveText === 'Cadastros') { cpmMin = 22; cpmMax = 28; }
+                    else if (objectiveText === 'Vendas') { cpmMin = 25; cpmMax = 30; }
+                    const cpmStart = cpmMin;
+                    const cpmTarget = cpmMin + (cpmMax - cpmMin) * (0.7 + Math.random() * 0.3); // sobe até perto do topo
+
+                    const hookStart = 17.0; // 17%
+                    const hookTarget = 17.0 + Math.random() * 5.0; // 17% até 22%
+
+                    const durationMs = 45000; // animação lenta (~45s)
+                    const startTime = Date.now();
+
+                    const els = {
+                        impressions: document.getElementById('metric-impressions'),
+                        reach: document.getElementById('metric-reach'),
+                        frequency: document.getElementById('metric-frequency'),
+                        ctr: document.getElementById('metric-ctr'),
+                        clicks: document.getElementById('metric-clicks'),
+                        cpc: document.getElementById('metric-cpc'),
+                        cpm: document.getElementById('metric-cpm'),
+                        hook: document.getElementById('metric-hook')
+                    };
+
+                    const fmtInt = (n) => n.toLocaleString('pt-BR');
+                    const fmtPct = (n) => `${n.toFixed(1).replace('.', ',')}%`;
+                    const fmtPctHook = (n) => `${n.toFixed(1).replace('.', ',')}%`; // exibir como 17,3 – 19,9
+                    const fmtCurr = (n) => `R$ ${n.toFixed(2).replace('.', ',')}`;
+
+                    const tick = () => {
+                        const elapsed = Date.now() - startTime;
+                        const t = Math.min(elapsed / durationMs, 1);
+                        const ease = 1 - Math.pow(1 - t, 3); // ease-out
+
+                        const reachCur = Math.floor(reachTarget * ease);
+                        const freqCur = freqStart + (freqTarget - freqStart) * ease;
+                        const ctrCur = ctrStart + (ctrTarget - ctrStart) * ease;
+                        // Impressões devem refletir a frequência: impr = alcance * frequência
+                        const impressionsCur = Math.max(0, Math.floor(reachCur * (freqCur || 0)));
+                        const cpmCur = cpmStart + (cpmTarget - cpmStart) * ease;
+                        const clicksCur = Math.max(0, Math.floor(reachCur * (ctrCur / 100)));
+                        // CPC animado independente, com pequena oscilação e limites 0,75–9,95
+                        let cpcCur = cpcStart + (cpcTarget - cpcStart) * ease;
+                        // Aplicar variação aleatória apenas durante a animação, não no final
+                        if (t < 0.95) {
+                            cpcCur += (Math.random() - 0.5) * 0.1; // leve variação apenas durante animação
+                        }
+                        cpcCur = Math.min(0.95, Math.max(0.75, cpcCur));
+                        // Hook Rate será atualizado via interval com passos maiores
+
+                        if (els.reach) els.reach.textContent = fmtInt(reachCur);
+                        if (els.impressions) els.impressions.textContent = fmtInt(impressionsCur);
+                        if (els.frequency) els.frequency.textContent = (reachCur > 0 ? (impressionsCur / reachCur) : 0).toFixed(2).replace('.', ',');
+                        if (els.ctr) els.ctr.textContent = fmtPct(ctrCur);
+                        if (els.clicks) els.clicks.textContent = fmtInt(clicksCur);
+                        if (els.cpm) els.cpm.textContent = fmtCurr(cpmCur);
+                        if (els.cpc) els.cpc.textContent = fmtCurr(cpcCur);
+                        // Hook Rate atualizado separadamente
+
+                        if (t < 1) {
+                            requestAnimationFrame(tick);
+                        }
+                    };
+
+                    // Animação por passos para Hook Rate: incrementos maiores e mais lentos
+                    let hookCurrent = hookStart;
+                    if (els.hook) els.hook.textContent = fmtPctHook(hookCurrent);
+                    const hookStartTime = Date.now();
+                    const hookMaxMs = 60000; // mais lento, até 60s
+                    const hookIntervalMs = 2200 + Math.floor(Math.random() * 1100); // atualiza a cada ~2.2–3.3s
+                    const hookTimer = setInterval(() => {
+                        const elapsedHook = Date.now() - hookStartTime;
+                        // parar quando atingir alvo ou tempo máximo
+                        if (elapsedHook >= hookMaxMs || hookCurrent >= (hookTarget - 0.05)) {
+                            hookCurrent = Math.min(hookTarget, hookCurrent);
+                            if (els.hook) els.hook.textContent = fmtPctHook(hookCurrent);
+                            clearInterval(hookTimer);
+                            return;
+                        }
+
+                        // passo principal: saltos maiores (0,4 – 1,2)
+                        let delta = 0.4 + Math.random() * 0.8;
+                        // pequena chance de queda leve para dar naturalidade (ex.: 18,8 → 18,2)
+                        if (Math.random() < 0.2) {
+                            delta = -(0.2 + Math.random() * 0.4);
+                        }
+
+                        hookCurrent = Math.max(hookStart, Math.min(hookTarget, hookCurrent + delta));
+                        if (els.hook) els.hook.textContent = fmtPctHook(hookCurrent);
+                    }, hookIntervalMs);
+
+                    requestAnimationFrame(tick);
+                } catch (e) {
+                    console.error('Erro ao iniciar animação de métricas:', e);
+                }
+            }
+
+        }
+
+        // Funções globais para o modal gerenciadas pelo LoginComponent
+
+        // Modal de Login gerenciado pelo LoginComponent
+
+        // Função para copiar URL para área de transferência
+        function copyToClipboard(url, button) {
+            navigator.clipboard.writeText(url).then(() => {
+                // Feedback visual de sucesso
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i>';
+                button.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                }, 1500);
+                
+                // Mostrar tooltip de sucesso
+                const tooltip = document.createElement('div');
+                tooltip.textContent = 'URL copiada!';
+                tooltip.style.cssText = `
+                    position: absolute;
+                    background: #2ecc71;
+                    color: white;
+                    padding: 0.3rem 0.6rem;
+                    border-radius: 4px;
+                    font-size: 0.8rem;
+                    z-index: 10000;
+                    pointer-events: none;
+                    transform: translateX(-50%);
+                    white-space: nowrap;
+                `;
+                
+                const rect = button.getBoundingClientRect();
+                tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+                tooltip.style.top = (rect.top - 35) + 'px';
+                
+                document.body.appendChild(tooltip);
+                
+                setTimeout(() => {
+                    document.body.removeChild(tooltip);
+                }, 1500);
+                
+            }).catch(err => {
+                console.error('Erro ao copiar URL:', err);
+                alert('Erro ao copiar URL. Tente novamente.');
+            });
+        }
+
+        // Função para detectar se é dispositivo mobile
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                   window.innerWidth <= 768;
+        }
+
+        // Função para criar página de visualização de arquivo
+        function createFileViewerPage(url, fileName) {
+            // Abrir arquivo diretamente em nova aba/janela
+            const newWindow = window.open(url, '_blank');
+            return newWindow;
+        }
+
+        // Função para verificar se o arquivo existe e abrir
+        async function checkFileAndOpen(url, fileName, index) {
+            const statusElement = document.getElementById(`file-status-${index}`);
+            
+            try {
+                // Mostrar status de verificação
+                statusElement.innerHTML = '<i class="fas fa-spinner fa-spin" style="color: #3498db;"></i> Verificando...';
+                
+                // Verificar se o arquivo existe
+                const response = await fetch(url, { method: 'HEAD' });
+                
+                if (response.ok) {
+                    statusElement.innerHTML = '<i class="fas fa-check" style="color: #27ae60;"></i> Disponível';
+                    
+                    // Verificar se é mobile
+                    if (isMobileDevice()) {
+                        // No mobile, criar uma nova página com o arquivo
+                        createFileViewerPage(url, fileName);
+                    } else {
+                        // No desktop, abrir diretamente em nova aba
+                        window.open(url, '_blank');
+                    }
+                    
+                    // Limpar status após 3 segundos
+                    setTimeout(() => {
+                        statusElement.innerHTML = '';
+                    }, 3000);
+                } else {
+                    // Arquivo não encontrado
+                    statusElement.innerHTML = '<i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i> Arquivo não encontrado';
+                    
+                    // Mostrar mensagem de erro mais amigável
+                    alert(`❌ Arquivo não encontrado\n\nO arquivo "${fileName}" não está mais disponível no servidor.\n\nIsso pode acontecer se:\n• O arquivo foi removido\n• Houve um problema no upload\n• O link está incorreto\n\nTente fazer o upload do arquivo novamente.`);
+                }
+            } catch (error) {
+                console.error('Erro ao verificar arquivo:', error);
+                statusElement.innerHTML = '<i class="fas fa-times" style="color: #e74c3c;"></i> Erro na verificação';
+                
+                // Mostrar mensagem de erro de conexão
+                alert(`❌ Erro de conexão\n\nNão foi possível verificar se o arquivo "${fileName}" existe.\n\nVerifique sua conexão com a internet e tente novamente.`);
+            }
+        }
+
+        // Função para adicionar event listeners aos links de arquivos
+        function addFileEventListeners() {
+            document.querySelectorAll('.file-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const url = this.getAttribute('data-file-url');
+                    const fileName = this.getAttribute('data-file-name');
+                    const index = this.getAttribute('data-file-index');
+                    checkFileAndOpen(url, fileName, index);
+                });
+            });
+        }
+
+        // Função para validar senha segura
+        function validatePassword(password) {
+            const errors = [];
+            
+            // Mínimo 8 caracteres
+            if (password.length < 8) {
+                errors.push('A senha deve ter no mínimo 8 caracteres');
+            }
+            
+            // Verifica sequências numéricas de 4 ou mais dígitos
+            const sequentialPatterns = [
+                '0123', '1234', '2345', '3456', '4567', '5678', '6789',
+                '9876', '8765', '7654', '6543', '5432', '4321', '3210'
+            ];
+            
+            for (let pattern of sequentialPatterns) {
+                if (password.includes(pattern)) {
+                    errors.push('A senha não pode conter sequências numéricas como ' + pattern);
+                    break;
+                }
+            }
+            
+            // Verifica repetições de 4 ou mais caracteres iguais
+            const repeatPattern = /(.)\1{3,}/;
+            if (repeatPattern.test(password)) {
+                errors.push('A senha não pode ter 4 ou mais caracteres iguais consecutivos');
+            }
+            
+            return errors;
+        }
+
+        // Máscara para WhatsApp com código do Brasil (+55)
+        function formatWhatsApp(value) {
+            // Remove tudo que não é dígito
+            let numbers = value.replace(/\D/g, '');
+            
+            // Se o campo estiver vazio, retorna vazio para permitir digitação
+            if (numbers.length === 0) {
+                return '';
+            }
+            
+            // Se não começar com 55, adiciona automaticamente
+            if (!numbers.startsWith('55')) {
+                numbers = '55' + numbers;
+            }
+            
+            // Limita a 13 dígitos (55 + 11 dígitos do número brasileiro)
+            if (numbers.length > 13) {
+                numbers = numbers.substring(0, 13);
+            }
+            
+            // Aplica a máscara +55 (00) 00000-0000
+            let formatted = '+55';
+            
+            if (numbers.length > 2) {
+                let remaining = numbers.substring(2); // Remove o 55 inicial
+                
+                if (remaining.length >= 2) {
+                    formatted += ' (' + remaining.substring(0, 2);
+                    if (remaining.length > 2) {
+                        formatted += ')';
+                        remaining = remaining.substring(2);
+                        
+                        if (remaining.length > 0) {
+                            if (remaining.length <= 5) {
+                                formatted += ' ' + remaining;
+                            } else {
+                                formatted += ' ' + remaining.substring(0, 5);
+                                if (remaining.length > 5) {
+                                    formatted += '-' + remaining.substring(5);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    formatted += ' (' + remaining;
+                }
+            }
+            
+            return formatted;
+        }
+
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!window.minhasCampanhasInstance) {
+                // Aguardar um pouco para garantir que todos os scripts foram carregados
+                setTimeout(function() {
+                    window.minhasCampanhasInstance = new MinhasCampanhas();
+                }, 300);
+            }
+            
+            // Adicionar evento de clique para o botão de login na seção de acesso restrito
+            const campaignsLoginBtn = document.getElementById('campaigns-login-btn');
+            if (campaignsLoginBtn) {
+                campaignsLoginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Abrir modal de login
+                    const loginModalOverlay = document.getElementById('login-modal-overlay');
+                    if (loginModalOverlay) {
+                        loginModalOverlay.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            }
+            
+            // Máscara do WhatsApp
+            const whatsappField = document.getElementById('signup-whatsapp');
+            if (whatsappField) {
+                whatsappField.addEventListener('input', function(e) {
+                    e.target.value = formatWhatsApp(e.target.value);
+                });
+            }
+            
+            // Controle do dropdown do usuário
+            initUserDropdown();
+        });
+        
+        function initUserDropdown() {
+            // Elementos do botão de login desktop/mobile
+            const loginBtnDesktop = document.getElementById('loginBtnDesktop');
+            const loginBtnMobile = document.getElementById('loginBtnMobile');
+            const userDropdown = document.getElementById('userDropdownDesktop');
+            const userDropdownMobile = document.getElementById('userDropdownMobile');
+            const logoutLink = document.getElementById('logout-link');
+            const logoutLinkMobile = document.getElementById('logout-link-mobile');
+            const minhaContaLink = document.getElementById('minha-conta-link');
+            const minhaContaLinkMobile = document.getElementById('minha-conta-link-mobile');
+            
+
+            
+            // Botões de login gerenciados pelo LoginComponent
+            
+            // Eventos de logout
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+            
+            if (logoutLinkMobile) {
+                logoutLinkMobile.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+            
+            // Eventos de Minha Conta
+            if (minhaContaLink) {
+                minhaContaLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = 'minha-conta.html';
+                });
+            }
+            
+            if (minhaContaLinkMobile) {
+                minhaContaLinkMobile.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = 'minha-conta.html';
+                });
+            }
+            
+            // Eventos dos elementos principais
+            const minhaContaLinkMain = document.getElementById('minha-conta-link');
+            const logoutLinkMain = document.getElementById('logout-link');
+            
+            if (minhaContaLinkMain) {
+                minhaContaLinkMain.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = 'minha-conta.html';
+                });
+            }
+            
+            if (logoutLinkMain) {
+                logoutLinkMain.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+        }
+        
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!window.minhasCampanhasInstance) {
+                // Aguardar um pouco para garantir que todos os scripts foram carregados
+                setTimeout(() => {
+                    window.minhasCampanhasInstance = new MinhasCampanhas();
+                }, 300);
+            }
+            
+            // Adicionar evento de clique para o botão de login na seção de acesso restrito
+            const campaignsLoginBtn = document.getElementById('campaigns-login-btn');
+            if (campaignsLoginBtn) {
+                campaignsLoginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Abrir modal de login
+                    const loginModalOverlay = document.getElementById('login-modal-overlay');
+                    if (loginModalOverlay) {
+                        loginModalOverlay.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            }
+            
+            // Máscara do WhatsApp
+            const whatsappField = document.getElementById('signup-whatsapp');
+            if (whatsappField) {
+                whatsappField.addEventListener('input', function(e) {
+                    e.target.value = formatWhatsApp(e.target.value);
+                });
+            }
+            
+            // Controle do dropdown do usuário
+            initUserDropdown();
+        });
+        
+    </script>
+
+
+
+    <!-- Scripts de autenticação -->
+    <script src="js/user-button-component.js"></script>
+    <script src="js/login-component.js"></script>
+    <script src="js/auth-sync.js"></script>
+    
+    <!-- Script adicional para garantir interatividade mobile -->
+    <script>
+        // Monitor de interatividade para mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar periodicamente se há problemas de interatividade
+            setInterval(() => {
+                const overlay = document.querySelector('.login-modal-overlay');
+                if (overlay && !overlay.classList.contains('active')) {
+                    // Se o overlay existe mas não está ativo, garantir que não está bloqueando
+                    overlay.style.display = 'none';
+                    overlay.style.pointerEvents = 'none';
+                    overlay.style.touchAction = 'auto';
+                    overlay.style.zIndex = '-1';
+                }
+                
+                // Verificar se o body está com overflow hidden sem modal ativo
+                const futuristicActive = document.getElementById('futuristicPage')?.classList.contains('active');
+                const paymentOverlayVisible = document.getElementById('payment-modal-overlay')?.style.display === 'flex';
+                if (document.body.style.overflow === 'hidden' && 
+                    (!overlay || !overlay.classList.contains('active')) &&
+                    !futuristicActive && !paymentOverlayVisible) {
+                    document.body.style.overflow = '';
+                    document.body.style.touchAction = '';
+                    document.documentElement.style.overflow = '';
+                    document.documentElement.style.touchAction = '';
+                    console.log('🔧 Corrigido overflow hidden órfão');
+                }
+            }, 3000);
+            
+            // Listener para cliques no overlay
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('login-modal-overlay')) {
+                    setTimeout(() => {
+                        if (window.campaignManager && window.campaignManager.forceMobileInteractivity) {
+                            window.campaignManager.forceMobileInteractivity();
+                        }
+                    }, 100);
+                }
+            });
+            
+            // Listener para mudanças de visibilidade da página
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    setTimeout(() => {
+                        if (window.campaignManager && window.campaignManager.forceMobileInteractivity) {
+                            window.campaignManager.forceMobileInteractivity();
+                        }
+                    }, 500);
+                }
+            });
+        });
+    </script>
+
+    <footer style="background-color: #f8f9fa; padding: 0.8rem; text-align: center; margin-top: 2rem; border-top: 1px solid #dee2e6; position: absolute; left: 15%; right: 0; padding-right: 2rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <p style="margin: 0; color: #6c757d; font-size: 0.7rem;">
+            <i class="fas fa-copyright"></i> 2025 Next Ads. Todos os direitos reservados.
+        </p>
+    </footer>
+    
+</body>
+</html>

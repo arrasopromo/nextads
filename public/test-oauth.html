@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste OAuth Facebook - NextAds</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        button {
+            background: #1877f2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #166fe5;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        #log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Teste OAuth Facebook</h1>
+        
+        <div class="step">
+            <h3>1. Verificar Autenticação</h3>
+            <button onclick="checkAuth()">Verificar Token</button>
+            <div id="auth-status"></div>
+        </div>
+        
+        <div class="step">
+            <h3>2. Testar Login</h3>
+            <button onclick="testLogin()">Fazer Login</button>
+            <div id="login-status"></div>
+        </div>
+        
+        <div class="step">
+            <h3>3. Testar OAuth Facebook</h3>
+            <button onclick="testOAuth()">Iniciar OAuth</button>
+            <div id="oauth-status"></div>
+        </div>
+        
+        <div class="step">
+            <h3>4. Verificar Integrações</h3>
+            <button onclick="checkIntegrations()">Verificar Integrações</button>
+            <div id="integrations-status"></div>
+        </div>
+        
+        <div class="step">
+            <h3>📋 Log de Atividades</h3>
+            <button onclick="clearLog()">Limpar Log</button>
+            <div id="log"></div>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        function setStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+
+        async function checkAuth() {
+            log('🔍 Verificando autenticação...');
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                setStatus('auth-status', '❌ Nenhum token encontrado no localStorage', 'error');
+                log('❌ Nenhum token encontrado');
+                return false;
+            }
+            
+            log(`✅ Token encontrado: ${token.substring(0, 20)}...`);
+            
+            try {
+                const response = await fetch('/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const userData = await response.json();
+                    setStatus('auth-status', `✅ Usuário autenticado: ${userData.name || userData.email}`, 'success');
+                    log(`✅ Usuário autenticado: ${userData.name || userData.email}`);
+                    return true;
+                } else {
+                    setStatus('auth-status', '❌ Token inválido', 'error');
+                    log('❌ Token inválido');
+                    return false;
+                }
+            } catch (error) {
+                setStatus('auth-status', `❌ Erro: ${error.message}`, 'error');
+                log(`❌ Erro ao verificar token: ${error.message}`);
+                return false;
+            }
+        }
+
+        async function testLogin() {
+            log('🔐 Redirecionando para login...');
+            setStatus('login-status', '🔄 Redirecionando para página de login...', 'info');
+            window.location.href = '/login.html';
+        }
+
+        async function testOAuth() {
+            log('🚀 Testando OAuth Facebook...');
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                setStatus('oauth-status', '❌ Faça login primeiro', 'error');
+                log('❌ Token não encontrado - faça login primeiro');
+                return;
+            }
+            
+            try {
+                log('🔗 Iniciando fluxo OAuth...');
+                setStatus('oauth-status', '🔄 Iniciando OAuth...', 'info');
+                
+                // Redirecionar para o endpoint OAuth com o token
+                const oauthUrl = `/login/facebook?token=${encodeURIComponent(token)}`;
+                log(`🔗 Redirecionando para: ${oauthUrl}`);
+                window.location.href = oauthUrl;
+                
+            } catch (error) {
+                setStatus('oauth-status', `❌ Erro: ${error.message}`, 'error');
+                log(`❌ Erro no OAuth: ${error.message}`);
+            }
+        }
+
+        async function checkIntegrations() {
+            log('🔍 Verificando integrações...');
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                setStatus('integrations-status', '❌ Faça login primeiro', 'error');
+                log('❌ Token não encontrado');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/user/integrations', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ Resposta das integrações: ${JSON.stringify(data, null, 2)}`);
+                    
+                    if (data.facebook && data.facebook.connected) {
+                        setStatus('integrations-status', `✅ Facebook conectado: ${data.facebook.user.name}`, 'success');
+                        log(`✅ Facebook conectado: ${data.facebook.user.name}`);
+                    } else {
+                        setStatus('integrations-status', '❌ Facebook não conectado', 'error');
+                        log('❌ Facebook não conectado');
+                    }
+                } else {
+                    setStatus('integrations-status', `❌ Erro HTTP: ${response.status}`, 'error');
+                    log(`❌ Erro HTTP: ${response.status}`);
+                }
+            } catch (error) {
+                setStatus('integrations-status', `❌ Erro: ${error.message}`, 'error');
+                log(`❌ Erro ao verificar integrações: ${error.message}`);
+            }
+        }
+
+        // Verificar automaticamente ao carregar a página
+        window.onload = function() {
+            log('🔄 Página carregada - verificando autenticação...');
+            checkAuth();
+        };
+    </script>
+</body>
+</html>

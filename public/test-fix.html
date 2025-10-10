@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Correção Facebook UI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background: #1877f2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #166fe5;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        #log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Teste - Correção Facebook UI</h1>
+        
+        <!-- Simular elementos da página integracoes.html -->
+        <div class="test-section">
+            <h3>Elementos DOM Simulados</h3>
+            
+            <!-- Container de login do Facebook -->
+            <div id="facebook-login-button-container" style="margin-bottom: 15px;">
+                <button id="facebook-oauth-btn" style="background: #1877f2; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer;">
+                    <i class="fab fa-facebook-f"></i>
+                    Conectar com Facebook
+                </button>
+            </div>
+            
+            <!-- Botões de controle -->
+            <div id="facebook-control-buttons" style="display: none; gap: 10px;">
+                <button id="facebook-disconnect-btn" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Desconectar
+                </button>
+                
+                <button id="facebook-switch-account-btn" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">
+                    <i class="fas fa-user-friends"></i>
+                    Trocar Conta
+                </button>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Testes</h3>
+            <button onclick="testConnectedState()">Testar Estado Conectado</button>
+            <button onclick="testDisconnectedState()">Testar Estado Desconectado</button>
+            <button onclick="checkElements()">Verificar Elementos</button>
+            <button onclick="clearLog()">Limpar Log</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>📋 Log de Teste</h3>
+            <div id="log"></div>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.textContent += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = '';
+        }
+
+        // Simular a classe IntegrationManager com a função updateFacebookUI corrigida
+        class TestIntegrationManager {
+            updateFacebookUI(userData, isConnected) {
+                console.log('🔍 DEBUG - updateFacebookUI chamada com:', {
+                    userData: userData,
+                    isConnected: isConnected,
+                    userDataType: typeof userData,
+                    hasUserData: !!userData
+                });
+                
+                // Usar os IDs corretos que existem no HTML
+                const connectBtn = document.getElementById('facebook-oauth-btn');
+                const disconnectBtn = document.getElementById('facebook-disconnect-btn');
+                const controlButtons = document.getElementById('facebook-control-buttons');
+                const loginContainer = document.getElementById('facebook-login-button-container');
+
+                console.log('🔍 DEBUG - Elementos DOM encontrados:', {
+                    connectBtn: !!connectBtn,
+                    disconnectBtn: !!disconnectBtn,
+                    controlButtons: !!controlButtons,
+                    loginContainer: !!loginContainer
+                });
+
+                if (isConnected) {
+                    console.log('✅ Facebook conectado - atualizando UI...');
+                    
+                    // Esconder botão de conectar
+                    if (connectBtn) {
+                        connectBtn.style.display = 'none';
+                        console.log('✅ Botão de conectar escondido');
+                    }
+                    
+                    // Mostrar botões de controle (desconectar e trocar conta)
+                    if (controlButtons) {
+                        controlButtons.style.display = 'flex';
+                        console.log('✅ Botões de controle exibidos');
+                    }
+                    
+                    // Esconder container de login
+                    if (loginContainer) {
+                        loginContainer.style.display = 'none';
+                        console.log('✅ Container de login escondido');
+                    }
+                    
+                    // Atualizar texto do botão de conectar para mostrar status
+                    if (connectBtn) {
+                        connectBtn.innerHTML = `
+                            <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                            Conectado como ${userData?.name || 'Usuário'}
+                        `;
+                        connectBtn.style.background = '#28a745';
+                        connectBtn.style.display = 'block';
+                    }
+                } else {
+                    console.log('❌ Facebook desconectado - atualizando UI...');
+                    
+                    // Mostrar botão de conectar
+                    if (connectBtn) {
+                        connectBtn.style.display = 'block';
+                        connectBtn.innerHTML = `
+                            <i class="fab fa-facebook-f"></i>
+                            Conectar com Facebook
+                        `;
+                        connectBtn.style.background = '#1877f2';
+                        console.log('✅ Botão de conectar exibido');
+                    }
+                    
+                    // Esconder botões de controle
+                    if (controlButtons) {
+                        controlButtons.style.display = 'none';
+                        console.log('✅ Botões de controle escondidos');
+                    }
+                    
+                    // Mostrar container de login
+                    if (loginContainer) {
+                        loginContainer.style.display = 'block';
+                        console.log('✅ Container de login exibido');
+                    }
+                }
+            }
+        }
+
+        const testManager = new TestIntegrationManager();
+
+        function checkElements() {
+            log('🔍 Verificando elementos DOM...');
+            
+            const elements = [
+                'facebook-oauth-btn',
+                'facebook-disconnect-btn',
+                'facebook-control-buttons',
+                'facebook-login-button-container'
+            ];
+            
+            let foundElements = 0;
+            
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    foundElements++;
+                    log(`✅ Elemento #${id} encontrado`);
+                } else {
+                    log(`❌ Elemento #${id} NÃO encontrado`);
+                }
+            });
+            
+            if (foundElements === elements.length) {
+                log(`✅ Todos os ${elements.length} elementos encontrados!`);
+            } else {
+                log(`❌ ${elements.length - foundElements} elementos não encontrados`);
+            }
+        }
+
+        function testConnectedState() {
+            log('🧪 Testando estado CONECTADO...');
+            
+            const userData = {
+                name: 'João Silva',
+                id: '123456789',
+                pages: [
+                    { name: 'Minha Página', id: 'page123' }
+                ]
+            };
+            
+            testManager.updateFacebookUI(userData, true);
+            log('✅ Teste de estado conectado concluído');
+        }
+
+        function testDisconnectedState() {
+            log('🧪 Testando estado DESCONECTADO...');
+            
+            testManager.updateFacebookUI(null, false);
+            log('✅ Teste de estado desconectado concluído');
+        }
+
+        // Executar verificação inicial
+        window.onload = function() {
+            log('🚀 Página carregada - iniciando verificações...');
+            checkElements();
+        };
+    </script>
+</body>
+</html>

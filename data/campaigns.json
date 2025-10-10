@@ -1,0 +1,25 @@
+{
+  "campaigns": [
+    {
+      "id": "test-campaign-1",
+      "nome": "Campanha de Teste",
+      "objetivo": "Conversões",
+      "publico": "Jovens 18-35",
+      "orcamento": "R$ 500,00",
+      "duracao": "7 dias",
+      "status": "Ativa",
+      "dataInicio": "2025-01-01",
+      "dataFim": "2025-01-07",
+      "files": [
+        {
+          "nome": "Arquivo Existente",
+          "url": "http://localhost:4000/uploads/files-1758542527297-943339511.jpg"
+        },
+        {
+          "nome": "Arquivo Inexistente",
+          "url": "http://localhost:4000/uploads/files-1758642173574-750779178.PNG"
+        }
+      ]
+    }
+  ]
+}

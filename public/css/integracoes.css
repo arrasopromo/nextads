@@ -1,0 +1,1244 @@
+/* ========================================
+   INTEGRAÇÕES PAGE STYLES
+   ======================================== */
+
+/* ========================================
+   LAYOUT PRINCIPAL
+   ======================================== */
+.main-content {
+    margin-left: 280px;
+    padding: 2rem;
+    min-height: 100vh;
+    background: white;
+}
+
+/* ========================================
+   ESTADOS DE LOADING E LOGIN
+   ======================================== */
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+}
+
+.loading i {
+    font-size: 3rem;
+    color: #3b82f6;
+    margin-bottom: 1rem;
+    animation: spin 1s linear infinite;
+}
+
+.loading p {
+    font-size: 1.1rem;
+    color: #64748b;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.login-required {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.login-required i {
+    font-size: 4rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+}
+
+.login-required h2 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.login-required p {
+    color: #7f8c8d;
+    margin-bottom: 2rem;
+}
+
+/* Estilos específicos para botão de login na seção principal (não header) */
+.login-required .login-btn-desktop {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    color: white !important;
+    padding: 12px 20px !important;
+    border: none !important;
+    border-radius: 25px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    position: relative !important;
+    top: 50% !important;
+    left: 0% !important;
+    margin: 0 !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+    width: auto !important;
+    line-height: 1.2 !important;
+    z-index: 1999 !important;
+}
+
+.login-required .login-btn-desktop:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.login-required .login-btn-desktop i,
+.login-required .login-btn-desktop .fas,
+.login-required .login-btn-desktop .fa-sign-in-alt {
+    font-size: 16px;
+    color: white !important;
+    background: none !important;
+    background-color: transparent !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: white !important;
+    background-clip: unset !important;
+    line-height: 1.2;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+}
+
+/* Garantir que o botão apareça no mobile */
+@media (max-width: 768px) {
+    .login-required .login-btn-desktop {
+        display: inline-block !important;
+        margin: 2% 0% 0 0 !important;
+        padding: 10px 16px !important;
+        font-size: 12px !important;
+        width: auto !important;
+    }
+}
+
+/* ========================================
+   CABEÇALHO DA PÁGINA
+   ======================================== */
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+}
+
+.page-header h1 {
+    color: #000000;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    font-size: 1.1rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+/* ========================================
+   SEÇÃO DE INTEGRAÇÃO SIMPLIFICADA
+   ======================================== */
+.simple-integration-section {
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+}
+
+.simple-integration-card {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    max-width: 500px;
+    width: 100%;
+}
+
+.integration-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.facebook-icon {
+    background: #1877f2;
+}
+
+.instagram-icon {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.icon-connector {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: #64748b;
+}
+
+.simple-integration-card h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #1e293b;
+}
+
+.simple-integration-card p {
+    font-size: 1.1rem;
+    color: #64748b;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.btn-integrate {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-integrate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-integrate:active {
+    transform: translateY(0);
+}
+
+/* ========================================
+   RESPONSIVIDADE MOBILE
+   ======================================== */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+    
+    .simple-integration-section {
+        min-height: 50vh;
+        padding: 1rem 0;
+    }
+    
+    .simple-integration-card {
+        padding: 2rem 1.5rem;
+        margin: 0 1rem;
+    }
+    
+    .integration-icons {
+        gap: 0.8rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .icon-connector {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .simple-integration-card h2 {
+        font-size: 1.6rem;
+    }
+    
+    .simple-integration-card p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .btn-integrate {
+        padding: 0.9rem 1.5rem;
+        font-size: 1rem;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+.quick-integration-icons i {
+    font-size: 3rem;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.quick-integration-icons .fa-plus {
+    font-size: 1.5rem;
+    opacity: 0.8;
+}
+
+.quick-integration-card:hover .quick-integration-icons i {
+    transform: scale(1.1);
+}
+
+.quick-integration-card h3 {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.quick-integration-card p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.quick-integration-btn {
+    background: white;
+    color: #667eea;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.quick-integration-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.quick-integration-btn:hover::before {
+    left: 100%;
+}
+
+.quick-integration-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    background: #f8fafc;
+}
+
+.quick-integration-btn:active {
+    transform: translateY(0);
+}
+
+.quick-integration-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.quick-integration-benefits li {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quick-integration-benefits li i {
+    color: #10b981;
+    font-size: 1rem;
+}
+
+/* Animação de sucesso para o botão */
+.quick-integration-success {
+    background: #10b981 !important;
+    color: white !important;
+    transform: scale(1.05);
+}
+
+.quick-integration-card.success-animation {
+    animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   CONTAINER PRINCIPAL
+   ======================================== */
+.integrations-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   GRID DE INTEGRAÇÕES
+   ======================================== */
+.integrations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+/* ========================================
+   CARDS DE INTEGRAÇÃO
+   ======================================== */
+.integration-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    position: relative;
+}
+
+.integration-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.integration-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ========================================
+   CABEÇALHO DO CARD
+   ======================================== */
+.integration-header {
+    padding: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.integration-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.facebook-icon {
+    background: linear-gradient(135deg, #1877f2, #42a5f5);
+}
+
+.instagram-icon {
+    background: linear-gradient(135deg, #e1306c, #fd1d1d, #fcb045);
+}
+
+.integration-info {
+    flex: 1;
+}
+
+.integration-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+}
+
+.integration-description {
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* ========================================
+   STATUS DA INTEGRAÇÃO
+   ======================================== */
+.integration-status {
+    flex-shrink: 0;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 25px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge.connected {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.status-badge.disconnected {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+/* ========================================
+   CORPO DO CARD
+   ======================================== */
+.integration-body {
+    padding: 2rem;
+}
+
+/* ========================================
+   LISTA DE PERMISSÕES
+   ======================================== */
+.permissions-list {
+    margin-bottom: 2rem;
+}
+
+.permissions-list h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.permissions-list h4 i {
+    color: #667eea;
+}
+
+.permissions-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.permissions-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    color: #475569;
+    font-size: 0.9rem;
+}
+
+.permissions-list li i {
+    color: #10b981;
+    font-size: 0.875rem;
+    width: 16px;
+}
+
+/* ========================================
+   AÇÕES DA INTEGRAÇÃO
+   ======================================== */
+.integration-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.875rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    justify-content: center;
+    min-width: 140px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: white;
+    color: #64748b;
+    border: 2px solid #e2e8f0;
+}
+
+.btn-secondary:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+}
+
+/* ========================================
+   INFORMAÇÕES DA CONTA CONECTADA
+   ======================================== */
+.connected-account {
+    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid #bae6fd;
+}
+
+.account-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    border: 3px solid white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.account-details h5 {
+    margin: 0 0 0.5rem 0;
+    color: #0c4a6e;
+    font-weight: 600;
+}
+
+.account-stats {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    background: white;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.stat-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #0c4a6e;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+}
+
+/* ========================================
+   PÁGINAS DO FACEBOOK
+   ======================================== */
+.facebook-pages {
+    margin-top: 1.5rem;
+}
+
+.facebook-pages h5 {
+    margin-bottom: 1rem;
+    color: #1e293b;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.facebook-pages h5 i {
+    color: #1877f2;
+}
+
+.pages-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.page-item {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.page-item:hover {
+    border-color: #1877f2;
+    box-shadow: 0 4px 15px rgba(24, 119, 242, 0.1);
+}
+
+.page-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.page-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 2px solid #e2e8f0;
+}
+
+.page-details h6 {
+    margin: 0;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.page-details p {
+    margin: 0.25rem 0 0 0;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+/* ========================================
+   CONTAS DO INSTAGRAM
+   ======================================== */
+.instagram-accounts {
+    margin-top: 1.5rem;
+}
+
+.instagram-accounts h5 {
+    margin-bottom: 1rem;
+    color: #1e293b;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.instagram-accounts h5 i {
+    color: #e1306c;
+}
+
+.instagram-item {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.instagram-item:hover {
+    border-color: #e1306c;
+    box-shadow: 0 4px 15px rgba(225, 48, 108, 0.1);
+}
+
+.instagram-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.instagram-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #e2e8f0;
+}
+
+.instagram-details h6 {
+    margin: 0;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.instagram-details p {
+    margin: 0.25rem 0 0 0;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+/* ========================================
+   SEÇÃO DE BENEFÍCIOS
+   ======================================== */
+.benefits-section {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    margin-top: 3rem;
+}
+
+.benefits-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.benefit-card {
+    text-align: center;
+    padding: 2rem 1rem;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.benefit-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.benefit-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1e293b;
+}
+
+.benefit-card p {
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ========================================
+   MODAL DE CARREGAMENTO
+   ======================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+}
+
+.loading-modal {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 90%;
+}
+
+.loading-content h3 {
+    margin: 1rem 0 0.5rem 0;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.loading-content p {
+    color: #64748b;
+    margin: 0;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+/* ========================================
+   ANIMAÇÕES
+   ======================================== */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.integration-card {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.integration-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+/* ========================================
+   AD ACCOUNTS SECTION
+   ======================================== */
+.ad-accounts-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.ad-accounts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.ad-account-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.ad-account-item:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+.ad-account-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.ad-account-name {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.ad-account-id {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-family: 'Courier New', monospace;
+}
+
+.ad-account-details {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.ad-account-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-active {
+    color: #059669;
+}
+
+.status-inactive {
+    color: #dc2626;
+}
+
+.ad-account-currency {
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* ========================================
+   RESPONSIVIDADE
+   ======================================== */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+    
+    .page-header {
+        margin-bottom: 2rem;
+        padding: 1.5rem 1rem;
+        text-align: center;
+    }
+    
+    .page-header h1 {
+        font-size: 1.6rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .page-header p {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+    
+    .integrations-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .integration-header {
+        padding: 1.5rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .integration-body {
+        padding: 1.5rem;
+    }
+    
+    .integration-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        flex: none;
+        width: 100%;
+    }
+    
+    .benefits-section {
+        padding: 2rem 1rem;
+        margin-top: 2rem;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .account-stats {
+        justify-content: center;
+    }
+    
+    .stat-item {
+        min-width: 70px;
+    }
+    
+    .ad-account-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .ad-account-details {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .integration-title {
+        font-size: 1.25rem;
+    }
+    
+    .benefits-title {
+        font-size: 1.5rem;
+    }
+    
+    .integration-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+}
+
+/* ========================================
+   FACEBOOK LOGIN SECTION
+   ======================================== */
+.facebook-login-section {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.facebook-login-section h3 {
+    color: #1877f2;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.facebook-login-section h3::before {
+    content: "\f09a";
+    font-family: "Font Awesome 5 Brands";
+    font-size: 1.1rem;
+}
+
+.facebook-login-section p {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+/* Estilização do botão oficial do Facebook */
+.fb_iframe_widget {
+    display: inline-block;
+    margin: 0.5rem 0;
+}
+
+.quick-integration-section {
+    background: #fef7ff;
+    border: 2px solid #e879f9;
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.quick-integration-section h3 {
+    color: #a855f7;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.quick-integration-section h3::before {
+    content: "\f0e7";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 1.1rem;
+}
+
+/* Responsividade para as novas seções */
+@media (max-width: 768px) {
+    .facebook-login-section,
+    .quick-integration-section {
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    .facebook-login-section h3,
+    .quick-integration-section h3 {
+        font-size: 1.1rem;
+    }
+}

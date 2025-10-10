@@ -1,0 +1,434 @@
+[
+  {
+    "codigo_ibge": 1100015,
+    "nome": "Alta Floresta D'Oeste",
+    "latitude": -11.9355,
+    "longitude": -61.9993,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100023,
+    "nome": "Ariquemes",
+    "latitude": -9.9133,
+    "longitude": -63.0405,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100031,
+    "nome": "Cabixi",
+    "latitude": -13.4992,
+    "longitude": -60.5447,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100049,
+    "nome": "Cacoal",
+    "latitude": -11.4386,
+    "longitude": -61.4472,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100056,
+    "nome": "Cerejeiras",
+    "latitude": -13.1925,
+    "longitude": -60.8158,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100064,
+    "nome": "Colorado do Oeste",
+    "latitude": -13.1067,
+    "longitude": -60.4889,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100072,
+    "nome": "Corumbiara",
+    "latitude": -12.9686,
+    "longitude": -60.9258,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100080,
+    "nome": "Costa Marques",
+    "latitude": -12.4356,
+    "longitude": -64.2339,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100098,
+    "nome": "Espigão D'Oeste",
+    "latitude": -11.5258,
+    "longitude": -61.0378,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100106,
+    "nome": "Guajará-Mirim",
+    "latitude": -10.7833,
+    "longitude": -65.3333,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100114,
+    "nome": "Jaru",
+    "latitude": -10.4394,
+    "longitude": -62.4661,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100122,
+    "nome": "Ji-Paraná",
+    "latitude": -10.8756,
+    "longitude": -61.9378,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100130,
+    "nome": "Machadinho D'Oeste",
+    "latitude": -9.4089,
+    "longitude": -61.9997,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100148,
+    "nome": "Nova Brasilândia D'Oeste",
+    "latitude": -11.7167,
+    "longitude": -62.7333,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100155,
+    "nome": "Ouro Preto do Oeste",
+    "latitude": -10.7486,
+    "longitude": -62.2158,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100189,
+    "nome": "Pimenta Bueno",
+    "latitude": -11.6708,
+    "longitude": -61.1936,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100205,
+    "nome": "Porto Velho",
+    "latitude": -8.7619,
+    "longitude": -63.9039,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100254,
+    "nome": "Presidente Médici",
+    "latitude": -11.1747,
+    "longitude": -61.8986,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100262,
+    "nome": "Rio Crespo",
+    "latitude": -9.6167,
+    "longitude": -62.8833,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100288,
+    "nome": "Rolim de Moura",
+    "latitude": -11.7281,
+    "longitude": -61.7781,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100296,
+    "nome": "Santa Luzia D'Oeste",
+    "latitude": -11.9167,
+    "longitude": -61.7667,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1100304,
+    "nome": "Vilhena",
+    "latitude": -12.7406,
+    "longitude": -60.1458,
+    "codigo_uf": 11,
+    "ddd": 69
+  },
+  {
+    "codigo_ibge": 1200013,
+    "nome": "Acrelândia",
+    "latitude": -9.9575,
+    "longitude": -67.1342,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200021,
+    "nome": "Assis Brasil",
+    "latitude": -10.9447,
+    "longitude": -69.5733,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200039,
+    "nome": "Brasiléia",
+    "latitude": -11.0158,
+    "longitude": -68.7486,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200047,
+    "nome": "Bujari",
+    "latitude": -9.8167,
+    "longitude": -67.9333,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200054,
+    "nome": "Capixaba",
+    "latitude": -10.5833,
+    "longitude": -67.3333,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200062,
+    "nome": "Cruzeiro do Sul",
+    "latitude": -7.6333,
+    "longitude": -72.6667,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200070,
+    "nome": "Epitaciolândia",
+    "latitude": -11.0333,
+    "longitude": -68.7333,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200088,
+    "nome": "Feijó",
+    "latitude": -8.1667,
+    "longitude": -70.3667,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200096,
+    "nome": "Jordão",
+    "latitude": -9.1667,
+    "longitude": -72.7833,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200104,
+    "nome": "Mâncio Lima",
+    "latitude": -7.6167,
+    "longitude": -72.8833,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200112,
+    "nome": "Manoel Urbano",
+    "latitude": -8.8333,
+    "longitude": -69.2667,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200120,
+    "nome": "Marechal Thaumaturgo",
+    "latitude": -8.9333,
+    "longitude": -72.7833,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200138,
+    "nome": "Plácido de Castro",
+    "latitude": -10.3333,
+    "longitude": -67.1833,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200146,
+    "nome": "Porto Acre",
+    "latitude": -9.6167,
+    "longitude": -67.5333,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200179,
+    "nome": "Porto Walter",
+    "latitude": -8.2667,
+    "longitude": -72.7667,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200203,
+    "nome": "Rio Branco",
+    "latitude": -9.9747,
+    "longitude": -67.8103,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200252,
+    "nome": "Rodrigues Alves",
+    "latitude": -7.7667,
+    "longitude": -72.6667,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200302,
+    "nome": "Santa Rosa do Purus",
+    "latitude": -9.4167,
+    "longitude": -70.4833,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200328,
+    "nome": "Sena Madureira",
+    "latitude": -9.0667,
+    "longitude": -68.6667,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200336,
+    "nome": "Senador Guiomard",
+    "latitude": -10.1333,
+    "longitude": -67.7333,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200344,
+    "nome": "Tarauacá",
+    "latitude": -8.1667,
+    "longitude": -70.7667,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 1200352,
+    "nome": "Xapuri",
+    "latitude": -10.6500,
+    "longitude": -68.5000,
+    "codigo_uf": 12,
+    "ddd": 68
+  },
+  {
+    "codigo_ibge": 3550308,
+    "nome": "São Paulo",
+    "latitude": -23.5505,
+    "longitude": -46.6333,
+    "codigo_uf": 35,
+    "ddd": 11
+  },
+  {
+    "codigo_ibge": 3304557,
+    "nome": "Rio de Janeiro",
+    "latitude": -22.9068,
+    "longitude": -43.1729,
+    "codigo_uf": 33,
+    "ddd": 21
+  },
+  {
+    "codigo_ibge": 3106200,
+    "nome": "Belo Horizonte",
+    "latitude": -19.9167,
+    "longitude": -43.9345,
+    "codigo_uf": 31,
+    "ddd": 31
+  },
+  {
+    "codigo_ibge": 2927408,
+    "nome": "Salvador",
+    "latitude": -12.9714,
+    "longitude": -38.5014,
+    "codigo_uf": 29,
+    "ddd": 71
+  },
+  {
+    "codigo_ibge": 2304400,
+    "nome": "Fortaleza",
+    "latitude": -3.7319,
+    "longitude": -38.5267,
+    "codigo_uf": 23,
+    "ddd": 85
+  },
+  {
+    "codigo_ibge": 5300108,
+    "nome": "Brasília",
+    "latitude": -15.7939,
+    "longitude": -47.8828,
+    "codigo_uf": 53,
+    "ddd": 61
+  },
+  {
+    "codigo_ibge": 1302603,
+    "nome": "Manaus",
+    "latitude": -3.1190,
+    "longitude": -60.0217,
+    "codigo_uf": 13,
+    "ddd": 92
+  },
+  {
+    "codigo_ibge": 4106902,
+    "nome": "Curitiba",
+    "latitude": -25.4244,
+    "longitude": -49.2654,
+    "codigo_uf": 41,
+    "ddd": 41
+  },
+  {
+    "codigo_ibge": 4314902,
+    "nome": "Porto Alegre",
+    "latitude": -30.0346,
+    "longitude": -51.2177,
+    "codigo_uf": 43,
+    "ddd": 51
+  },
+  {
+    "codigo_ibge": 2611606,
+    "nome": "Recife",
+    "latitude": -8.0476,
+    "longitude": -34.8770,
+    "codigo_uf": 26,
+    "ddd": 81
+  }
+]
