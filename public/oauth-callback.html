@@ -115,11 +115,14 @@
                     }
                 }
                 
-                // Fechar automaticamente após processamento
-                setTimeout(() => {
-                    console.log('🔄 Fechando callback automaticamente...');
-                    closeCallback();
-                }, 300); // Fechar rapidamente
+                // Fechar automaticamente após processamento - IMEDIATAMENTE
+                console.log('🔄 Fechando callback IMEDIATAMENTE...');
+                closeCallback();
+                
+                // Backup: tentar fechar múltiplas vezes
+                setTimeout(() => window.close(), 100);
+                setTimeout(() => window.close(), 200);
+                setTimeout(() => window.close(), 500);
                 
             } else {
                 console.log('❌ OAuth com erro:', error);
@@ -133,43 +136,46 @@
         });
         
         function closeCallback(status = 'success') {
+            console.log('🔄 Iniciando closeCallback...');
+            
+            // Tentar fechar imediatamente - múltiplas estratégias simultâneas
             try {
-                // Estratégia 1: Fechar se for popup
-                if (window.opener) {
-                    console.log('✅ Fechando popup...');
-                    window.close();
-                    return;
-                }
-                
-                // Estratégia 2: Se for nova guia com histórico mínimo
-                if (window.history.length <= 1) {
-                    console.log('✅ Fechando nova guia...');
-                    window.close();
-                    return;
-                }
-                
-                // Estratégia 3: Voltar no histórico
-                if (window.history.length > 1) {
-                    console.log('✅ Voltando no histórico...');
-                    window.history.back();
-                    return;
-                }
-                
-                // Estratégia 4: Fallback - tentar fechar sem redirecionamento
-                console.log('✅ Tentando fechar sem redirecionamento...');
-                try {
-                    window.close();
-                } catch (e) {
-                    console.log('❌ Não foi possível fechar automaticamente');
-                    // Apenas mostrar mensagem para o usuário fechar manualmente
-                    document.querySelector('.processing-text').textContent = 'Você pode fechar esta janela';
-                }
-                
+                console.log('✅ Tentativa 1: window.close()');
+                window.close();
             } catch (e) {
-                console.log('❌ Erro ao fechar callback:', e);
-                // Fallback final
-                window.location.href = 'integracoes.html?oauth_success=true';
+                console.log('❌ window.close() falhou:', e);
             }
+            
+            try {
+                if (window.opener) {
+                    console.log('✅ Tentativa 2: Fechando popup com opener');
+                    window.opener.focus();
+                    window.close();
+                }
+            } catch (e) {
+                console.log('❌ Fechar popup falhou:', e);
+            }
+            
+            try {
+                console.log('✅ Tentativa 3: self.close()');
+                self.close();
+            } catch (e) {
+                console.log('❌ self.close() falhou:', e);
+            }
+            
+            // Se nada funcionou, esconder conteúdo e mostrar mensagem
+            setTimeout(() => {
+                console.log('⚠️ Fallback: Escondendo conteúdo e mostrando mensagem');
+                document.body.innerHTML = `
+                    <div style="text-align: center; padding: 50px; font-family: Arial;">
+                        <h2>✅ Autenticação Concluída!</h2>
+                        <p>Você pode fechar esta guia agora.</p>
+                        <button onclick="window.close()" style="padding: 10px 20px; background: #1877f2; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            Fechar Guia
+                        </button>
+                    </div>
+                `;
+            }, 1000);
         }
         
         // Fallback de segurança - fechar após 3 segundos no máximo

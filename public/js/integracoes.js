@@ -417,6 +417,9 @@ class IntegrationManager {
             // Salvar no localStorage
             localStorage.setItem('facebook_integration', JSON.stringify(userData));
             
+            // Salvar no servidor se usuário estiver logado
+            this.saveFacebookIntegrationToServer(authResponseOrData);
+            
             // Atualizar UI
             this.updateFacebookUI(userData, true);
             this.showSuccess(authResponseOrData.message || 'Facebook conectado com sucesso!');
@@ -513,6 +516,49 @@ class IntegrationManager {
                 `).join('')}
             </div>
         `;
+    }
+
+    // Salvar integração Facebook no servidor
+    async saveFacebookIntegrationToServer(facebookData) {
+        try {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                console.log('⚠️ Usuário não autenticado - não salvando no servidor');
+                return;
+            }
+
+            console.log('💾 Salvando integração Facebook no servidor...');
+            
+            const integrationData = {
+                user: {
+                    id: facebookData.user_id,
+                    name: facebookData.user_name,
+                    email: facebookData.user_email || ''
+                },
+                adAccountsCount: facebookData.ad_accounts_count || 0,
+                pagesCount: facebookData.pages_count || 0,
+                connectedAt: facebookData.connected_at || new Date().toISOString()
+            };
+
+            const response = await fetch('/api/user/integrations/facebook', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(integrationData)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('✅ Integração Facebook salva no servidor:', result);
+            } else {
+                const errorText = await response.text();
+                console.error('❌ Erro ao salvar integração Facebook:', response.status, errorText);
+            }
+        } catch (error) {
+            console.error('❌ Erro ao salvar integração Facebook no servidor:', error);
+        }
     }
 
     // Atualizar UI do Facebook

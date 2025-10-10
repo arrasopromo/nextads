@@ -5022,6 +5022,83 @@ app.get('/api/user/integrations', verifyToken, async (req, res) => {
     }
 });
 
+// Save Facebook integration
+app.post('/api/user/integrations/facebook', verifyToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { user, adAccountsCount, pagesCount, connectedAt } = req.body;
+        
+        console.log('💾 Salvando integração Facebook para usuário:', userId);
+        console.log('📊 Dados recebidos:', { user, adAccountsCount, pagesCount, connectedAt });
+        
+        if (!user || !user.id || !user.name) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Dados do usuário Facebook são obrigatórios' 
+            });
+        }
+        
+        // Preparar dados da integração Facebook
+        const facebookIntegration = {
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email || ''
+            },
+            adAccounts: [], // Será preenchido quando necessário
+            pages: [], // Será preenchido quando necessário
+            adAccountsCount: adAccountsCount || 0,
+            pagesCount: pagesCount || 0,
+            connectedAt: connectedAt || new Date().toISOString(),
+            lastUpdated: new Date().toISOString(),
+            source: 'oauth_callback' // Indica que veio do callback OAuth
+        };
+        
+        // Atualizar usuário no MongoDB
+        const updateResult = await usersCollection.updateOne(
+            { id: userId },
+            { 
+                $set: { 
+                    'integrations.facebook': facebookIntegration,
+                    updatedAt: new Date().toISOString()
+                } 
+            }
+        );
+        
+        console.log('✅ Integração Facebook salva:', {
+            userId: userId,
+            facebookUserId: user.id,
+            facebookUserName: user.name,
+            matchedCount: updateResult.matchedCount,
+            modifiedCount: updateResult.modifiedCount
+        });
+        
+        if (updateResult.matchedCount === 0) {
+            return res.status(404).json({ 
+                success: false, 
+                error: 'Usuário não encontrado' 
+            });
+        }
+        
+        res.json({ 
+            success: true, 
+            message: 'Integração Facebook salva com sucesso',
+            data: {
+                facebookUserId: user.id,
+                facebookUserName: user.name,
+                connectedAt: facebookIntegration.connectedAt
+            }
+        });
+        
+    } catch (error) {
+        console.error('❌ Erro ao salvar integração Facebook:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Erro interno do servidor' 
+        });
+    }
+});
+
 // Validate session endpoint
 app.get('/api/validate-session', verifyToken, async (req, res) => {
     try {
