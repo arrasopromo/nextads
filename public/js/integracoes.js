@@ -176,6 +176,11 @@ class IntegrationManager {
                     // Verificar se os dados do usuário estão presentes
                     if (integrations.facebook.user && integrations.facebook.user.name) {
                         console.log('✅ Dados do usuário encontrados:', integrations.facebook.user);
+                        
+                        // Salvar dados do servidor no localStorage para consistência
+                        localStorage.setItem('facebook_integration', JSON.stringify(integrations.facebook));
+                        localStorage.setItem('facebook_connected', 'true');
+                        
                         this.updateFacebookUI(integrations.facebook, true);
                     } else {
                         console.log('❌ Dados do usuário não encontrados na estrutura:', integrations.facebook);
@@ -377,8 +382,7 @@ class IntegrationManager {
                         
                         this.showSuccess('Facebook conectado com sucesso!');
                         
-                        // Limpar flags temporários
-                        localStorage.removeItem('facebook_connected');
+                        // Limpar flags temporários (manter facebook_connected principal)
                         localStorage.removeItem('facebook_oauth_completed');
                     } else {
                         console.log('❌ Conexão não detectada');
@@ -429,6 +433,7 @@ class IntegrationManager {
 
             // Salvar no localStorage
             localStorage.setItem('facebook_integration', JSON.stringify(userData));
+            localStorage.setItem('facebook_connected', 'true');
             
             // Salvar no servidor se usuário estiver logado
             this.saveFacebookIntegrationToServer(authResponseOrData);
@@ -473,6 +478,7 @@ class IntegrationManager {
 
                     // Salvar no localStorage
                     localStorage.setItem('facebook_integration', JSON.stringify(userData));
+                    localStorage.setItem('facebook_connected', 'true');
                     
                     // Atualizar UI
                     this.updateFacebookUI(userData, true);
@@ -849,6 +855,7 @@ class IntegrationManager {
         if (confirm('Tem certeza que deseja desconectar sua conta do Facebook?')) {
             FB.logout(() => {
                 localStorage.removeItem('facebook_integration');
+                localStorage.removeItem('facebook_connected');
                 this.updateFacebookUI(null, false);
                 this.showSuccess('Facebook desconectado com sucesso!');
             });
@@ -1327,6 +1334,7 @@ class IntegrationManager {
 
                     // Salvar Facebook
                     localStorage.setItem('facebook_integration', JSON.stringify(userData));
+                    localStorage.setItem('facebook_connected', 'true');
                     this.updateFacebookUI(userData, true);
 
                     // Se há contas do Instagram Business, conectar automaticamente
@@ -1462,6 +1470,7 @@ class IntegrationManager {
 
             // Salvar no localStorage
             localStorage.setItem('facebook_integration', JSON.stringify(integrationData));
+            localStorage.setItem('facebook_connected', 'true');
             
             // Se houver contas Instagram, conectar automaticamente
             if (instagramAccounts.length > 0) {
