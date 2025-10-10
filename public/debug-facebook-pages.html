@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Facebook Pages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .data-display {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .clear-btn {
+            background: #dc3545;
+        }
+        .clear-btn:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Debug Facebook Pages</h1>
+        
+        <div class="section">
+            <h3>📱 LocalStorage Data</h3>
+            <button onclick="checkLocalStorage()">Verificar LocalStorage</button>
+            <button onclick="clearLocalStorage()" class="clear-btn">Limpar LocalStorage</button>
+            <div id="localStorage-data" class="data-display">Clique em "Verificar LocalStorage" para ver os dados</div>
+        </div>
+
+        <div class="section">
+            <h3>🗄️ MongoDB Data</h3>
+            <button onclick="checkMongoData()">Verificar MongoDB</button>
+            <div id="mongodb-data" class="data-display">Clique em "Verificar MongoDB" para ver os dados</div>
+        </div>
+
+        <div class="section">
+            <h3>🌐 Facebook API Test</h3>
+            <button onclick="testFacebookAPI()">Testar API do Facebook</button>
+            <div id="facebook-api-data" class="data-display">Clique em "Testar API do Facebook" para ver os dados</div>
+        </div>
+
+        <div class="section">
+            <h3>📊 Logs</h3>
+            <button onclick="clearLogs()">Limpar Logs</button>
+            <div id="logs" class="data-display">Logs aparecerão aqui...</div>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logsDiv = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            logsDiv.textContent += `[${timestamp}] ${message}\n`;
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function checkLocalStorage() {
+            log('🔍 Verificando localStorage...');
+            const data = {};
+            
+            // Verificar todas as chaves relacionadas ao Facebook
+            const facebookKeys = ['facebook_integration', 'facebook_connected', 'facebook_user_data', 'facebook_pages', 'facebook_accounts'];
+            
+            facebookKeys.forEach(key => {
+                const value = localStorage.getItem(key);
+                if (value) {
+                    try {
+                        data[key] = JSON.parse(value);
+                    } catch (e) {
+                        data[key] = value;
+                    }
+                }
+            });
+
+            document.getElementById('localStorage-data').textContent = JSON.stringify(data, null, 2);
+            log(`✅ LocalStorage verificado. Encontradas ${Object.keys(data).length} chaves relacionadas ao Facebook`);
+        }
+
+        function clearLocalStorage() {
+            log('🧹 Limpando localStorage...');
+            const facebookKeys = ['facebook_integration', 'facebook_connected', 'facebook_user_data', 'facebook_pages', 'facebook_accounts'];
+            
+            facebookKeys.forEach(key => {
+                localStorage.removeItem(key);
+                log(`🗑️ Removido: ${key}`);
+            });
+
+            document.getElementById('localStorage-data').textContent = 'LocalStorage limpo!';
+            log('✅ LocalStorage limpo com sucesso');
+        }
+
+        async function checkMongoData() {
+            log('🔍 Verificando dados do MongoDB...');
+            try {
+                const response = await fetch('/api/user/integrations', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token') || 'no-token'}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('mongodb-data').textContent = JSON.stringify(data, null, 2);
+                    log('✅ Dados do MongoDB carregados');
+                } else {
+                    const errorText = await response.text();
+                    document.getElementById('mongodb-data').textContent = `Erro: ${response.status} - ${errorText}`;
+                    log(`❌ Erro ao carregar dados do MongoDB: ${response.status}`);
+                }
+            } catch (error) {
+                document.getElementById('mongodb-data').textContent = `Erro: ${error.message}`;
+                log(`❌ Erro de rede: ${error.message}`);
+            }
+        }
+
+        async function testFacebookAPI() {
+            log('🔍 Testando API do Facebook...');
+            
+            // Verificar se há token do Facebook no localStorage
+            const facebookData = localStorage.getItem('facebook_integration');
+            if (!facebookData) {
+                document.getElementById('facebook-api-data').textContent = 'Nenhum token do Facebook encontrado no localStorage';
+                log('❌ Nenhum token do Facebook encontrado');
+                return;
+            }
+
+            try {
+                const data = JSON.parse(facebookData);
+                const accessToken = data.accessToken || data.access_token;
+                
+                if (!accessToken) {
+                    document.getElementById('facebook-api-data').textContent = 'Token de acesso não encontrado nos dados do Facebook';
+                    log('❌ Token de acesso não encontrado');
+                    return;
+                }
+
+                log('🔑 Token encontrado, testando API...');
+
+                // Testar busca de páginas
+                const pagesResponse = await fetch(`https://graph.facebook.com/v18.0/me/accounts?access_token=${accessToken}`);
+                const pagesData = await pagesResponse.json();
+
+                // Testar busca de business managers
+                const businessResponse = await fetch(`https://graph.facebook.com/v18.0/me/businesses?access_token=${accessToken}`);
+                const businessData = await businessResponse.json();
+
+                const result = {
+                    pages: pagesData,
+                    businesses: businessData
+                };
+
+                document.getElementById('facebook-api-data').textContent = JSON.stringify(result, null, 2);
+                log(`✅ API testada. Páginas: ${pagesData.data?.length || 0}, Businesses: ${businessData.data?.length || 0}`);
+            } catch (error) {
+                document.getElementById('facebook-api-data').textContent = `Erro: ${error.message}`;
+                log(`❌ Erro ao testar API: ${error.message}`);
+            }
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').textContent = '';
+        }
+
+        // Carregar dados automaticamente ao abrir a página
+        window.onload = function() {
+            log('🚀 Debug Facebook Pages carregado');
+            checkLocalStorage();
+        };
+    </script>
+</body>
+</html>

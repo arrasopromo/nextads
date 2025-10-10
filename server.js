@@ -573,6 +573,7 @@ app.get('/auth/facebook/callback', async (req, res) => {
         
         let allPages = [...(mePages.data.data || [])];
         console.log(`✅ Encontradas ${allPages.length} páginas diretas`);
+        console.log('🔍 DEBUG - Páginas diretas encontradas:', allPages.map(p => ({ id: p.id, name: p.name })));
         
         // Passo 2: Buscar páginas via Business Managers (/me/businesses)
         try {
@@ -600,6 +601,7 @@ app.get('/auth/facebook/callback', async (req, res) => {
                     
                     const bizPagesData = bizPages.data.data || [];
                     console.log(`✅ Encontradas ${bizPagesData.length} páginas no BM ${biz.name}`);
+                    console.log('🔍 DEBUG - Páginas do BM:', bizPagesData.map(p => ({ id: p.id, name: p.name })));
                     allPages = [...allPages, ...bizPagesData];
                 } catch (bizError) {
                     console.warn(`⚠️ Erro ao buscar páginas do Business Manager ${biz.name}:`, bizError.response?.data || bizError.message);
@@ -624,6 +626,7 @@ app.get('/auth/facebook/callback', async (req, res) => {
         
         const pages = uniquePages;
         console.log(`🎯 Total final: ${pages.length} páginas únicas encontradas`);
+        console.log('🔍 DEBUG - Páginas finais:', pages.map(p => ({ id: p.id, name: p.name })));
         
         console.log('✅ OAuth 2.0 Facebook concluído:', {
             user: userData.name,
@@ -804,6 +807,7 @@ app.get('/auth/callback', async (req, res) => {
         
         let allPages = [...(mePages.data.data || [])];
         console.log(`✅ Encontradas ${allPages.length} páginas diretas (callback genérico)`);
+        console.log('🔍 DEBUG - Páginas diretas (callback genérico):', allPages.map(p => ({ id: p.id, name: p.name })));
         
         // Passo 2: Buscar páginas via Business Managers (/me/businesses)
         try {
@@ -831,6 +835,7 @@ app.get('/auth/callback', async (req, res) => {
                     
                     const bizPagesData = bizPages.data.data || [];
                     console.log(`✅ Encontradas ${bizPagesData.length} páginas no BM ${biz.name} (callback genérico)`);
+                    console.log('🔍 DEBUG - Páginas do BM (callback genérico):', bizPagesData.map(p => ({ id: p.id, name: p.name })));
                     allPages = [...allPages, ...bizPagesData];
                 } catch (bizError) {
                     console.warn(`⚠️ Erro ao buscar páginas do Business Manager ${biz.name} (callback genérico):`, bizError.response?.data || bizError.message);
@@ -855,6 +860,7 @@ app.get('/auth/callback', async (req, res) => {
         
         const pages = uniquePages;
         console.log(`🎯 Total final: ${pages.length} páginas únicas encontradas (callback genérico)`);
+        console.log('🔍 DEBUG - Páginas finais (callback genérico):', pages.map(p => ({ id: p.id, name: p.name })));
         
         // Gerar token de longo prazo (60 dias)
         console.log('🔄 Gerando token de longo prazo (callback genérico)...');
