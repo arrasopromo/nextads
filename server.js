@@ -611,20 +611,57 @@ app.get('/auth/facebook/callback', async (req, res) => {
             console.warn('⚠️ Erro ao buscar Business Managers (pode não ter permissão business_management):', businessError.response?.data || businessError.message);
         }
         
-        // Passo 4: Remover páginas duplicadas por ID
+        // Passo 4: Remover páginas duplicadas por ID com priorização inteligente
+        console.log('🔄 Aplicando deduplicação inteligente...');
+        
+        // Separar páginas diretas das páginas de Business Managers
+        const directPagesCount = mePages.data.data?.length || 0;
+        const directPages = allPages.slice(0, directPagesCount);
+        const businessPages = allPages.slice(directPagesCount);
+        
+        console.log(`📊 Páginas diretas: ${directPages.length}, Páginas de BM: ${businessPages.length}`);
+        
         const uniquePages = Object.values(
-            allPages.reduce((acc, page) => {
+            allPages.reduce((acc, page, index) => {
                 if (page && page.id) {
-                    // Se já existe uma página com este ID, manter a que tem mais dados
-                    if (!acc[page.id] || Object.keys(page).length > Object.keys(acc[page.id]).length) {
-                        acc[page.id] = page;
+                    const isDirectPage = index < directPagesCount;
+                    
+                    if (!acc[page.id]) {
+                        // Primeira vez vendo esta página
+                        acc[page.id] = { ...page, _source: isDirectPage ? 'direct' : 'business_manager' };
+                    } else {
+                        // Página duplicada - aplicar lógica de priorização
+                        const existing = acc[page.id];
+                        const existingIsDirect = existing._source === 'direct';
+                        
+                        // PRIORIDADE 1: Páginas diretas sempre ganham
+                        if (isDirectPage && !existingIsDirect) {
+                            console.log(`🔄 Priorizando página direta: ${page.name} (ID: ${page.id})`);
+                            acc[page.id] = { ...page, _source: 'direct' };
+                        }
+                        // PRIORIDADE 2: Se ambas são de BM, manter a que tem access_token válido
+                        else if (!isDirectPage && !existingIsDirect) {
+                            if (page.access_token && !existing.access_token) {
+                                console.log(`🔄 Priorizando página com access_token: ${page.name} (ID: ${page.id})`);
+                                acc[page.id] = { ...page, _source: 'business_manager' };
+                            }
+                            // Se ambas têm ou não têm access_token, manter a primeira encontrada
+                        }
+                        // PRIORIDADE 3: Se página existente é direta, manter ela
+                        else if (existingIsDirect && !isDirectPage) {
+                            console.log(`✅ Mantendo página direta existente: ${existing.name} (ID: ${page.id})`);
+                        }
                     }
                 }
                 return acc;
             }, {})
         );
         
-        const pages = uniquePages;
+        // Remover propriedade auxiliar _source
+        const pages = uniquePages.map(page => {
+            const { _source, ...cleanPage } = page;
+            return cleanPage;
+        });
         console.log(`🎯 Total final: ${pages.length} páginas únicas encontradas`);
         console.log('🔍 DEBUG - Páginas finais:', pages.map(p => ({ id: p.id, name: p.name })));
         
