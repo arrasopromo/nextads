@@ -559,47 +559,88 @@ app.get('/auth/facebook/callback', async (req, res) => {
         
         const adAccounts = adAccountsResponse.data.data || [];
         
+        // Função auxiliar para buscar todas as páginas com paginação completa
+        async function fetchAllPages(accessToken, endpoint, fields) {
+            let pages = [];
+            let url = `https://graph.facebook.com/v21.0${endpoint}`;
+            let hasNextPage = true;
+            let pageCount = 0;
+            
+            console.log(`📄 Iniciando busca paginada em: ${endpoint}`);
+            
+            while (hasNextPage && pageCount < 10) { // Limite de segurança de 10 páginas
+                try {
+                    const response = await axios.get(url, {
+                        params: {
+                            access_token: accessToken,
+                            fields: fields,
+                            limit: 100 // Máximo por página
+                        }
+                    });
+                    
+                    const data = response.data;
+                    
+                    if (data.data && Array.isArray(data.data)) {
+                        pages = pages.concat(data.data);
+                        console.log(`📄 Página ${pageCount + 1}: ${data.data.length} itens encontrados`);
+                    }
+                    
+                    // Verificar se há próxima página
+                    if (data.paging && data.paging.next) {
+                        url = data.paging.next;
+                        pageCount++;
+                    } else {
+                        hasNextPage = false;
+                    }
+                    
+                } catch (error) {
+                    console.error(`❌ Erro na paginação (página ${pageCount + 1}):`, error.response?.data || error.message);
+                    hasNextPage = false;
+                }
+            }
+            
+            console.log(`✅ Busca paginada concluída: ${pages.length} itens totais em ${pageCount + 1} páginas`);
+            return pages;
+        }
+
         // Obter páginas do Facebook - Implementação completa para múltiplos Business Managers
         console.log('🔍 Buscando páginas do Facebook...');
         
-        // Passo 1: Buscar páginas padrão (/me/accounts)
+        // Passo 1: Buscar páginas padrão (/me/accounts) com paginação
         console.log('📄 Buscando páginas diretas da conta...');
-        const mePages = await axios.get(`https://graph.facebook.com/v21.0/me/accounts`, {
-            params: {
-                access_token: longLivedToken,
-                fields: 'id,name,access_token,instagram_business_account,category,picture'
-            }
-        });
+        const directPagesData = await fetchAllPages(
+            longLivedToken, 
+            '/me/accounts', 
+            'id,name,access_token,instagram_business_account,category,picture'
+        );
+        
+        const mePages = { data: { data: directPagesData } }; // Manter compatibilidade com código existente
         
         let allPages = [...(mePages.data.data || [])];
         console.log(`✅ Encontradas ${allPages.length} páginas diretas`);
         console.log('🔍 DEBUG - Páginas diretas encontradas:', allPages.map(p => ({ id: p.id, name: p.name })));
         
-        // Passo 2: Buscar páginas via Business Managers (/me/businesses)
+        // Passo 2: Buscar páginas via Business Managers (/me/businesses) com paginação
         try {
             console.log('🏢 Buscando Business Managers...');
-            const businessList = await axios.get(`https://graph.facebook.com/v21.0/me/businesses`, {
-                params: {
-                    access_token: longLivedToken,
-                    fields: 'id,name'
-                }
-            });
+            const businesses = await fetchAllPages(
+                longLivedToken,
+                '/me/businesses',
+                'id,name'
+            );
             
-            const businesses = businessList.data.data || [];
             console.log(`✅ Encontrados ${businesses.length} Business Managers`);
             
-            // Passo 3: Para cada Business Manager, buscar suas páginas
+            // Passo 3: Para cada Business Manager, buscar suas páginas com paginação
             for (const biz of businesses) {
                 try {
                     console.log(`🔍 Buscando páginas do Business Manager: ${biz.name} (${biz.id})`);
-                    const bizPages = await axios.get(`https://graph.facebook.com/v21.0/${biz.id}/owned_pages`, {
-                        params: {
-                            access_token: longLivedToken,
-                            fields: 'id,name,access_token,instagram_business_account,category,picture'
-                        }
-                    });
+                    const bizPagesData = await fetchAllPages(
+                        longLivedToken,
+                        `/${biz.id}/owned_pages`,
+                        'id,name,access_token,instagram_business_account,category,picture'
+                    );
                     
-                    const bizPagesData = bizPages.data.data || [];
                     console.log(`✅ Encontradas ${bizPagesData.length} páginas no BM ${biz.name}`);
                     console.log('🔍 DEBUG - Páginas do BM:', bizPagesData.map(p => ({ id: p.id, name: p.name })));
                     allPages = [...allPages, ...bizPagesData];
@@ -657,10 +698,20 @@ app.get('/auth/facebook/callback', async (req, res) => {
             }, {})
         );
         
-        // Remover propriedade auxiliar _source
+        // Remover propriedade auxiliar _source e estruturar dados das páginas
         const pages = uniquePages.map(page => {
             const { _source, ...cleanPage } = page;
-            return cleanPage;
+            return {
+                id: cleanPage.id,
+                name: cleanPage.name,
+                category: cleanPage.category || 'N/A',
+                picture: cleanPage.picture?.data?.url || null,
+                access_token: cleanPage.access_token,
+                instagram_business_account: cleanPage.instagram_business_account || null,
+                connectedAt: new Date().toISOString(),
+                lastUpdated: new Date().toISOString(),
+                source: _source || 'unknown' // Para debug: saber se veio de direct ou business_manager
+            };
         });
         console.log(`🎯 Total final: ${pages.length} páginas únicas encontradas`);
         console.log('🔍 DEBUG - Páginas finais:', pages.map(p => ({ id: p.id, name: p.name })));
