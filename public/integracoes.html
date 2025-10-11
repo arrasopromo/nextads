@@ -887,6 +887,21 @@
                 });
             }
             
+            // Configurar máscara de telefone para o campo WhatsApp
+            const whatsappInput = document.getElementById('signup-whatsapp');
+            if (whatsappInput) {
+                whatsappInput.addEventListener('input', function(e) {
+                    const formatted = formatWhatsApp(e.target.value);
+                    e.target.value = formatted;
+                    
+                    // Ocultar mensagem de erro se existir
+                    const errorElement = document.getElementById('whatsapp-error');
+                    if (errorElement) {
+                        errorElement.style.display = 'none';
+                    }
+                });
+            }
+            
             // Configurar botão "Entrar" da seção login-required
             const loginRequiredBtn = document.getElementById('login-required-btn');
             if (loginRequiredBtn) {
@@ -904,6 +919,57 @@
             
             console.log('✅ Formulários configurados com sucesso');
         });
+        
+        // Máscara para WhatsApp com código do Brasil (+55)
+        function formatWhatsApp(value) {
+            // Remove tudo que não é dígito
+            let numbers = value.replace(/\D/g, '');
+            
+            // Se o campo estiver vazio, retorna vazio para permitir digitação
+            if (numbers.length === 0) {
+                return '';
+            }
+            
+            // Se não começar com 55, adiciona automaticamente
+            if (!numbers.startsWith('55')) {
+                numbers = '55' + numbers;
+            }
+            
+            // Limita a 13 dígitos (55 + 11 dígitos do número brasileiro)
+            if (numbers.length > 13) {
+                numbers = numbers.substring(0, 13);
+            }
+            
+            // Aplica a máscara +55 (00) 00000-0000
+            let formatted = '+55';
+            
+            if (numbers.length > 2) {
+                let remaining = numbers.substring(2); // Remove o 55 inicial
+                
+                if (remaining.length >= 2) {
+                    formatted += ' (' + remaining.substring(0, 2);
+                    if (remaining.length > 2) {
+                        formatted += ')';
+                        remaining = remaining.substring(2);
+                        
+                        if (remaining.length > 0) {
+                            if (remaining.length <= 5) {
+                                formatted += ' ' + remaining;
+                            } else {
+                                formatted += ' ' + remaining.substring(0, 5);
+                                if (remaining.length > 5) {
+                                    formatted += '-' + remaining.substring(5);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    formatted += ' (' + remaining;
+                }
+            }
+            
+            return formatted;
+        }
         
         function showLoginSection() {
             const loginTabBtn = document.getElementById('login-tab-btn');
